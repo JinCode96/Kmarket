@@ -1,0 +1,393 @@
+/*** 초기화 ***/
+* {margin: 0; padding: 0; font: normal 12px 고딕;}
+a {text-decoration: none; color: #111;}
+ul, ol {list-style: none;}
+html, body {height: 100%}
+
+#wrapper {
+    height : auto;
+    min-height: 100%;
+    box-sizing: border-box;
+    padding-bottom: 60px;
+    box-sizing: border-box;
+}
+
+/*** 헤더 ***/
+header {
+    min-width: 1400px;
+    height: 120px;
+    box-sizing: border-box;
+    background: url(../img/admin_bg_body.jpg);
+    background-position: 0px -79px;
+}
+header > div {
+    width: 1400px;
+    height: 100%;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+header > div > a {
+    display: inline-block;
+    position: relative;
+    top: 45px;
+}
+header > div > nav {
+    position: relative;
+    top: 45px;
+    color: #fff;
+    float: right;
+    font-size: 0;
+}
+
+header > div > nav > span {margin-right: 15px;}
+header > div > nav > a {
+    color: inherit;
+    padding: 0 6px;
+}
+
+header > div > nav > a:not(:last-child) {border-right: 1px solid #fff;}
+
+/*** 관리자 메인 ***/
+main {
+    height: auto;
+    box-sizing: border-box;
+}
+main > div {
+    width: 1400px;
+    height: auto;
+    box-sizing: border-box;
+    margin: 0 auto;
+    overflow: hidden;
+}
+main > div > aside {
+    width: 270px;
+    height: auto;
+    box-sizing: border-box;
+    float: left;
+    background: url('../img/admin_bg_aside.jpg');
+}
+main > div > aside > ul > li {
+    width: 100%;
+    min-height: 66px;
+    border-bottom: 1px solid #c0c0c0;;
+    box-sizing: border-box;
+}
+main > div > aside > #gnb > li > a {
+    display: inline-block;
+    width: 100%;
+    height: 66px;
+    text-indent: 10px;
+    line-height: 66px;
+    font-size: 14px;
+    font-weight: bold;
+}
+main > div > aside > #gnb > li > a > i {
+    margin-right: 10px;
+    font-size: 20px;
+}
+
+main > div > aside > #gnb ol {display: none;}
+main > div > aside > #gnb ol > li > a {
+    display: block;
+    text-indent: 54px;
+    height: 30px;
+    line-height: 30px;
+}
+
+.admin {
+    float: left;
+    width: 1130px;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 20px;
+}
+.admin > nav {
+    box-sizing: border-box;
+    border-bottom: 1px solid #c0c0c0;
+    padding-bottom: 5px;
+    height: auto;
+}
+.admin > nav > h1 {
+    font-size: 20px;
+    font-weight: bold;
+    display: inline-block;
+}
+.admin > nav > p {float: right; line-height: 34px;}
+.admin > nav > p > span {font-weight: bold;}
+#admin-index > section {
+    width: 100%;
+    height: auto;
+    box-sizing: border-box;
+}
+#admin-index > section  table td, #admin-index > section  table th {border: 1px solid #e5e5e5;}
+#admin-index > section  table {
+    width: 100%;
+    height: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    border-top: 2px solid #8798a3
+}
+#admin-index > section table > caption {
+    text-align: left;
+    font-size: 15px;
+    font-weight: bold;
+    margin-bottom: 7px;
+}
+#admin-index > section > table tr:first-child {background: #f6f6f6;}
+#admin-index > section > table th{padding: 25px;}
+#admin-index > section > table th > p {
+    font-size: 16px;
+    font-weight: bold;
+}
+#admin-index > section > table th > strong {
+    display: block;
+    font-size: 16px;
+    font-weight: bold;
+    color: #bc2e13;
+    margin-top: 10px;
+}
+#admin-index > section > table td {padding: 15px;}
+#admin-index > section > table td > p:not(:first-childs) {margin-top: 10px;}
+#admin-index > section > table tr:not(:first-child) > td > p {
+    display: flex;
+    justify-content: space-between;
+}
+#admin-index > section > table td > p > span {font-size: 14px;}
+#admin-index > section {padding-top: 20px;}
+#admin-index > section > article {
+    width: 49%;
+    height: 100%;
+    box-sizing: border-box;
+}
+#admin-index > section > article:nth-child(1) {float: left;}
+#admin-index > section > article:nth-child(2) {float: right;}
+#admin-index > section > article > table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+#admin-index > section > article > table td {
+    padding: 15px;
+}
+#admin-index > section > article > table td > p {
+    display: flex;
+    justify-content: space-between;
+}
+#admin-index > section > article > table td > p:not(:first-child) {margin-top: 5px;}
+#admin-index > section > article > table td span:nth-child(1) {
+    width: 410px;
+    display: inline-block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+
+/*** 관리자 상품목록 ***/
+#admin-product-list {height: 100%;}
+#admin-product-list > select {
+    width: 80px;
+    border: 1px solid #d6d6d6;
+    box-sizing:border-box;
+    height: 30px;
+    text-indent: 5px;
+}
+
+#admin-product-list > input {
+    height: 30px;
+    border: 1px solid #d6d6d6;
+    box-sizing:border-box;
+    margin: 25px 0 10px;
+    text-indent: 5px;
+}
+#admin-product-list > table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    border-top: 2px solid #8798a3;
+}
+#admin-product-list > table tr:first-child > th {
+    background: #f6f6f6;
+    padding: 15px;
+    border-bottom: 1px solid #e6e6e6;
+}
+#admin-product-list > table tr:first-child > th > input[type=checkbox] {margin-top: 1.5px;}
+#admin-product-list > table tr > td {padding: 10px;}
+#admin-product-list > table tr:not(:first-child) > td:nth-child(4) {width: 300px;text-align: left;}
+#admin-product-list > table td {
+    border-bottom: 1px solid #e6e6e6;
+    text-align: center;
+}
+#admin-product-list > table td > img {width: 60px;}
+#admin-product-list > input[type=button] {
+    float: left;
+    background: #fff;
+    height: auto;
+    cursor: pointer;
+    text-indent: 0;
+    padding: 10px 15px;
+    border: 1px solid #d6d6d6;
+    box-sizing: border-box;
+}
+#admin-product-list > .paging {
+    display: block;
+    width: auto;
+    height: 32px;
+    margin-top: 28px;
+    text-align: center;
+}
+#admin-product-list > .paging > a {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    border: 1px solid #d6d6d6;
+    background-repeat: no-repeat;
+    border-radius: 3px;
+    color: #999;
+}
+#admin-product-list > .paging > a:nth-child(1) {
+    background-image: url('../img/admin_paging_end_on.JPG');
+    background-position: 3px 1px;
+}
+#admin-product-list > .paging > a:nth-child(2) {
+    background-image: url('../img/admin_paging_next_on.JPG');
+    background-position: 2px 3px;
+}
+#admin-product-list > .paging > a:nth-child(13) {
+    background-image: url('../img/admin_paging_next_off.JPG');
+    background-position: 4px 3px;
+}
+#admin-product-list > .paging > a:nth-child(14) {
+    background-image: url('../img/admin_paging_end_off.JPG');
+    background-position: 5px 1px;
+}
+#admin-product-list > .paging > .pageNum {
+    position: relative;
+    top: -11px;
+}
+#admin-product-list > .paging > .on {
+    border: 1px solid #6699cc;
+    background: #6699cc;
+    color: #fff;
+    font-weight: bold;
+}
+#admin-product-list > .paging > .pageNum:not(.on):hover {background-color: #e7f2fb;}
+p.ico  {
+    padding: 25px 50px;
+    margin-top: 50px;
+    border: 1px solid #8497BF;
+    background: no-repeat #A8B2C5 url('../img/admin_ico_info.png') scroll 15px 20px;
+}
+
+/*** 관리자 상품등록 ***/
+#admin-product-register > form > table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+#admin-product-register > form > h2 {
+    font-size: 15px;
+    font-weight: bold;
+    margin-top: 15px;
+}
+#admin-product-register > form > p {
+    background: #eaeaea;
+    padding: 10px;
+    margin: 10px 0;
+}
+#admin-product-register table > caption {text-align: left;}
+#admin-product-register table  tr:nth-child(1) {
+    border-top: 1px solid #e6e6e6;
+    border-bottom: 1px solid #e6e6e6;
+}
+#admin-product-register table  tr:not(:first-child) {border-bottom: 1px solid #e6e6e6;}
+#admin-product-register table  th {
+    width: 200px;
+    padding: 20px;
+    background: #f6f6f6;
+}
+#admin-product-register table  td {padding: 10px;}
+#admin-product-register table  td > select {
+    width: 140px;
+    height: 35px;
+    text-indent: 5px;
+    border: 1px solid #959595;
+}
+#admin-product-register table  td > div {overflow: hidden;}
+#admin-product-register table  td > div:nth-child(2) {margin: 15px 0;}
+#admin-product-register table  td  input[type=file] {float: left; width: 180px;}
+#admin-product-register table  td > input:not(input[type=file])  {
+    float: left;
+    width: 200px;
+    height: 35px;
+    text-indent: 5px;
+    border: 1px solid #959595;
+    box-sizing: border-box;
+}
+#admin-product-register table  td > span {float: left; line-height: 35px; font-weight: bold;}
+#admin-product-register table tr:not(:nth-child(9)) td > p {
+    float: left;
+    text-indent: 5px;
+    margin: 10px 0 5px 10px;
+}
+#admin-product-register table tr:nth-child(9) td > div > p {
+    float: left;
+    line-height: 23px;
+    margin-left: 52px;
+}
+#admin-product-register table tr:nth-child(10) td > p {
+    line-height: 20px;;
+    margin: 0;
+    text-indent: 0;
+    margin-left: 52px;
+}
+#admin-product-register table  td > p:nth-child(1) {margin-top: 0;}
+#admin-product-register table  td > span {margin-left: 5px;}
+#admin-product-register > form > input[type=submit] {
+    float: right;
+    background: none;
+    border: 1px solid #959595;
+    border-radius: 2px;
+    box-sizing: border-box;
+    padding: 10px 15px;
+    margin-top: 15px;
+    cursor: pointer;
+}
+#admin-product-register > p.ico  {
+    padding: 25px 50px;
+    margin-top: 80px;
+    border: 1px solid #FDD845;
+    background: no-repeat #FFF6BF  url('../img/admin_ico_alert.png') scroll 15px 20px;
+}
+
+/*** 푸터 ***/
+footer {
+    min-width: 1400px;
+    height: 60px;
+    box-sizing: border-box;
+    transform : translateY(-100%);
+    background: #0d3a46;
+}
+footer > div:nth-child(1) {
+    width: 1400px;
+    height: 60px;
+    box-sizing: border-box;
+    margin: 0 auto;
+    display: block;
+}
+
+footer > div:nth-child(1) > p {
+    color: #fff;
+    font-weight: bold;
+    line-height: 55px;
+}
+
+footer > div:nth-child(2) {
+    width: 100%;
+    height: 40px;
+}
+
+footer > div:nth-child(2) > p {
+    text-align: center;
+    line-height: 40px;
+}
