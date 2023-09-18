@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+  <script src="https://kit.fontawesome.com/20962f3e4b.js" crossorigin="anonymous"></script>
+  <!-- head 공통 -->
+  <th:block th:replace="~{fragment/config :: head_common}"></th:block>
+  <link rel="stylesheet" th:href="@{/css/member.css}">
+</head>
+<body>
+<div id="wrapper">
+  <header th:replace="~{fragment/header :: member_header}"></header>
+  <main layout:fragment="main"></main>
+</div>
+<footer th:replace="~{fragment/footer :: member_footer}"></footer>
+</body>
+</html>

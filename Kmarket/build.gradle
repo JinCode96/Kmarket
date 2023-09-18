@@ -27,6 +27,9 @@ dependencies {
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.2'
     compileOnly 'org.projectlombok:lombok'
 
+    // thymeleaf layout
+    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+
     // h2 db
     runtimeOnly 'com.h2database:h2'
 

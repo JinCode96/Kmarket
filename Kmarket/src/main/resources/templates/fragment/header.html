@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- main header -->
+<header th:fragment="main_header">
+    <div class="top">
+        <div>
+            <a href="./member/login.html">로그인</a>
+            <a href="#">회원가입</a>
+            <a href="#">마이페이지</a>
+            <a href="#">
+                <i class="fa fa-shopping-cart" aria-hidden="true"></i>
+                장바구니
+            </a>
+        </div>
+    </div>
+    <div class="logo">
+        <div>
+            <a href="#">
+                <img th:src="@{/img/header_logo.png}" alt="로고">
+            </a>
+            <form action="#">
+                <input type="text" name="search">
+                <button>
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+    <div class="menu">
+        <div>
+            <ul>
+                <li><a href="#">히트상품</a></li>
+                <li><a href="#">추천상품</a></li>
+                <li><a href="#">최신상품</a></li>
+                <li><a href="#">인기상품</a></li>
+                <li><a href="#">할인상품</a></li>
+            </ul>
+            <ul>
+                <li><a href="#">공지사항</a></li>
+                <li><a href="#">자주묻는질문</a></li>
+                <li><a href="#">문의하기</a></li>
+                <li><a href="#">고객센터</a></li>
+            </ul>
+        </div>
+    </div>
+</header>
+
+<!-- member header -->
+<header th:fragment="member_header">
+      <div class="top">
+        <div>
+          <nav>
+            <a href="#">로그인</a>
+            <a href="#">회원가입</a>
+            <a href="#">마이페이지</a>
+            <a href="#"><i class="fa fa-shopping-cart" aria-hidden="true"></i>&nbsp;장바구니</a>
+          </nav>
+        </div>
+      </div>
+      <div class="logo">
+        <div>
+          <a href="#">
+            <img th:src="@{/img/header_logo.png}" alt="Kmarket 대한민국 1등 온라인 쇼핑">
+          </a>
+        </div>
+      </div>
+  </header>
+
+<!-- admin header -->
+<header th:fragment="admin_header">
+    <div>
+        <a href="#">
+            <img th:src="@{/img/admin_logo.png}" alt="ADMINSTRATOR">
+        </a>
+        <nav>
+            <span>홍길동님 반갑습니다.</span>
+            <a href="#">HOME</a>
+            <a href="#">로그아웃</a>
+            <a href="#">고객센터</a>
+        </nav>
+    </div>
+</header>
+</html>

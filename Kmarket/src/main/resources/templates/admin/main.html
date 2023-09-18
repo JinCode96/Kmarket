@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/admin_layout}">
+<main layout:fragment="main">
+    <div>
+        <aside>
+            <!-- 카테고리 -->
+            <th:block th:replace="~{fragment/aside :: admin_category}"></th:block>
+        </aside>
+        <section id="admin-index" class="admin">
+            <nav>
+                <h1>관리자 메인</h1>
+                <p>HOME > <span>메인</span></p>
+            </nav>
+            <section>
+                <table border="0">
+                    <caption>쇼핑몰 운영현황</caption>
+                    <tr>
+                        <th>
+                            <p>주문건수(건)</p>
+                            <strong>131</strong>
+                        </th>
+                        <th>
+                            <p>주문금액(원)</p>
+                            <strong>1,130</strong>
+                        </th>
+                        <th>
+                            <p>회원가입(명)</p>
+                            <strong>1014</strong>
+                        </th>
+                        <th>
+                            <p>쇼핑몰 방문(명)</p>
+                            <strong>1014</strong>
+                        </th>
+                        <th>
+                            <p>신규 게시물(건)</p>
+                            <strong>100</strong>
+                        </th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
+                                <span>PC</span>
+                                <span>60</span>
+                            </p>
+                            <p>
+                                <span>Mobile</span>
+                                <span>71</span>
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                <span>PC</span>
+                                <span>60</span>
+                            </p>
+                            <p>
+                                <span>Mobile</span>
+                                <span>71</span>
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                <span>PC</span>
+                                <span>60</span>
+                            </p>
+                            <p>
+                                <span>Mobile</span>
+                                <span>71</span>
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                <span>PC</span>
+                                <span>60</span>
+                            </p>
+                            <p>
+                                <span>Mobile</span>
+                                <span>71</span>
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                <span>PC</span>
+                                <span>60</span>
+                            </p>
+                            <p>
+                                <span>Mobile</span>
+                                <span>71</span>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>
+                                <span>어제</span>
+                                <span>4</span>
+                            </p>
+                            <p>
+                                <span>주간</span>
+                                <span>10</span>
+                            </p>
+                            <p>
+                                <span>월간</span>
+                                <span>30</span>
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                <span>어제</span>
+                                <span>4</span>
+                            </p>
+                            <p>
+                                <span>주간</span>
+                                <span>10</span>
+                            </p>
+                            <p>
+                                <span>월간</span>
+                                <span>30</span>
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                <span>어제</span>
+                                <span>4</span>
+                            </p>
+                            <p>
+                                <span>주간</span>
+                                <span>10</span>
+                            </p>
+                            <p>
+                                <span>월간</span>
+                                <span>30</span>
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                <span>어제</span>
+                                <span>4</span>
+                            </p>
+                            <p>
+                                <span>주간</span>
+                                <span>10</span>
+                            </p>
+                            <p>
+                                <span>월간</span>
+                                <span>30</span>
+                            </p>
+                        </td>
+                        <td>
+                            <p>
+                                <span>어제</span>
+                                <span>4</span>
+                            </p>
+                            <p>
+                                <span>주간</span>
+                                <span>10</span>
+                            </p>
+                            <p>
+                                <span>월간</span>
+                                <span>30</span>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </section>
+            <section>
+                <table border="0">
+                    <caption>주문 업무현황</caption>
+                    <tr>
+                        <th>
+                            <p>입금대기(건)</p>
+                            <strong>100</strong>
+                        </th>
+                        <th>
+                            <p>배송준비(건)</p>
+                            <strong>100</strong>
+                        </th>
+                        <th>
+                            <p>취소요청(건)</p>
+                            <strong>100</strong>
+                        </th>
+                        <th>
+                            <p>교환요청(건)</p>
+                            <strong>100</strong>
+                        </th>
+                        <th>
+                            <p>반품요청(건)</p>
+                            <strong>100</strong>
+                        </th>
+                    </tr>
+                </table>
+            </section>
+            <section>
+                <article>
+                    <table border="0">
+                        <caption>공지사항1</caption>
+                        <tr>
+                            <td>
+                                <p>
+                                    <span>[공지] 케이마켓 판매자님들은 주기적인 비밀번호 변경을 하세요. 케이마켓 판매자님들은 주기적인 비밀번호 변경을 하세요.</span>
+                                    <span>20-07-08 12:23</span>
+                                </p>
+                                <p>
+                                    <span>[공지] 1주년 기념 신규가입 사은품 안내</span>
+                                    <span>20-07-08 12:23</span>
+                                </p>
+                                <p>
+                                    <span>[공지] 1주년 기념 신규가입 사은품 안내</span>
+                                    <span>20-07-08 12:23</span>
+                                </p>
+                                <p>
+                                    <span>[공지] 1주년 기념 신규가입 사은품 안내</span>
+                                    <span>20-07-08 12:23</span>
+                                </p>
+                                <p>
+                                    <span>[공지] 1주년 기념 신규가입 사은품 안내</span>
+                                    <span>20-07-08 12:23</span>
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                </article>
+                <article>
+                    <table>
+                        <caption>고객문의</caption>
+                        <tr>
+                            <td>
+                                <p>
+                                    <span>[문의] 상품이 잘못 왔습니다.</span>
+                                    <span>20-07-08 12:23</span>
+                                </p>
+                                <p>
+                                    <span>[문의] 안녕하세요. 주문자 입니다. 구매한 상품에 문제가 있어서 이렇게 문의글을 남깁니다.</span>
+                                    <span>20-07-08 12:23</span>
+                                </p>
+                                <p>
+                                    <span>[문의] 상품이 1개 잘못 왔습니다.</span>
+                                    <span>20-07-08 12:23</span>
+                                </p>
+                                <p>
+                                    <span>[문의] 상품이 1개 잘못 왔습니다.</span>
+                                    <span>20-07-08 12:23</span>
+                                </p>
+                                <p>
+                                    <span>[문의] 상품이 1개 잘못 왔습니다.</span>
+                                    <span>20-07-08 12:23</span>
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                </article>
+            </section>
+        </section>
+    </div>
+</main>
+</html>
