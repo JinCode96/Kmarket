@@ -1,4 +1,4 @@
-package com.kmarket.web.my.controller;
+package com.kmarket.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/my")
 @RequiredArgsConstructor
 public class MyController {
-
     @GetMapping("/home")
     public String home() {
         return "my/home";
@@ -18,4 +17,5 @@ public class MyController {
     public String info() {
         return "my/info";
     }
+
 }

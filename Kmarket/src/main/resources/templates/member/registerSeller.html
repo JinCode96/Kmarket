@@ -2,6 +2,16 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/member_layout}">
+<head>
+    <script th:inline="javascript">
+        var referer = [[${referer}]];
+        console.log(referer);
+        if (referer == null) {
+            alert("정상적인 경로를 통해서 다시 접근해주세요.");
+            document.location.href='/kmarket';
+        }
+    </script>
+</head>
     <main id="member" layout:fragment="main">
         <div class="register">
             <nav>

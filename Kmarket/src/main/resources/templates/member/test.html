@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email 입력 폼</title>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const emailForm = document.getElementById('emailForm');
+      const emailPrefixInput = document.getElementById('emailPrefix');
+      const emailDomainInput = document.getElementById('emailDomain');
+      const domainSelect = document.getElementById('domainSelect');
+      const result = document.getElementById('result');
+
+      // select 요소에서 도메인을 선택할 때 이벤트 처리
+      domainSelect.addEventListener('change', function () {
+        const selectedDomain = domainSelect.value;
+        emailDomainInput.value = selectedDomain; // 선택한 도메인을 입력 필드에 설정
+      });
+
+      emailForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const emailPrefix = emailPrefixInput.value;
+        const emailDomain = emailDomainInput.value;
+
+        const email = emailPrefix + "@" + emailDomain;
+
+        if (isValidEmail(email)) {
+          result.textContent = '유효한 이메일 주소입니다.';
+        } else {
+          result.textContent = '유효하지 않은 이메일 주소입니다.';
+        }
+      });
+
+      // 이메일 유효성 검사 함수
+      function isValidEmail(email) {
+        const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+        return emailRegex.test(email);
+      }
+    });
+  </script>
+</head>
+<body>
+<form id="emailForm">
+  <label for="email">이메일 주소:</label>
+  <div id="emailInputGroup">
+    <input type="text" id="emailPrefix" name="emailPrefix" required>
+    <span>@</span>
+    <input type="text" id="emailDomain" name="emailDomain" required>
+    <select id="domainSelect" name="domainSelect">
+      <option value="" disabled selected>도메인 선택</option>
+      <option value="gmail.com">gmail.com</option>
+      <option value="yahoo.com">yahoo.com</option>
+      <option value="hotmail.com">hotmail.com</option>
+      <!-- 다른 이메일 도메인을 필요에 따라 추가하세요 -->
+    </select>
+  </div>
+  <button type="submit">제출</button>
+</form>
+<p id="result"></p>
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -2,6 +2,39 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/member_layout}">
+<head>
+    <script th:inline="javascript">
+        // 현재 페이지의 Referer 값을 가져오기
+        // var referer = document.referrer;
+        // console.log(referer);
+        //
+        // Referer 가 null 인지 확인
+        // if (!referer) {
+            // Referer 가 null 이면 비정상적인 접근이라고 판단
+            // alert("비정상적인 접근입니다.");
+            // 사용자를 http://localhost:8080/kmarket 페이지로 보냄
+            // window.location.href = "http://localhost:8080/kmarket";
+        // }
+        // var referer = [[${referer}]];
+        // console.log(referer);
+        // if (referer == null) {
+        //     alert("정상적인 경로를 통해서 다시 접근해주세요.");
+        //     document.location.href = '/kmarket';
+        // }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const emailDomainInput = document.getElementById('emailDomain');
+            const domainSelect = document.getElementById('domainSelect');
+
+            // select 요소에서 도메인을 선택할 때 이벤트 처리
+            domainSelect.addEventListener('change', function () {
+                const selectedDomain = domainSelect.value;
+                emailDomainInput.value = selectedDomain; // 선택한 도메인을 입력 필드에 설정
+            });
+        });
+    </script>
+</head>
     <main id="member" layout:fragment="main">
         <div class="register">
             <nav>
@@ -57,20 +90,22 @@
                     <tr>
                         <th>
                             <span class="essential">*</span>
-                            성별
-                        </th>
-                        <td class="radio">
-                            <label><input type="radio" name="km_gender" value="1"> 남</label>&emsp;
-                            <label><input type="radio" name="km_gender" value="2"> 여</label>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            <span class="essential">*</span>
                             EMAIL
                         </th>
                         <td>
-                            <input type="email" name="km_email" placeholder="이메일 입력" required>
+                            <input type="text" id="emailPrefix" name="emailPrefix" placeholder="이메일 입력" required> @
+                            <input type="text" id="emailDomain" name="emailDomain" placeholder="이메일 도메인" required>
+                            <select class="select" id="domainSelect" name="domainSelect">
+                                <option value="" >-직접입력-</option>
+                                <option value="naver.com">naver.com</option>
+                                <option value="nate.com">nate.com</option>
+                                <option value="daum.com">daum.com</option>
+                                <option value="gmail.com">gmail.com</option>
+                                <option value="yahoo.com">yahoo.com</option>
+                                <option value="hanmail.net">hanmail.net</option>
+                                <option value="kakao.com">kakao.com</option>
+                                <option value="korea.kr">korea.kr</option>
+                            </select>
                         </td>
                     </tr>
                     <tr>

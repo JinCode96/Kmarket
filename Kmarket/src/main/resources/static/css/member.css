@@ -201,12 +201,13 @@ header > div.logo > div > a {
 }
 
 /* 회원가입 - signup */
-#member > .signup > section {overflow: hidden;}
-#member > .signup > section:nth-of-type(4) {margin-bottom: 20px;}
-#member > .signup > section > h3 {margin-top: 20px;font-size: 14px;}
-#member > .signup > section > h3 > span.essential {color: #ef3f43;}
-#member > .signup > section > h3 > span.optional {color: #01c1c4;}
-#member > .signup > section > textarea {
+
+#member > .signup > form > section {overflow: hidden;}
+#member > .signup > form > section:nth-of-type(4) {margin-bottom: 20px;}
+#member > .signup > form > section > h3 {margin-top: 20px;font-size: 14px;}
+#member > .signup > form > section > h3 > span.essential {color: #ef3f43;}
+#member > .signup > form > section > h3 > span.optional {color: #01c1c4;}
+#member > .signup > form > section > textarea {
     margin-top: 10px;
     width: 100%;
     height: 160px;
@@ -214,17 +215,17 @@ header > div.logo > div > a {
     box-sizing: border-box;
     resize: none;
 }
-#member > .signup > section > label {
+#member > .signup > form > section > label {
     margin-top: 5px;
     font-size: 14px;
     float: right;
 }
-#member > .signup > section > label > input {
+#member > .signup > form > section > label > input {
     position: relative;
     top: 1.5px;
     margin-right: 6px;
 }
-#member > .signup > .agreeBtn, #member > .register > .registerBtn {
+#member > .signup > form > .agreeBtn, #member > .register > .registerBtn {
     background: #ef3f43;
     border: none;
     font-size: 20px;
@@ -265,6 +266,13 @@ header > div.logo > div > a {
 #member > .register > section > table th > .essential{color: #ef3f43;}
 #member > .register > section > table td {padding-left: 10px;}
 #member > .register > section > table input {
+    vertical-align: middle;
+    padding: 0 5px;
+    height: 31px;
+    font-size: 14px;
+    border: 1px solid #dfe5ed;
+}
+#member > .register > section > table select {
     vertical-align: middle;
     padding: 0 5px;
     height: 31px;

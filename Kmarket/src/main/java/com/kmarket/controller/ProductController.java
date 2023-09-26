@@ -1,4 +1,4 @@
-package com.kmarket.web.product.controller;
+package com.kmarket.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/product")
 @RequiredArgsConstructor
 public class ProductController {
-
     @GetMapping("/list")
     public String list() {
         return "product/list";

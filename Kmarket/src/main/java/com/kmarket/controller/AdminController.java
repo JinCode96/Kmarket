@@ -1,4 +1,4 @@
-package com.kmarket.web.admin.controller;
+package com.kmarket.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
