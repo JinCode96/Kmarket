@@ -225,7 +225,7 @@ header > div.logo > div > a {
     top: 1.5px;
     margin-right: 6px;
 }
-#member > .signup > form > .agreeBtn, #member > .register > .registerBtn {
+#member > .signup > form > .agreeBtn, #member > .register > form > .registerBtn {
     background: #ef3f43;
     border: none;
     font-size: 20px;
@@ -239,22 +239,22 @@ header > div.logo > div > a {
 
 /* 회원가입 - register */
 #member > .register {}
-#member > .register > section {}
-#member > .register > section > table {
+#member > .register > form > section {}
+#member > .register > form > section > table {
     width: 100%;
     border-collapse: collapse;
     border-spacing: 0;
     border-top: 1px solid #b6bdc7;
 }
-#member > .register > section > table > caption {
+#member > .register > form > section > table > caption {
     text-align: left;
     font-size: 16px;
     margin-top: 20px;
     margin-bottom: 10px;
     margin-left: 10px;
 }
-#member > .register > section > table tr {border-bottom: 1px solid #dfe5ed;}
-#member > .register > section > table th {
+#member > .register > form > section > table tr {border-bottom: 1px solid #dfe5ed;}
+#member > .register > form > section > table th {
     width: 200px;
     height: 54px;
     padding: 0 20px;
@@ -263,52 +263,84 @@ header > div.logo > div > a {
     background: #f4f6f9;
     text-align: left;
 }
-#member > .register > section > table th > .essential{color: #ef3f43;}
-#member > .register > section > table td {padding-left: 10px;}
-#member > .register > section > table input {
+#member > .register > form > section > table th > .essential{color: #ef3f43;}
+#member > .register > form > section > table td {padding-left: 10px;}
+#member > .register > form > section > table input {
     vertical-align: middle;
     padding: 0 5px;
     height: 31px;
     font-size: 14px;
     border: 1px solid #dfe5ed;
 }
-#member > .register > section > table select {
+/* 추가 */
+#member > .register > form > section > table .middleNumber {
+    vertical-align: middle;
+    padding: 0 5px;
+    height: 31px;
+    width: 80px;
+    font-size: 14px;
+    border: 1px solid #dfe5ed;
+}
+#member > .register > form > section > table .lastNumber {
+    vertical-align: middle;
+    padding: 0 5px;
+    height: 31px;
+    width: 120px;
+    font-size: 14px;
+    border: 1px solid #dfe5ed;
+}
+#member > .register > form section > table .authBtn {
+    font-size: 15px;
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+    vertical-align: middle;
+    background: rgb(57, 100, 229);
+    border-width: initial;
+    border-style: none;
+    border-color: initial;
+    border-image: initial;
+    padding: 6px 15px;
+    margin: 6px auto;
+    border-radius: 3px;
+}
+
+#member > .register > form > section > table select {
     vertical-align: middle;
     padding: 0 5px;
     height: 31px;
     font-size: 14px;
     border: 1px solid #dfe5ed;
 }
-#member > .register > section > table input > span {}
-#member > .register > section > table label {font-size: 14px;}
-#member > .register > section > table .radio input {
+#member > .register > form > section > table input > span {}
+#member > .register > form > section > table label {font-size: 14px;}
+#member > .register > form > section > table .radio input {
     vertical-align: middle;
     height: auto;
 }
-#member > .register > section > table .addr > td {padding-top: 10px;}
-#member > .register > section > table .addr > td > input {margin-bottom: 6px;}
-#member > .register > section > table .addr > td > input:nth-of-type(2) {width: 370px;}
-#member > .register > section > table .addr > td > input:nth-of-type(3) {width: 370px;}
+#member > .register > form > section > table .addr > td {padding-top: 10px;}
+#member > .register > form > section > table .addr > td > input {margin-bottom: 6px;}
+#member > .register > form > section > table .addr > td > input:nth-of-type(2) {width: 370px;}
+#member > .register > form > section > table .addr > td > input:nth-of-type(3) {width: 370px;}
 
 
 /* 회원가입 - registerSeller */
 #member > .registerSeller {}
-#member > .registerSeller > section {}
-#member > .registerSeller > section > table {
+#member > .registerSeller  > form > section {}
+#member > .registerSeller > form > section > table {
     width: 100%;
     border-collapse: collapse;
     border-spacing: 0;
     border-top: 1px solid #b6bdc7;
 }
-#member > .registerSeller > section > table > caption {
+#member > .registerSeller > form > section > table > caption {
     text-align: left;
     font-size: 16px;
     margin-top: 20px;
     margin-bottom: 10px;
     margin-left: 10px;
 }
-#member > .registerSeller > section > table tr {border-bottom: 1px solid #dfe5ed;}
-#member > .registerSeller > section > table th {
+#member > .registerSeller > form > section > table tr {border-bottom: 1px solid #dfe5ed;}
+#member > .registerSeller > form > section > table th {
     width: 200px;
     height: 54px;
     padding: 0 20px;
@@ -317,24 +349,24 @@ header > div.logo > div > a {
     background: #f4f6f9;
     text-align: left;
 }
-#member > .registerSeller > section > table th > .essential{color: #ef3f43;}
-#member > .registerSeller > section > table td {padding-left: 10px;}
-#member > .registerSeller > section > table input {
+#member > .registerSeller > form > section > table th > .essential{color: #ef3f43;}
+#member > .registerSeller > form > section > table td {padding-left: 10px;}
+#member > .registerSeller > form > section > table input {
     vertical-align: middle;
     padding: 0 5px;
     height: 31px;
     font-size: 14px;
     border: 1px solid #dfe5ed;
 }
-#member > .registerSeller > section > table label {font-size: 14px;}
-#member > .registerSeller > section > table .radio input {
+#member > .registerSeller > form > section > table label {font-size: 14px;}
+#member > .registerSeller > form > section > table .radio input {
     vertical-align: middle;
     height: auto;
 }
-#member > .registerSeller > section > table .addr > td {padding-top: 10px;}
-#member > .registerSeller > section > table .addr > td > input {margin-bottom: 6px;}
-#member > .registerSeller > section > table .addr > td > input:nth-of-type(2) {width: 370px;}
-#member > .registerSeller > section > table .addr > td > input:nth-of-type(3) {width: 370px;}
+#member > .registerSeller > form > section > table .addr > td {padding-top: 10px;}
+#member > .registerSeller > form > section > table .addr > td > input {margin-bottom: 6px;}
+#member > .registerSeller > form > section > table .addr > td > input:nth-of-type(2) {width: 370px;}
+#member > .registerSeller > form > section > table .addr > td > input:nth-of-type(3) {width: 370px;}
 
 /*** 푸터 ***/
 footer {

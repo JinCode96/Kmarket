@@ -2,21 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/member_layout}">
-    <head>
-        <script th:src="@{/js/selectAll.js}"></script>
-        <script>
-            function nextBtn(){
-                let termsCheckBox = document.querySelector("input[name=termsTerms]");
-                let financeCheckBox = document.querySelector("input[name=termsFinance]");
-                let privacyCheckBox = document.querySelector("input[name=termsPrivacy]");
-
-                if(!termsCheckBox.checked || !financeCheckBox.checked || !privacyCheckBox.checked){
-                    alert('필수 이용약관에 동의해주세요.');
-                    return false;
-                }
-            }
-        </script>
-    </head>
     <main id="member" layout:fragment="main">
         <div class="signup">
             <nav>
@@ -51,4 +36,19 @@
             </form>
         </div>
     </main>
+    <th:block layout:fragment="script">
+        <script th:src="@{/js/selectAll.js}"></script>
+        <script>
+            function nextBtn(){
+                let termsCheckBox = document.querySelector("input[name=termsTerms]");
+                let financeCheckBox = document.querySelector("input[name=termsFinance]");
+                let privacyCheckBox = document.querySelector("input[name=termsPrivacy]");
+
+                if(!termsCheckBox.checked || !financeCheckBox.checked || !privacyCheckBox.checked){
+                    alert('필수 이용약관에 동의해주세요.');
+                    return false;
+                }
+            }
+        </script>
+    </th:block>
 </html>

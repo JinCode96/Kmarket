@@ -2,136 +2,132 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/member_layout}">
-<head>
-    <script th:inline="javascript">
-        // 현재 페이지의 Referer 값을 가져오기
-        // var referer = document.referrer;
-        // console.log(referer);
-        //
-        // Referer 가 null 인지 확인
-        // if (!referer) {
-            // Referer 가 null 이면 비정상적인 접근이라고 판단
-            // alert("비정상적인 접근입니다.");
-            // 사용자를 http://localhost:8080/kmarket 페이지로 보냄
-            // window.location.href = "http://localhost:8080/kmarket";
-        // }
-        // var referer = [[${referer}]];
-        // console.log(referer);
-        // if (referer == null) {
-        //     alert("정상적인 경로를 통해서 다시 접근해주세요.");
-        //     document.location.href = '/kmarket';
-        // }
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const emailDomainInput = document.getElementById('emailDomain');
-            const domainSelect = document.getElementById('domainSelect');
-
-            // select 요소에서 도메인을 선택할 때 이벤트 처리
-            domainSelect.addEventListener('change', function () {
-                const selectedDomain = domainSelect.value;
-                emailDomainInput.value = selectedDomain; // 선택한 도메인을 입력 필드에 설정
-            });
-        });
-    </script>
-</head>
     <main id="member" layout:fragment="main">
         <div class="register">
             <nav>
                 <h1>일반 회원가입</h1>
             </nav>
-            <section>
-                <table>
-                    <caption>필수 정보입력</caption>
-                    <tr>
-                        <th>
-                            <span class="essential">*</span>
-                            아이디
-                        </th>
-                        <td>
-                            <input type="text" name="km_uid" placeholder="아이디 입력" required>
-                            <span class="msgId">&ensp;영문, 숫자로 4~12자까지 설정해 주세요.</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            <span class="essential">*</span>
-                            비밀번호
-                        </th>
-                        <td>
-                            <input type="password" name="km_pass1" placeholder="비밀번호 입력" required>
-                            <span class="msgPass">&ensp;영문, 숫자, 특수문자를 조합하여 8~12자까지 설정해 주세요.</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            <span class="essential">*</span>
-                            비밀번호 확인
-                        </th>
-                        <td>
-                            <input type="password" name="km_pass2" placeholder="비밀번호 확인" required>
-                            <span class="msgPass">&ensp;비밀번호 재입력</span>
-                        </td>
-                    </tr>
-                </table>
-            </section>
-            <section>
-                <table>
-                    <caption>기본 정보입력</caption>
-                    <tr>
-                        <th>
-                            <span class="essential">*</span>
-                            이름
-                        </th>
-                        <td>
-                            <input type="text" name="km_name" placeholder="이름 입력" required>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            <span class="essential">*</span>
-                            EMAIL
-                        </th>
-                        <td>
-                            <input type="text" id="emailPrefix" name="emailPrefix" placeholder="이메일 입력" required> @
-                            <input type="text" id="emailDomain" name="emailDomain" placeholder="이메일 도메인" required>
-                            <select class="select" id="domainSelect" name="domainSelect">
-                                <option value="" >-직접입력-</option>
-                                <option value="naver.com">naver.com</option>
-                                <option value="nate.com">nate.com</option>
-                                <option value="daum.com">daum.com</option>
-                                <option value="gmail.com">gmail.com</option>
-                                <option value="yahoo.com">yahoo.com</option>
-                                <option value="hanmail.net">hanmail.net</option>
-                                <option value="kakao.com">kakao.com</option>
-                                <option value="korea.kr">korea.kr</option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            <span class="essential">*</span>
-                            휴대폰
-                        </th>
-                        <td>
-                            <input type="tel" name="km_hp" placeholder="휴대폰 번호 입력" required>
-                            <span class="msgHp">&ensp;( - ) 포함 13자리를 입력하세요.<span>
-                        </td>
-                    </tr>
-                    <tr class="addr">
-                        <th>
-                            <span>&nbsp;</span>
-                            주소
-                        </th>
-                        <td>
-                            <input type="text" name="km_zip" id="zip" placeholder="우편번호" required><br/>
-                            <input type="text" name="km_addr1" id="addr1" placeholder="주소를 검색하세요." required><br/>
-                            <input type="text" name="km_addr2" id="addr2" placeholder="상세주소를 입력하세요." required>
-                        </td>
-                    </tr>
-                </table>
-            </section>
-            <input type="button" class="registerBtn" value="회원가입">
+            <form th:object="${member}" id="generalForm">
+                <section>
+                    <table>
+                        <caption>필수 정보입력</caption>
+                        <tr>
+                            <th>
+                                <span class="essential">*</span>
+                                아이디
+                            </th>
+                            <td>
+                                <input type="text" th:field="*{loginId}" placeholder="아이디 입력" maxlength="13">
+                                <span class="loginIdResult" style="color:rgb(174,174,174)">&ensp;띄어쓰기 없이 영/숫자 6~13자</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <span class="essential">*</span>
+                                비밀번호
+                            </th>
+                            <td>
+                                <input type="password" th:field="*{password}" placeholder="비밀번호 입력" maxlength="16">
+                                <span class="passwordResult" style="color:rgb(174,174,174)">&ensp;8~15자의 영문 대/소문자, 숫자, 특수문자 조합</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <span class="essential">*</span>
+                                비밀번호 확인
+                            </th>
+                            <td>
+                                <input type="password" th:field="*{confirmPass}" placeholder="비밀번호 확인">
+                                <span class="confirmPassResult" style="color:rgb(174,174,174)">&ensp;위의 비밀번호를 다시 입력해주세요.</span>
+                            </td>
+                        </tr>
+                    </table>
+                </section>
+                <section>
+                    <table>
+                        <caption>기본 정보입력</caption>
+                        <tr>
+                            <th>
+                                <span class="essential">*</span>
+                                이름
+                            </th>
+                            <td>
+                                <input type="text" th:field="*{name}" placeholder="이름 입력" maxlength="20">
+                                <span class="nameResult"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <span class="essential">*</span>
+                                EMAIL
+                            </th>
+                            <td>
+                                <input type="text" th:field="*{emailPrefix}" placeholder="이메일 입력"> @
+                                <input type="text" th:field="*{emailDomain}" placeholder="이메일 도메인">
+                                <select class="select" id="domainSelect" name="domainSelect">
+                                    <option value="" >-직접입력-</option>
+                                    <option value="naver.com">naver.com</option>
+                                    <option value="nate.com">nate.com</option>
+                                    <option value="daum.com">daum.com</option>
+                                    <option value="gmail.com">gmail.com</option>
+                                    <option value="yahoo.com">yahoo.com</option>
+                                    <option value="hanmail.net">hanmail.net</option>
+                                    <option value="kakao.com">kakao.com</option>
+                                    <option value="korea.kr">korea.kr</option>
+                                </select>
+                                <span class="emailResult"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <span class="essential">*</span>
+                                휴대폰
+                            </th>
+                            <td>
+                                <select th:field="*{areaNumber}">
+                                    <option th:value="'010'">010</option> <!-- 문자로 넘겨야 010이 유지된다. -->
+                                    <option th:value="'011'">011</option>
+                                    <option th:value="'016'">016</option>
+                                    <option th:value="'017'">017</option>
+                                    <option th:value="'018'">018</option>
+                                    <option th:value="'019'">019</option>
+                                </select> -
+                                <input type="text" th:field="*{middleNumber}" class="middleNumber" maxlength="4" oninput="this.value = this.value.replace(/[^0-9]/g, '');"> -
+                                <input type="text" th:field="*{lastNumber}" class="lastNumber" maxlength="4" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                <span class="numberResult"><span>
+                            </td>
+                        </tr>
+                        <tr class="addr">
+                            <th>
+                                <span>&nbsp;</span>
+                                주소
+                            </th>
+                            <td>
+                                <input type="text" th:field="*{zipCode}" placeholder="우편번호" readonly>
+                                <button type="button" class="authBtn" onclick="daumPostcode()" id="btnSearchAddr">우편번호 찾기</button><br/>
+                                <input type="text" th:field="*{address}" placeholder="주소를 검색하세요." readonly><br/>
+                                <input type="text" th:field="*{detailAddress}" placeholder="상세주소를 입력하세요.">
+                                <span class="addressResult"><span>
+                            </td>
+                        </tr>
+                    </table>
+                </section>
+                <input type="submit" class="registerBtn" value="회원가입">
+            </form>
         </div>
     </main>
+<th:block layout:fragment="script">
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script th:src="@{/js/emailDomain.js}"></script>
+    <script th:src="@{/js/postCode.js}"></script>
+    <script th:src="@{/js/memberRegister.js}"></script>
+    <script th:inline="javascript">
+        // 서버 사이드 유효성 검증
+        const error = [[${error}]];
+        console.log(error);
+        if (error) {
+            alert("비정상적인 접근입니다!!!");
+        }
+    </script>
+</th:block>
 </html>

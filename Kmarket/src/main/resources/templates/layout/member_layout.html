@@ -7,6 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
   <script src="https://kit.fontawesome.com/20962f3e4b.js" crossorigin="anonymous"></script>
+  <script src="http://code.jquery.com/jquery-latest.js"></script>
   <!-- head 공통 -->
   <th:block th:replace="~{fragment/config :: head_common}"></th:block>
   <link rel="stylesheet" th:href="@{/css/member.css}">
@@ -17,5 +18,6 @@
   <main layout:fragment="main"></main>
 </div>
 <footer th:replace="~{fragment/footer :: member_footer}"></footer>
+<th:block layout:fragment="script"></th:block>
 </body>
 </html>

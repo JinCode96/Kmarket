@@ -1,25 +1,30 @@
 package com.kmarket.controller;
 
-import com.kmarket.dto.TermsDto;
+import com.kmarket.api.ApiResponse;
+import com.kmarket.domain.Members;
+import com.kmarket.dto.member.EmailDTO;
+import com.kmarket.dto.member.LoginIdDTO;
+import com.kmarket.dto.member.TermsDTO;
+import com.kmarket.dto.member.GeneralMemberDTO;
 import com.kmarket.entity.TermsEntity;
 import com.kmarket.service.MemberService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import jakarta.validation.Valid;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.kmarket.constant.MemberConst.*;
 
 
 @Slf4j
@@ -56,21 +61,15 @@ public class MemberController {
      * 체크박스 검증 후 리다이렉트
      */
     @PostMapping("/sign-up/{type}")
-    public String termsValid(TermsDto terms, HttpSession session, @PathVariable String type, RedirectAttributes redirectAttributes) {
-        log.info("terms={}", terms);
+    public String termsValid(TermsDTO terms, HttpSession session, @PathVariable String type, RedirectAttributes redirectAttributes) {
         redirectAttributes.addAttribute("type", type);
 
-        // 필수 체크 모두 true 면 세션 만들기.
-        if (terms.isTermsTerms() && terms.isTermsFinance() && terms.isTermsPrivacy()) {
-            // 이용약관 동의 여부 세션에 저장
+        if (terms.isTermsTerms() && terms.isTermsFinance() && terms.isTermsPrivacy()) { // 서버 사이드 검증
+
             // todo spring security 에서 세션에 값이 있으면 회원가입 페이지로 갈 수 있고, 없으면 갈 수 없게 하기.
             session.setAttribute("termsAgreed", true);
-            
-            // 모두 true 면 회원가입 페이지로 리다이렉트
             return "redirect:/member/register/{type}";
         }
-
-        // 검증 실패 하면 돌려 보내기
         return "redirect:/member/sign-up/{type}";
     }
 
@@ -79,20 +78,61 @@ public class MemberController {
      * referer 을 통해 url 직접 접근을 막는다.
      */
     @GetMapping("/register/{type}")
-    public String registerGeneral(@PathVariable String type) {
+    public String registerForm(@PathVariable String type, Model model) {
 
-//        model.addAttribute("referer", request.getHeader("referer")); // url 직접 접근 자바스크립트로 막기
+        model.addAttribute("member", new Members()); // th:object 사용 위해서
 
-        if (type.equals("general")) {
+        if (type.equals(GENERAL)) {
             return "member/registerGeneral";
-        } else if (type.equals("seller")) {
+        } else if (type.equals(SELLER)) {
             return "member/registerSeller";
         }
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "잘못된 url 요청"); // 404
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "잘못된 url 요청");
     }
 
-    @GetMapping("/test")
-    public String test() {
-        return "member/test";
+    @ResponseBody
+    @PostMapping("/register/general")
+    public ApiResponse saveMember1(@Validated @RequestBody GeneralMemberDTO generalMemberDTO, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) { // todo 오류 화면 내려주기
+            log.info("비정상적인 접근!!!");
+            model.addAttribute("error", true);
+        }
+        log.info("member={}", generalMemberDTO.toString());
+        int result = memberService.saveGeneralMember(generalMemberDTO.generalDTOToDomain());
+        if (result == 1) {
+            return new ApiResponse("회원가입이 완료되었습니다. 로그인 해주세요.", result);
+        } else {
+            return new ApiResponse("회원가입에 실패하였습니다. 다시 회원가입을 진행해주세요.", result);
+        }
     }
+
+    /**
+     * 아이디 중복 검사
+     */
+    @ResponseBody
+    @PostMapping("/register/checkLoginId")
+    public ApiResponse checkLoginId(@RequestBody LoginIdDTO loginId) {
+        int result = memberService.checkGeneralLoginId(loginId.getLoginId());
+        if (result == 1) {
+            return new ApiResponse("이미 사용중인 아이디 입니다.", result);
+        } else {
+            return new ApiResponse("사용 가능한 아이디 입니다.", result);
+        }
+    }
+
+    /**
+     * 이메일 중복 검사
+     */
+    @ResponseBody
+    @PostMapping("/register/checkEmail")
+    public ApiResponse checkEmail(@RequestBody EmailDTO email) {
+        int result = memberService.checkEmail(email.getEmail());
+        if (result == 1) {
+            return new ApiResponse("이미 사용중인 이메일입니다.", result);
+        } else {
+            return new ApiResponse("사용 가능한 이메일입니다.", result);
+        }
+    }
+
+
 }

@@ -1,0 +1,1 @@
+export const loginIdRegEx = /^[a-z]+[a-z0-9]{5,19}$/g;

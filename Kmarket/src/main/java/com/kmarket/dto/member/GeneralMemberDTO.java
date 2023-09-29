@@ -1,0 +1,92 @@
+package com.kmarket.dto.member;
+
+import com.kmarket.domain.Members;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import lombok.Data;
+
+/**
+ * 일반 회원 폼 
+ * controller 로 받는 역할만 수행
+ * validation 검증
+ */
+@Data
+public class GeneralMemberDTO {
+
+    // 일반 회원 필드
+    @NotBlank
+    @Pattern(regexp = "^[a-z][a-z0-9]{5,12}$") // 영문자 or 영문자 + 숫자 (6~13자리)
+    private String loginId;
+    @NotBlank
+    @Pattern(regexp = "(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{7,15}") // 영문 대 소문자 + 숫자 + 특수문자 (8~16자리)
+    private String password;
+    @NotBlank
+    @Pattern(regexp = "^(?:[가-힣\\s]{2,20}|[a-zA-Z\\s]{2,20})$") // 한글 or 영문 띄어쓰기, 혼용 안됨. (2~20자리)
+    private String name;
+    @NotBlank
+    private String phoneNumber;
+    @NotBlank
+    @Pattern(regexp = "^[0-9a-zA-Z]([-_\\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\\.]?[0-9a-zA-Z])*\\.[a-zA-Z]{2,3}$") // 이메일 정규식
+    private String email;
+    @NotBlank
+    private String zipCode;
+    @NotBlank
+    private String address;
+    @NotBlank
+    private String detailAddress;
+
+    /**
+     * MemberDTO 로 변환
+     */
+    public Members generalDTOToDomain() {
+        return new Members().builder()
+                .loginId(this.loginId)
+                .password(this.password)
+                .name(this.name)
+                .phoneNumber(this.phoneNumber)
+                .email(this.email)
+                .zipCode(this.zipCode)
+                .address(this.address)
+                .detailAddress(this.detailAddress)
+                .build();
+    }
+
+    // 추가 필드 //
+//    @NotBlank
+//    @Pattern(regexp = "^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*$") // 이메일 앞부분
+//    private String emailPrefix;
+//    @NotBlank
+//    @Pattern(regexp = "^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\\.[a-zA-Z]{2,3}$") // 이메일 도메인
+//    private String emailDomain;
+//    @NotBlank
+//    private String areaNumber; // 문자열로 받는다.
+//    @NotBlank
+//    @Pattern(regexp = "^[0-9]{3,4}$") // 3~4자리 숫자
+//    private String middleNumber;
+//    @NotBlank
+//    @Pattern(regexp = "^[0-9]{4}$") // 4자리 숫자
+//    private String lastNumber;
+//    @NotBlank
+//    private String confirmPass;
+
+//    // 이메일 가공
+//    public void makeEmail() {
+//        if (emailPrefix != null && emailDomain != null) {
+//            this.email = emailPrefix + "@" + emailDomain;
+//        } else {
+//            this.email = null;
+//        }
+//    }
+//
+//    // 휴대폰 번호 가공
+//    public void makePhoneNumber() {
+//        if (areaNumber != null && middleNumber != null && lastNumber != null) {
+//            this.phoneNumber = areaNumber + "-" + middleNumber + "-" + lastNumber;
+//        } else {
+//            this.phoneNumber = null;
+//        }
+//    }
+
+
+
+}

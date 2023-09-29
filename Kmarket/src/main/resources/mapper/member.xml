@@ -1,5 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.kmarket.domain.member.repository.MemberMapper">
+<mapper namespace="com.kmarket.repository.member.MemberMapper">
 
+    <insert id="saveGeneral">
+        insert into km_member_general (login_id, password, name, phone_number, email, zip_code, address, detail_address, ragistration_date)
+        values (#{loginId}, #{password}, #{name}, #{phoneNumber}, #{email}, #{zipCode}, #{address}, #{detailAddress}, NOW());
+    </insert>
+
+    <select id="checkGeneralLoginId" parameterType="String" resultType="int">
+        select count(*)
+        from km_member_general
+        where login_id = #{loginId};
+    </select>
+
+    <select id="checkEmail">
+        select count(*)
+        from km_member_general
+        where email = #{email};
+    </select>
 </mapper>
