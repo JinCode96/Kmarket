@@ -7,7 +7,7 @@
             <nav>
                 <h1>약관동의</h1>
             </nav>
-            <form th:action="|@{/member/sign-up}/${type}|" method="post">
+            <form th:action="|@{/member/sign-up}/${type}|" id="signUpForm" method="post">
                 <section>
                     <label><input type="checkbox" name="agree0" value="selectAll" onclick='selectAll(this)'>전체 동의</label>
                 </section>
@@ -32,23 +32,47 @@
                     <textarea name="location" th:text="${terms.location}" readonly></textarea>
                     <label><input type="checkbox" name="termsLocation">동의합니다.</label>
                 </section>
-                <input type="submit" class="agreeBtn" value="동의하기" onclick="nextBtn()">
+                <input type="submit" class="agreeBtn" value="동의하기">
             </form>
         </div>
     </main>
     <th:block layout:fragment="script">
         <script th:src="@{/js/selectAll.js}"></script>
-        <script>
-            function nextBtn(){
-                let termsCheckBox = document.querySelector("input[name=termsTerms]");
-                let financeCheckBox = document.querySelector("input[name=termsFinance]");
-                let privacyCheckBox = document.querySelector("input[name=termsPrivacy]");
+        <script th:inline="javascript">
+            const termsCheckBox = document.querySelector("input[name=termsTerms]");
+            const financeCheckBox = document.querySelector("input[name=termsFinance]");
+            const privacyCheckBox = document.querySelector("input[name=termsPrivacy]");
+            const submit = document.getElementById('signUpForm');
+            let type = [[${type}]];
 
-                if(!termsCheckBox.checked || !financeCheckBox.checked || !privacyCheckBox.checked){
+            submit.addEventListener('submit', function (event) {
+                event.preventDefault();
+                let terms = termsCheckBox.checked;
+                let finance = financeCheckBox.checked;
+                let privacy = privacyCheckBox.checked;
+                if (!termsCheckBox.checked || !financeCheckBox.checked || !privacyCheckBox.checked) {
                     alert('필수 이용약관에 동의해주세요.');
-                    return false;
+                } else {
+                    $.ajax({
+                        url: "/kmarket/member/sign-up/" + type,
+                        method: 'POST',
+                        contentType: 'application/json',
+                        dataType: 'json',
+                        data: JSON.stringify({
+                            "termsTerms":terms,
+                            "termsFinance":finance,
+                            "termsPrivacy":privacy
+                        }),
+                        success: function (data) {
+                            window.location.href = "/kmarket/member/register/" + type;
+                        },
+                        error: function (xhr) {
+                            console.error(xhr.responseText);
+                            alert("잘못된 요청입니다. 다시 실행해주세요.");
+                        }
+                    });
                 }
-            }
+            });
         </script>
     </th:block>
 </html>

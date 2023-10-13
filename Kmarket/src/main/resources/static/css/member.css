@@ -289,6 +289,15 @@ header > div.logo > div > a {
     font-size: 14px;
     border: 1px solid #dfe5ed;
 }
+#member > .register > form > section > table .bizNum {
+    vertical-align: middle;
+    padding: 0 5px;
+    height: 31px;
+    width: 87px;
+    font-size: 14px;
+    border: 1px solid #dfe5ed;
+}
+
 #member > .register > form section > table .authBtn {
     font-size: 15px;
     color: rgb(255, 255, 255);

@@ -3,8 +3,18 @@
 <mapper namespace="com.kmarket.repository.member.MemberMapper">
 
     <insert id="saveGeneral">
-        insert into km_member_general (login_id, password, name, phone_number, email, zip_code, address, detail_address, ragistration_date)
-        values (#{loginId}, #{password}, #{name}, #{phoneNumber}, #{email}, #{zipCode}, #{address}, #{detailAddress}, NOW());
+        insert into km_member_general (login_id, password, name, phone_number, email, type, zip_code, address, detail_address, ragistration_date)
+        values (#{loginId}, #{password}, #{name}, #{phoneNumber}, #{email}, #{type}, #{zipCode}, #{address}, #{detailAddress}, NOW());
+    </insert>
+
+    <insert id="saveSeller">
+        insert into km_member_seller (login_id, password, type, company, ceo, business_registration_number, report_number, phone_number, zip_code, address, detail_address, ragistragion_date)
+        values (#{loginId}, #{password}, #{type}, #{company}, #{ceo}, #{businessRegistrationNumber}, #{reportNumber}, #{phoneNumber}, #{zipCode}, #{address}, #{detailAddress}, NOW());
+    </insert>
+
+    <insert id="saveCommonUser">
+        insert into km_member_user (login_id, type)
+        values (#{loginId}, #{type});
     </insert>
 
     <select id="checkGeneralLoginId" parameterType="String" resultType="int">
@@ -13,9 +23,33 @@
         where login_id = #{loginId};
     </select>
 
+    <select id="checkSellerLoginId" parameterType="String" resultType="int">
+        select count(*)
+        from km_member_seller
+        where login_id = #{loginId};
+    </select>
+
     <select id="checkEmail">
         select count(*)
         from km_member_general
         where email = #{email};
+    </select>
+
+    <select id="findById">
+        select *
+        from km_member_user
+        where login_Id = #{loginId};
+    </select>
+
+    <select id="findByIdGeneral">
+        select *
+        from km_member_general
+        where login_Id = #{loginId};
+    </select>
+
+    <select id="findByIdSeller">
+        select *
+        from km_member_seller
+        where login_Id = #{loginId};
     </select>
 </mapper>

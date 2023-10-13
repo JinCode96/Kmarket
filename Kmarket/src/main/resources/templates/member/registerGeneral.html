@@ -28,7 +28,7 @@
                             </th>
                             <td>
                                 <input type="password" th:field="*{password}" placeholder="비밀번호 입력" maxlength="16">
-                                <span class="passwordResult" style="color:rgb(174,174,174)">&ensp;8~15자의 영문 대/소문자, 숫자, 특수문자 조합</span>
+                                <span class="passwordResult" style="color:rgb(174,174,174)">&ensp;8~16자의 영문 대/소문자, 숫자, 특수문자 조합</span>
                             </td>
                         </tr>
                         <tr>
@@ -81,7 +81,7 @@
                         <tr>
                             <th>
                                 <span class="essential">*</span>
-                                휴대폰
+                                휴대폰 번호
                             </th>
                             <td>
                                 <select th:field="*{areaNumber}">
@@ -93,7 +93,7 @@
                                     <option th:value="'019'">019</option>
                                 </select> -
                                 <input type="text" th:field="*{middleNumber}" class="middleNumber" maxlength="4" oninput="this.value = this.value.replace(/[^0-9]/g, '');"> -
-                                <input type="text" th:field="*{lastNumber}" class="lastNumber" maxlength="4" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+                                <input type="text" th:field="*{lastNumber}" class="lastNumber" maxlength="4" oninput="this.value = this.value.replace(/[^0-9]/g, '');"> <!-- 숫자만 사용 -->
                                 <span class="numberResult"><span>
                             </td>
                         </tr>
@@ -117,17 +117,9 @@
         </div>
     </main>
 <th:block layout:fragment="script">
-    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script> <!-- 주소찾기 -->
+    <script th:src="@{/js/postCode.js}"></script> <!-- 주소찾기 -->
     <script th:src="@{/js/emailDomain.js}"></script>
-    <script th:src="@{/js/postCode.js}"></script>
-    <script th:src="@{/js/memberRegister.js}"></script>
-    <script th:inline="javascript">
-        // 서버 사이드 유효성 검증
-        const error = [[${error}]];
-        console.log(error);
-        if (error) {
-            alert("비정상적인 접근입니다!!!");
-        }
-    </script>
+    <script th:src="@{/js/generalRegister.js}"></script>
 </th:block>
 </html>

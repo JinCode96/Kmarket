@@ -7,7 +7,7 @@
             <nav>
                 <h1>판매자 회원가입</h1>
             </nav>
-            <form th:action>
+            <form th:object="${member}" id="sellerForm">
                 <section>
                     <table>
                         <caption>필수 정보입력</caption>
@@ -17,8 +17,8 @@
                                 아이디
                             </th>
                             <td>
-                                <input type="text" name="km_uid" placeholder="아이디 입력" required>
-                                <span class="msgId">&ensp;영문, 숫자로 4~12자까지 설정해 주세요.</span>
+                                <input type="text" th:field="*{loginId}" placeholder="아이디 입력" maxlength="13">
+                                <span class="loginIdResult" style="color:rgb(174,174,174)">&ensp;띄어쓰기 없이 영/숫자 6~13자</span>
                             </td>
                         </tr>
                         <tr>
@@ -27,8 +27,8 @@
                                 비밀번호
                             </th>
                             <td>
-                                <input type="password" name="km_pass1" placeholder="비밀번호 입력" required>
-                                <span class="msgPass">&ensp;영문, 숫자, 특수문자를 조합하여 8~12자까지 설정해 주세요.</span>
+                                <input type="password" th:field="*{password}" placeholder="비밀번호 입력" maxlength="16">
+                                <span class="passwordResult" style="color:rgb(174,174,174)">&ensp;8~16자의 영문 대/소문자, 숫자, 특수문자 조합</span>
                             </td>
                         </tr>
                         <tr>
@@ -37,8 +37,8 @@
                                 비밀번호 확인
                             </th>
                             <td>
-                                <input type="password" name="km_pass2" placeholder="비밀번호 확인" required>
-                                <span class="msgPass">&ensp;비밀번호 재입력</span>
+                                <input type="password" th:field="*{confirmPass}" placeholder="비밀번호 확인">
+                                <span class="confirmPassResult" style="color:rgb(174,174,174)">&ensp;위의 비밀번호를 다시 입력해주세요.</span>
                             </td>
                         </tr>
                     </table>
@@ -52,17 +52,18 @@
                                 회사명
                             </th>
                             <td>
-                                <input type="text" name="km_company" placeholder="회사명 입력" required>
-                                <span class="msgCompany">&ensp;㈜ 포함 입력, 예) ㈜케이마켓</span>
+                                <input type="text" th:field="*{company}" placeholder="회사명 입력" maxlength="20">
+                                <span class="companyResult" style="color:rgb(174,174,174)">&ensp;㈜ 포함 입력, 예) ㈜케이마켓</span>
                             </td>
                         </tr>
                         <tr>
                             <th>
                                 <span class="essential">*</span>
-                                대표자
+                                대표자 이름
                             </th>
                             <td>
-                                <input type="text" name="km_ceo" placeholder="대표자 입력" required>
+                                <input type="text" th:field="*{ceo}" placeholder="대표자 이름 입력" maxlength="20">
+                                <span class="ceoResult"></span>
                             </td>
                         </tr>
                         <tr>
@@ -71,8 +72,10 @@
                                 사업자등록번호
                             </th>
                             <td>
-                                <input type="text" name="km_corp_reg" placeholder="사업자등록번호 입력" required>
-                                <span class="msgCorp">&ensp;( - ) 표시 포함 12자리 입력, 예) 123-45-67890</span>
+                                <input type="text" id="bizNum1" class="bizNum" oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="3"> -
+                                <input type="text" id="bizNum2" class="bizNum" oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="2"> -
+                                <input type="text" id="bizNum3" class="bizNum" oninput="this.value = this.value.replace(/[^0-9]/g, '');" maxlength="5">
+                                <span class="bizNumResult"></span>
                             </td>
                         </tr>
                         <tr>
@@ -81,28 +84,27 @@
                                 통신판매업신고 번호
                             </th>
                             <td>
-                                <input type="text" name="kms_online_reg" placeholder="통신판매업신고 입력" required>
-                                <span class="msgOnline">&ensp;( - ) 표시 포함, 예) 강남-12345, 제 1-01-23-4567호, 2017-경기성남-0011</span>
+                                <input type="text" th:field="*{reportNumber}" placeholder="통신판매업신고 입력" maxlength="20">
+                                <span class="reportNumberResult" style="color:rgb(174,174,174)">&ensp;"년도-지역-4자리번호" 형식, 예) 2017-경기성남-0011</span>
                             </td>
                         </tr>
                         <tr>
                             <th>
                                 <span class="essential">*</span>
-                                전화번호
+                                휴대폰 번호
                             </th>
                             <td>
-                                <input type="tel" name="kms_tel" placeholder="전화번호 입력" required>
-                                <span class="msgTel">&ensp;( - ) 표시 포함, 지역번호 포함, 예) 02-234-1234</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>
-                                <span class="essential">*</span>
-                                팩스번호
-                            </th>
-                            <td>
-                                <input type="tel" name="kms_fax" placeholder="팩스번호 입력" required>
-                                <span class="msgFax">&ensp;( - ) 표시 포함, 지역번호 포함, 예) 02-234-1234</span>
+                                <select th:field="*{areaNumber}">
+                                    <option th:value="'010'">010</option> <!-- 문자로 넘겨야 010이 유지된다. -->
+                                    <option th:value="'011'">011</option>
+                                    <option th:value="'016'">016</option>
+                                    <option th:value="'017'">017</option>
+                                    <option th:value="'018'">018</option>
+                                    <option th:value="'019'">019</option>
+                                </select> -
+                                <input type="text" th:field="*{middleNumber}" class="middleNumber" maxlength="4" oninput="this.value = this.value.replace(/[^0-9]/g, '');"> -
+                                <input type="text" th:field="*{lastNumber}" class="lastNumber" maxlength="4" oninput="this.value = this.value.replace(/[^0-9]/g, '');"> <!-- 숫자만 사용 -->
+                                <span class="numberResult"></span>
                             </td>
                         </tr>
                         <tr class="addr">
@@ -111,39 +113,22 @@
                                 주소
                             </th>
                             <td>
-                                <input type="text" name="km_zip" id="zip" placeholder="우편번호" required><br/>
-                                <input type="text" name="km_addr1" id="addr1" placeholder="주소를 검색하세요." required><br/>
-                                <input type="text" name="km_addr2" id="addr2" placeholder="상세주소를 입력하세요." required>
+                                <input type="text" th:field="*{zipCode}" placeholder="우편번호" readonly>
+                                <button type="button" class="authBtn" onclick="daumPostcode()" id="btnSearchAddr">우편번호 찾기</button><br/>
+                                <input type="text" th:field="*{address}" placeholder="주소를 검색하세요." readonly><br/>
+                                <input type="text" th:field="*{detailAddress}" placeholder="상세주소를 입력하세요." >
+                                <span class="addressResult"><span>
                             </td>
                         </tr>
                     </table>
                 </section>
-                <section>
-                    <table>
-                        <caption>담당자 정보입력</caption>
-                        <tr>
-                            <th>
-                                <span class="essential">*</span>
-                                이름
-                            </th>
-                            <td>
-                                <input type="text" name="km_name" placeholder="이름 입력" required>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th>
-                                <span class="essential">*</span>
-                                휴대폰
-                            </th>
-                            <td>
-                                <input type="tel" name="km_hp" maxlength="13" placeholder="휴대폰 번호 입력" required>
-                                <span class="msgHp">&ensp;( - ) 포함 13자리를 입력하세요.</span>
-                            </td>
-                        </tr>
-                    </table>
-                </section>
-                <input type="button" class="registerBtn" value="회원가입">
+                <input type="submit" class="registerBtn" value="회원가입">
             </form>
         </div>
     </main>
+    <th:block layout:fragment="script">
+        <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script> <!-- 주소찾기 -->
+        <script th:src="@{/js/postCode.js}"></script> <!-- 주소찾기 -->
+        <script th:src="@{/js/sellerRegister.js}"></script>
+    </th:block>
 </html>

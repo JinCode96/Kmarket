@@ -1,14 +1,19 @@
 package com.kmarket.dto.member;
 
+import com.kmarket.constant.MemberConst;
 import com.kmarket.domain.Members;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import lombok.Data;
+import lombok.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import static com.kmarket.constant.MemberConst.*;
 
 /**
  * 일반 회원 폼 
- * controller 로 받는 역할만 수행
+ * controller 로 받는 역할 수행
  * validation 검증
+ * password encode
  */
 @Data
 public class GeneralMemberDTO {
@@ -24,6 +29,7 @@ public class GeneralMemberDTO {
     @Pattern(regexp = "^(?:[가-힣\\s]{2,20}|[a-zA-Z\\s]{2,20})$") // 한글 or 영문 띄어쓰기, 혼용 안됨. (2~20자리)
     private String name;
     @NotBlank
+    @Pattern(regexp = "0[0-9]{1,2}-[0-9]{3,4}-[0-9]{4}")
     private String phoneNumber;
     @NotBlank
     @Pattern(regexp = "^[0-9a-zA-Z]([-_\\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\\.]?[0-9a-zA-Z])*\\.[a-zA-Z]{2,3}$") // 이메일 정규식
@@ -48,6 +54,7 @@ public class GeneralMemberDTO {
                 .zipCode(this.zipCode)
                 .address(this.address)
                 .detailAddress(this.detailAddress)
+                .type("GENERAL")
                 .build();
     }
 
