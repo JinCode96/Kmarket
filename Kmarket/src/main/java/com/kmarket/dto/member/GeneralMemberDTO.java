@@ -57,43 +57,4 @@ public class GeneralMemberDTO {
                 .type("GENERAL")
                 .build();
     }
-
-    // 추가 필드 //
-//    @NotBlank
-//    @Pattern(regexp = "^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*$") // 이메일 앞부분
-//    private String emailPrefix;
-//    @NotBlank
-//    @Pattern(regexp = "^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*\\.[a-zA-Z]{2,3}$") // 이메일 도메인
-//    private String emailDomain;
-//    @NotBlank
-//    private String areaNumber; // 문자열로 받는다.
-//    @NotBlank
-//    @Pattern(regexp = "^[0-9]{3,4}$") // 3~4자리 숫자
-//    private String middleNumber;
-//    @NotBlank
-//    @Pattern(regexp = "^[0-9]{4}$") // 4자리 숫자
-//    private String lastNumber;
-//    @NotBlank
-//    private String confirmPass;
-
-//    // 이메일 가공
-//    public void makeEmail() {
-//        if (emailPrefix != null && emailDomain != null) {
-//            this.email = emailPrefix + "@" + emailDomain;
-//        } else {
-//            this.email = null;
-//        }
-//    }
-//
-//    // 휴대폰 번호 가공
-//    public void makePhoneNumber() {
-//        if (areaNumber != null && middleNumber != null && lastNumber != null) {
-//            this.phoneNumber = areaNumber + "-" + middleNumber + "-" + lastNumber;
-//        } else {
-//            this.phoneNumber = null;
-//        }
-//    }
-
-
-
 }

@@ -1,5 +1,6 @@
 package com.kmarket.dto.member;
 
+import jakarta.persistence.Column;
 import lombok.Data;
 
 /**

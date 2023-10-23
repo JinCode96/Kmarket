@@ -25,6 +25,9 @@ public class SellerMemberDTO {
     @Pattern(regexp = "(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{7,15}") // 영문 대 소문자 + 숫자 + 특수문자 (8~16자리)
     private String password;
     @NotBlank
+    @Pattern(regexp = "^(?:[가-힣\\s]{2,20}|[a-zA-Z\\s]{2,20})$") // 한글 or 영문 띄어쓰기, 혼용 안됨. (2~20자리)
+    private String name;
+    @NotBlank
     private String company; // 회사명
     @NotBlank
     @Pattern(regexp = "^(?:[가-힣\\s]{2,20}|[a-zA-Z\\s]{2,20})$") // 한글 or 영문 띄어쓰기, 혼용 안됨. (2~20자리)
@@ -49,6 +52,7 @@ public class SellerMemberDTO {
         return new Members().builder()
                 .loginId(this.loginId)
                 .password(this.password)
+                .name(this.name)
                 .company(this.company)
                 .ceo(this.ceo)
                 .businessRegistrationNumber(this.businessRegistrationNumber)

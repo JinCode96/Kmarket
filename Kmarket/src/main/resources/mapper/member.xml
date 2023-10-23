@@ -3,13 +3,13 @@
 <mapper namespace="com.kmarket.repository.member.MemberMapper">
 
     <insert id="saveGeneral">
-        insert into km_member_general (login_id, password, name, phone_number, email, type, zip_code, address, detail_address, ragistration_date)
-        values (#{loginId}, #{password}, #{name}, #{phoneNumber}, #{email}, #{type}, #{zipCode}, #{address}, #{detailAddress}, NOW());
+        insert into km_member_general (login_id, password, name, phone_number, email, type, zip_code, address, detail_address, provider, provider_id, ragistration_date)
+        values (#{loginId}, #{password}, #{name}, #{phoneNumber}, #{email}, #{type}, #{zipCode}, #{address}, #{detailAddress}, #{provider}, #{providerId}, NOW());
     </insert>
 
     <insert id="saveSeller">
-        insert into km_member_seller (login_id, password, type, company, ceo, business_registration_number, report_number, phone_number, zip_code, address, detail_address, ragistragion_date)
-        values (#{loginId}, #{password}, #{type}, #{company}, #{ceo}, #{businessRegistrationNumber}, #{reportNumber}, #{phoneNumber}, #{zipCode}, #{address}, #{detailAddress}, NOW());
+        insert into km_member_seller (login_id, password, name, type, company, ceo, business_registration_number, report_number, phone_number, zip_code, address, detail_address, ragistragion_date)
+        values (#{loginId}, #{password}, #{name}, #{type}, #{company}, #{ceo}, #{businessRegistrationNumber}, #{reportNumber}, #{phoneNumber}, #{zipCode}, #{address}, #{detailAddress}, NOW());
     </insert>
 
     <insert id="saveCommonUser">

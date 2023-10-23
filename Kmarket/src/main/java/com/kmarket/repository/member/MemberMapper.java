@@ -21,8 +21,7 @@ public interface MemberMapper {
 
     int checkEmail(String email);
 
-    Optional<UserDTO> findById(@Param("loginId") String loginId);
-
-    Optional<Members> findByIdGeneral(@Param("loginId") String loginId);
-    Optional<Members> findByIdSeller(@Param("loginId") String loginId);
+    Optional<UserDTO> findById(String loginId);
+    Optional<Members> findByIdGeneral(String loginId);
+    Optional<Members> findByIdSeller(String loginId);
 }

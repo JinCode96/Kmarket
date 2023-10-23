@@ -6,18 +6,25 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
 @Slf4j
 @Data
-public class PrincipalDetails implements UserDetails {
+public class PrincipalDetails implements UserDetails, OAuth2User {
 
     private Members members;
+    private Map<String, Object> attributes; // oauth 유저
 
     public PrincipalDetails(Members members) {
         this.members = members;
+    }
+    public PrincipalDetails(Members members, Map<String, Object> attributes) {
+        this.members = members;
+        this.attributes = attributes;
     }
 
     /**
@@ -77,5 +84,17 @@ public class PrincipalDetails implements UserDetails {
     public boolean isEnabled() {
         // 1년이 지나면 휴면 계정으로 return false 할 수 있다.
         return true; // 활성화
+    }
+
+    // OAuth2User
+    @Override
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
+
+    // OAuth2User
+    @Override
+    public String getName() {
+        return null;
     }
 }

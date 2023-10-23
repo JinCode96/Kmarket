@@ -29,7 +29,8 @@ public class MemberController {
     private final MemberService memberService;
 
     @GetMapping("/loginForm")
-    public String login() {
+    public String login(String failCheck, Model model) {
+        model.addAttribute("failCheck", failCheck);
         return "member/loginForm";
     }
 

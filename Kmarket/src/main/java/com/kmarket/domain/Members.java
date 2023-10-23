@@ -41,4 +41,9 @@ public class Members {
     private Integer middleNumber;
     private Integer lastNumber;
     private String confirmPass; // 비밀번호 확인
+
+    // OAuth2
+    private String provider;
+    private String providerId;
+
 }

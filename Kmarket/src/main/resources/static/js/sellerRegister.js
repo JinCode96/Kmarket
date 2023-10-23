@@ -10,6 +10,7 @@ window.onload = function() {
         loginId: false,
         password: false,
         confirmPassword: false,
+        name: false,
         company: false,
         ceo: false,
         bizNum: false,
@@ -26,6 +27,7 @@ window.onload = function() {
         loginId: document.getElementById('loginId'),
         password: document.getElementById('password'),
         confirmPass: document.getElementById('confirmPass'),
+        name: document.getElementById('name'),
         company: document.getElementById('company'),
         ceo: document.getElementById('ceo'),
         bizNum1: document.getElementById('bizNum1'),
@@ -43,6 +45,7 @@ window.onload = function() {
     const regex = {
         loginId: /^[a-z][a-z0-9]{5,12}$/,
         password: /^(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\W)(?=\S+$).{7,15}$/,
+        name: /^(?:[가-힣\s]{2,20}|[a-zA-Z\s]{2,20})$/,
         ceo: /^(?:[가-힣\s]{2,20}|[a-zA-Z\s]{2,20})$/,
         reportNumber: /^(20\d{2}|19\d{2})-[가-힣]{2,7}-\d{4,5}$/
     };
@@ -51,6 +54,7 @@ window.onload = function() {
         loginId: document.querySelector('.loginIdResult'),
         password: document.querySelector('.passwordResult'),
         confirmPass: document.querySelector('.confirmPassResult'),
+        name: document.querySelector('.nameResult'),
         company: document.querySelector('.companyResult'),
         ceo: document.querySelector('.ceoResult'),
         bizNum: document.querySelector('.bizNumResult'),
@@ -62,6 +66,7 @@ window.onload = function() {
     inputs.loginId.addEventListener('focusout', validateLoginId);
     inputs.password.addEventListener('focusout', validatePassword);
     inputs.confirmPass.addEventListener('focusout', validateConfirmPassword);
+    inputs.name.addEventListener('focusout', validateName);
     inputs.company.addEventListener('focusout', validateCompany);
     inputs.ceo.addEventListener('focusout', validateCeo);
     inputs.bizNum1.addEventListener('focusout', validateBizNum1);
@@ -137,6 +142,20 @@ window.onload = function() {
         } else {
             displayResult(results.confirmPass, "비밀번호가 일치합니다.", successColor);
             validation.confirmPassword = true;
+        }
+    }
+
+    function validateName() {
+        let name = inputs.name.value;
+        if (name === "") {
+            displayResult(results.name, "필수 정보입니다.", errorColor);
+            validation.name = false;
+        } else if (!regex.name.test(name)) {
+            displayResult(results.name, "이름 형식에 맞지 않습니다.", errorColor);
+            validation.name = false;
+        } else {
+            results.name.innerText = "";
+            validation.name = true;
         }
     }
 
@@ -278,6 +297,7 @@ window.onload = function() {
             { isValid: validation.loginId, message: '아이디를 확인해주세요.', input: inputs.loginId },
             { isValid: validation.password, message: '비밀번호를 확인해주세요.', input: inputs.password },
             { isValid: validation.confirmPassword, message: '비밀번호가 틀립니다.', input: inputs.confirmPass },
+            { isValid: validation.name, message: '이름을 확인해주세요.', input: inputs.name },
             { isValid: validation.company, message: '회사명을 확인해주세요.', input: inputs.company },
             { isValid: validation.ceo, message: '대표자 이름을 확인해주세요.', input: inputs.ceo },
             { isValid: validation.bizNum, message: '사업자등록번호를 확인해주세요.', input: inputs.bizNum1 },
@@ -300,6 +320,7 @@ window.onload = function() {
     function gatherMemberData() {
         const loginId = inputs.loginId.value;
         const password = inputs.password.value;
+        const name = inputs.name.value;
         const company = inputs.company.value;
         const ceo = inputs.ceo.value;
         const businessRegistrationNumber = inputs.bizNum1.value + "-" + inputs.bizNum2.value + "-" + inputs.bizNum3.value;
@@ -312,6 +333,7 @@ window.onload = function() {
         return {
             loginId,
             password,
+            name,
             company,
             ceo,
             businessRegistrationNumber,

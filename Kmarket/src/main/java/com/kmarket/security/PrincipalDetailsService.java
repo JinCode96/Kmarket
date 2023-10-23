@@ -20,24 +20,26 @@ public class PrincipalDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.info("loginProcess...");
+        log.info("loadUserByUsername...");
         log.info("username={}", username);
-        UserDTO user = memberRepository.findById(username).get();
-        log.info("user={}", user);
 
+        UserDTO user = memberRepository.findById(username).orElse(null);
         Members member = null;
+
         if (user != null) {
-            log.info("1");
-            if (user.getType().equals("GENERAL")) {
-                member = memberRepository.findByIdGeneral(username).get();
-                log.info("member={}", member);
-            } else if (user.getType().equals("SELLER")) {
-                member = memberRepository.findByIdSeller(username).get();
-                log.info("member={}", member);
+            String userType = user.getType();
+
+            if ("GENERAL".equals(userType)) {
+                member = memberRepository.findByIdGeneral(username).orElse(null);
+            } else if ("SELLER".equals(userType)) {
+                member = memberRepository.findByIdSeller(username).orElse(null);
             }
-        } else {
-            return null;
+            if (member != null) {
+                log.info("member={}", member);
+                return new PrincipalDetails(member);
+            }
         }
-        return new PrincipalDetails(member);
+        log.info("회원 없음!!!");
+        throw new UsernameNotFoundException(username);
     }
 }
