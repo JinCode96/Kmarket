@@ -1,8 +1,8 @@
 package com.kmarket.repository.member;
 
 import com.kmarket.domain.Members;
+import com.kmarket.dto.member.SearchIdAndPassDTO;
 import com.kmarket.dto.member.UserDTO;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.Optional;
 
@@ -26,5 +26,8 @@ public interface MemberRepository {
 
     Optional<Members> findByIdSeller(String loginId);
 
+    int checkMemberNameAndEmail(SearchIdAndPassDTO searchIdAndPassDTO);
+
+    Members searchId(SearchIdAndPassDTO searchIdAndPassDTO);
     //    void update();
 }

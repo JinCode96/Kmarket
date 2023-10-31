@@ -36,6 +36,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.1.RELEASE' // security thymeleaf
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client' // oauth2
+    implementation 'org.springframework.boot:spring-boot-starter-mail' // mail send
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis' // redis
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.2'

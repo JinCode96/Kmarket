@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns="http://www.w3.org/1999/html"
+      layout:decorate="~{layout/member_layout}">
+<main id="member" layout:fragment="main">
+    <section class="find findId">
+        <form name="form" th:action="@{/member/searchId}" id="form" method="post">
+            <table border="0">
+                <caption>아이디 찾기</caption>
+                <tr>
+                    <td>이름</td>
+                    <td>
+                        <input type="text" name="name" id="name" class="val" placeholder="이름 입력"/>
+                        <span class="nameResult"></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>이메일</td>
+                    <td>
+                        <div>
+                            <input type="text" name="emailPrefix" id="emailPrefix" placeholder="이메일 입력"> @
+                            <input type="text" name="emailDomain" id="emailDomain" class="emailDomain" placeholder="이메일 도메인">
+                            <select class="select" id="domainSelect" name="domainSelect">
+                                <option value="" >-직접입력-</option>
+                                <option value="naver.com">naver.com</option>
+                                <option value="nate.com">nate.com</option>
+                                <option value="daum.com">daum.com</option>
+                                <option value="gmail.com">gmail.com</option>
+                                <option value="yahoo.com">yahoo.com</option>
+                                <option value="hanmail.net">hanmail.net</option>
+                                <option value="kakao.com">kakao.com</option>
+                                <option value="korea.kr">korea.kr</option>
+                            </select>
+                            <button type="button" class="btnAuth" id="btnEmailAuth">인증번호 받기</button>
+                            <br/>
+                        </div>
+                        <span class="emailResult"></span>
+                        <div id="emailAuthDiv">
+                            <input type="text" name="authCode" id="authCode" placeholder="인증번호 입력"/>
+                            <button type="button" class="btnConfirm" id="btnEmailConfirm">확인</button>
+                            <button type="button" class="btnReSendEmail" id="btnReSendEmail">재전송</button>
+                            <span class="timer" id="timer"></span>
+                        </div>
+                        <span class="emailAuthResult"></span>
+                    </td>
+                </tr>
+            </table>
+        <p>
+            회원가입시 이메일 주소와 입력한 이메일 주소가 같아야, 인증번호를 받을 수 있습니다.<br>
+            인증번호를 입력 후 아이디 찾기 버튼을 누르세요.
+        </p>
+        <div>
+            <a th:href='@{/member/login}' class="btn btnCancel">취소</a>
+            <button type="submit" class="btn btnNext" id="btnSearchId" disabled>아이디 찾기</button>
+        </div>
+        </form>
+    </section>
+</main>
+<th:block layout:fragment="script">
+    <script th:src="@{/js/emailDomain.js}"></script>
+    <script th:src="@{/js/findId.js}"></script>
+</th:block>
+</html>

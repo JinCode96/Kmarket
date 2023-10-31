@@ -24,3 +24,17 @@ logging:
       itemservice:
         repository:
           mybatis: trace
+
+---
+# application-email.yml import
+spring:
+  config:
+    import: classpath:application-email.yml
+
+---
+
+spring:
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379

@@ -1,6 +1,7 @@
 package com.kmarket.service;
 
 import com.kmarket.domain.Members;
+import com.kmarket.dto.member.SearchIdAndPassDTO;
 import com.kmarket.entity.TermsEntity;
 import com.kmarket.repository.member.MemberRepository;
 import com.kmarket.repository.member.TermsJpaRepository;
@@ -58,6 +59,12 @@ public class MemberService {
         return termsJpaRepository.findById(1);
     }
 
+    public int checkMemberNameAndEmail(SearchIdAndPassDTO searchIdAndPassDTO) {
+        return memberRepository.checkMemberNameAndEmail(searchIdAndPassDTO);
+    }
 
+    public Members searchId(SearchIdAndPassDTO searchIdAndPassDTO) {
+        return memberRepository.searchId(searchIdAndPassDTO);
+    }
 
 }

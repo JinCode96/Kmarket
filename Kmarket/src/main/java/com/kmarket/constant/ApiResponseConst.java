@@ -9,5 +9,8 @@ public final class ApiResponseConst {
     public static final String ID_NOT_OK = "이미 사용중인 아이디 입니다.";
     public static final String EMAIL_OK = "사용 가능한 이메일 입니다.";
     public static final String EMAIL_NOT_OK = "이미 사용중인 이메일입니다.";
+    public static final String EMAIL_CODE_OK = "이메일 코드를 전송하였습니다.";
+    public static final String MEMBER_FOUND = "입력한 정보와 일치하는 회원이 있습니다.";
+    public static final String MEMBER_NOT_FOUND = "입력한 정보와 일치하는 회원정보가 없습니다. 이름/이메일 주소를 확인해주세요.";
 
 }

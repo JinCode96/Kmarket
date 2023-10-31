@@ -421,6 +421,126 @@ header > div.logo > div > a {
 #member > .registerSeller > form > section > table .addr > td > input:nth-of-type(2) {width: 370px;}
 #member > .registerSeller > form > section > table .addr > td > input:nth-of-type(3) {width: 370px;}
 
+/* 아이디, 비밀번호 찾기 공통 */
+#member > .find {
+    width: 675px;
+    height: auto;
+    margin: 60px auto;
+    float: none;
+    overflow: hidden;
+}
+#member > .find table {
+    width: 100%;
+    height: auto;
+    border-collapse: collapse;
+    border-spacing: 0;
+    border-top: 2px solid #111;
+}
+#member > .find table > caption {
+    text-align: left;
+    font-weight: bold;
+    font-size: 23px;
+    padding: 10px 0;
+    box-sizing: border-box;
+}
+
+#member > .find table tr > td {
+    padding: 12px;
+    border: 1px solid #e9e9e9;
+    box-sizing: border-box;
+}
+
+#member > .find table tr > td:nth-child(1) {width: 120px;}
+#member > .find table tr > td:nth-child(2) {font-weight: bold;}
+
+#member > .find table input {
+    width: 162px;
+    height: 22px;
+    border: 1px solid #e4eaec;
+    background: #f7f7f7;
+    text-indent: 6px;
+}
+
+#member > .find table .emailDomain {
+    width: 100px;
+    height: 22px;
+    border: 1px solid #e4eaec;
+    background: #f7f7f7;
+    text-indent: 6px;
+}
+
+#member > .find table select {
+    width: 100px;
+    height: 25px;
+    border: 1px solid #e4eaec;
+    background: #f7f7f7;
+    text-indent: 6px;
+}
+
+#member > .find table div {
+    margin-top: 10px;
+}
+
+#member > .find table .result {
+    margin: 25px;
+}
+
+#emailAuthDiv {
+    display: none;
+}
+
+
+#member > .find > p {
+    margin-top: 12px;
+    margin-bottom: 12px;
+    line-height: 20px;
+}
+
+#member > .find > div {
+    float: right;
+    margin-top: 10px;
+}
+/* 추가 */
+#member > .find > form > p {
+    margin-top: 12px;
+    margin-bottom: 12px;
+    line-height: 20px;
+}
+
+#member > .find > form > div {
+    float: right;
+    margin-top: 10px;
+}
+
+#member > .find .resultEmail {
+    display: block;
+    margin-top: 5px;
+}
+
+#member .btn {
+    display: inline-block;
+    padding: 8px;
+    border: 1px solid #bebebe;
+    text-align: center;
+    cursor: pointer;
+}
+#member .btnNext { background: #e9e9e9; }
+
+
+#member .btnComplete {
+    border: 1px solid #3b3c3f;
+    background: #4b545e;
+    color: #fff;
+}
+
+#member .btnAuth, .btnConfirm, .btnReSendEmail {
+    display: inline-block;
+    padding: 4px;
+    border: 1px solid #bebebe;
+    text-align: center;
+    cursor: pointer;
+}
+
 /*** 푸터 ***/
 footer {
     min-width: 1200px;

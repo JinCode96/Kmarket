@@ -32,9 +32,9 @@ public class SecurityConfig {
                         .anyRequest().permitAll() // 그 외 다른 요청 모두 통과
                 )
                 .formLogin(form -> form
-                        .loginPage("/member/loginForm").permitAll() // 기본 로그인 화면 설정
-                        .loginProcessingUrl("/member/loginForm") // 해당 url 로 post 요청
-                        .failureUrl("/member/loginForm?failCheck=true")
+                        .loginPage("/member/login").permitAll() // 기본 로그인 화면 설정
+                        .loginProcessingUrl("/member/login") // 해당 url 로 post 요청
+                        .failureUrl("/member/login?failCheck=true")
                         .defaultSuccessUrl("/") // 시큐리티는 로그인 후 자동으로 가려던 웹 페이지로 이동시켜준다.
                 )
                 .logout(logout -> logout
@@ -45,7 +45,7 @@ public class SecurityConfig {
                         .userDetailsService(principalDetailsService)
                 )
                 .oauth2Login(cust -> cust
-                        .loginPage("/member/loginForm") // OAuth2 로그인 페이지 설정
+                        .loginPage("/member/login") // OAuth2 로그인 페이지 설정
                         .userInfoEndpoint(oauth -> oauth.userService(principalOauth2UserService)) // 로그인 완료 후처리 필요. tip. 코드 X (엑세스 토큰 + 사용자 프로필 정보 O)
                 );
 

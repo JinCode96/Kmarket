@@ -5,9 +5,13 @@ import com.kmarket.domain.Members;
 import com.kmarket.dto.member.*;
 import com.kmarket.entity.TermsEntity;
 import com.kmarket.service.MemberService;
+import com.kmarket.util.EmailService;
+import com.kmarket.util.RedisUtil;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +19,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.kmarket.constant.ApiResponseConst.*;
 import static com.kmarket.constant.MemberConst.*;
@@ -27,9 +36,11 @@ import static com.kmarket.constant.MemberConst.*;
 public class MemberController {
 
     private final MemberService memberService;
+    private final EmailService emailService;
+    private final RedisUtil redisUtil;
 
-    @GetMapping("/loginForm")
-    public String login(String failCheck, Model model) {
+    @GetMapping("/login")
+    public String loginForm(String failCheck, Model model) {
         model.addAttribute("failCheck", failCheck);
         return "member/loginForm";
     }
@@ -90,7 +101,6 @@ public class MemberController {
 
     /**
      * 일반 회원가입
-     * todo 비밀번호 bcrypt 사용하기
      */
     @ResponseBody
     @PostMapping("/register/general")
@@ -121,6 +131,27 @@ public class MemberController {
         return new ApiResponse(REGISTER_NOT_OK, result);
     }
 
+    @GetMapping("/findId")
+    public String findIdForm() {
+        return "member/findId";
+    }
+
+    @GetMapping("/findPw")
+    public String findPwForm() {
+        return "member/findPw";
+    }
+
+//    @GetMapping("/findIdResult")
+//    public String findIdResult(Members members, Model model) {
+//        model.addAttribute("members", members);
+//        return "member/findIdResult";
+//    }
+
+    @GetMapping("/findPwResult")
+    public String findPwResult() {
+        return "member/findPwResult";
+    }
+
     /**
      * 아이디 중복 검사
      */
@@ -140,12 +171,69 @@ public class MemberController {
      */
     @ResponseBody
     @PostMapping("/register/checkEmail")
-    public ApiResponse checkEmail(@RequestBody EmailDTO email) {
-        int result = memberService.checkEmail(email.getEmail());
+    public ApiResponse checkEmail(@RequestBody SearchIdAndPassDTO searchIdAndPassDTO) {
+        int result = memberService.checkEmail(searchIdAndPassDTO.getEmail());
         if (result == 1) {
             return new ApiResponse(EMAIL_NOT_OK, result);
         } else {
             return new ApiResponse(EMAIL_OK, result);
+        }
+    }
+
+    /**
+     * 이름과 이메일로 회원 찾기
+     */
+    @ResponseBody
+    @PostMapping("/checkMemberNameAndEmail")
+    public ApiResponse checkMemberNameAndEmail(@RequestBody SearchIdAndPassDTO searchIdAndPassDTO) {
+        int result = memberService.checkMemberNameAndEmail(searchIdAndPassDTO);
+        if (result == 1) {
+            return new ApiResponse(MEMBER_FOUND, result);
+        } else {
+            return new ApiResponse(MEMBER_NOT_FOUND, result);
+        }
+    }
+
+    /**
+     * 이메일 인증번호 전송
+     */
+    @ResponseBody
+    @PostMapping("/mailConfirm")
+    public ApiResponse mailConfirm(@RequestBody SearchIdAndPassDTO searchIdAndPassDTO) throws MessagingException, UnsupportedEncodingException {
+        emailService.sendEmail(searchIdAndPassDTO.getEmail());
+        return new ApiResponse(EMAIL_CODE_OK, 200);
+    }
+
+    /**
+     * redis 코드 인증
+     */
+    @ResponseBody
+    @PostMapping("/codeConfirm")
+    public ApiResponse codeConfirm(@RequestBody SearchIdAndPassDTO searchIdAndPassDTO) {
+        String value = redisUtil.getData(searchIdAndPassDTO.getAuthCode());
+        if (value == null) {
+            return new ApiResponse("코드 맞지 않거나 만료된 코드임", 400);
+        } else {
+            return new ApiResponse("코드 확인 완료", 200);
+        }
+    }
+
+    /**
+     * 아이디 찾기
+     */
+    @PostMapping("/searchId")
+    public String searchId(@ModelAttribute SearchIdAndPassDTO searchIdAndPassDTO, Model model) {
+        searchIdAndPassDTO.makeEmail();
+        log.info("searchIdAndPassDTO={}", searchIdAndPassDTO);
+        Members members = memberService.searchId(searchIdAndPassDTO);
+        log.info("members = {}", members);
+
+        model.addAttribute("members", members);
+
+        if (members != null) {
+            return "member/findIdResult";
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "잘못된 url 요청");
         }
     }
 }

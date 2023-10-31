@@ -8,7 +8,7 @@
                 <h1>로그인</h1>
                 <p>HOME > <span>로그인</span></p>
             </nav>
-            <form th:action="@{/member/loginForm}" method="post" onsubmit="return loginSubmit()">
+            <form th:action="@{/member/login}" method="post" onsubmit="return loginSubmit()">
                 <table>
                     <tr>
                         <td>아이디</td>
@@ -32,8 +32,8 @@
                         <input type="checkbox" name="remember-me">
                         자동 로그인
                     </label>
-                    <a href="#">아이디 찾기</a>
-                    <a href="#">비밀번호 찾기</a>
+                    <a th:href="@{/member/findId}">아이디 찾기</a>
+                    <a th:href="@{/member/findPw}">비밀번호 찾기</a>
                     <a th:href="@{/member/join}">회원가입</a>
                 </div>
                 <div class="oauth">

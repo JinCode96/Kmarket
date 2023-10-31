@@ -1,6 +1,7 @@
 package com.kmarket.repository.member;
 
 import com.kmarket.domain.Members;
+import com.kmarket.dto.member.SearchIdAndPassDTO;
 import com.kmarket.dto.member.UserDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,4 +60,16 @@ public class MemberRepositoryImpl implements MemberRepository{
     public Optional<Members> findByIdSeller(String loginId) {
         return memberMapper.findByIdSeller(loginId);
     }
+
+    @Override
+    public int checkMemberNameAndEmail(SearchIdAndPassDTO searchIdAndPassDTO) {
+        return memberMapper.checkMemberNameAndEmail(searchIdAndPassDTO);
+    }
+
+    @Override
+    public Members searchId(SearchIdAndPassDTO searchIdAndPassDTO) {
+        return memberMapper.searchId(searchIdAndPassDTO);
+    }
+
+
 }
