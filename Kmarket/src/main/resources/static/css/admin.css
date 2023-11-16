@@ -356,7 +356,10 @@ p.ico  {
     margin: 0px;
     margin-top: 12px;
 }
-
+#admin-product-register table td > input.field-error:not(input[type=file]) {
+    border: 1px solid rgb(240,13,56);
+    color:  rgb(240,13,56);
+}
 #admin-product-register table tr:not(:nth-child(9)) td > p {
     float: right;
     text-indent: 5px;

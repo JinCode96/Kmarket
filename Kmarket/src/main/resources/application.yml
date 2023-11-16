@@ -36,7 +36,7 @@ spring:
 
 # 파일 저장 경로
 file:
-  dir: C:/Users/kimjinwoo/study/file/
+  dir: C:/Users/kimjinwoo/kmarket/file/
 
 # file 저장시 많은 로그 지우기
 logging:

@@ -48,8 +48,8 @@ public class AdminController {
             log.info("bindingResult error = {}", bindingResult);
             return "admin/register";
         }
-
         log.info("ProductSaveForm={}", productSaveForm);
+
         Integer cate1 = productSaveForm.getCategory1Code();
         Integer cate2 = productSaveForm.getCategory2Code();
         String username = principalDetails.getUsername();

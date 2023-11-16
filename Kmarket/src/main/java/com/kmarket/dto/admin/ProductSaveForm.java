@@ -1,52 +1,80 @@
 package com.kmarket.dto.admin;
 
 import com.kmarket.domain.Products;
+import com.kmarket.validation.ValidFile;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
+import lombok.*;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.web.multipart.MultipartFile;
 
-
-@Data
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
+@Builder
 public class ProductSaveForm {
-    @NotNull
+    @NotNull(message = "{required.product.category1Code}")
     private Integer category1Code;
-    @NotNull
+
+    @NotNull(message = "{required.product.category2Code}")
     private Integer category2Code;
-    @NotBlank
+
+    @NotBlank(message = "{required.product.productName}")
     private String productName;
-    @NotBlank
+
+    @NotBlank(message = "{required.product.description}")
     private String description;
-    @NotBlank
+
+    @NotBlank(message = "{required.product.company}")
     private String company;
-    @NotNull
+
+    @NotNull(message = "{required.product.price}")
+    @Range(min=0, max=100_000_000, message = "{range.product.price}")
     private Integer price;
-    @NotNull
+
+    @NotNull(message = "{required.product.discountRate}")
+    @Range(min=0, max =100, message = "{range.product.discountRate}")
     private Integer discountRate;
-    @NotNull
+
+    @NotNull(message = "{required.product.point}")
+    @Range(min = 0, max = 10_000, message = "{range.product.point}")
     private Integer point;
-    @NotNull
+
+    @NotNull(message = "{required.product.stock}")
+    @Range(min = 0, max = 10_000, message = "{range.product.stock}")
     private Integer stock;
-    @NotNull
+
+    @NotNull(message = "{required.product.deliveryCost}")
+    @Range(min = 0, max = 10_000, message = "{range.product.deliveryCost}")
     private Integer deliveryCost;
-    @NotNull
+
+    @ValidFile(message = "{required.product.file}")
     private MultipartFile thumbnailList;
-    @NotNull
+
+    @ValidFile(message = "{required.product.file}")
     private MultipartFile thumbnailMain;
-    @NotNull
+
+    @ValidFile(message = "{required.product.file}")
     private MultipartFile thumbnailDetail;
-    @NotNull
+
+    @ValidFile(message = "{required.product.file}")
     private MultipartFile detailCut;
-    @NotBlank
+
+    @NotBlank(message = "{required.product.status}")
     private String status;
-    @NotBlank
+
+    @NotBlank(message = "{required.product.duty}")
     private String duty;
-    @NotBlank
+
+    @NotBlank(message = "{required.product.receipt}")
     private String receipt;
-    @NotBlank
+
+    @NotBlank(message = "{required.product.businessType}")
     private String businessType;
-    @NotBlank
+
+    @NotBlank(message = "{required.product.origin}")
     private String origin;
 
     public Products productSaveFormToDomain(String username, String thumbnailList, String thumbnailMain, String thumbnailDetail, String detailCut) {
