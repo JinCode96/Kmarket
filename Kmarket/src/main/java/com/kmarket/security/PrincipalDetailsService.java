@@ -20,8 +20,7 @@ public class PrincipalDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.info("loadUserByUsername...");
-        log.info("username={}", username);
+//        log.info("username={}", username);
 
         UserDTO user = memberRepository.findById(username).orElse(null);
         Members member = null;
@@ -35,11 +34,11 @@ public class PrincipalDetailsService implements UserDetailsService {
                 member = memberRepository.findByIdSeller(username).orElse(null);
             }
             if (member != null) {
-                log.info("member={}", member);
+//                log.info("member={}", member);
                 return new PrincipalDetails(member);
             }
         }
-        log.info("회원 없음!!!");
+//        log.info("회원 없음!!!");
         throw new UsernameNotFoundException(username);
     }
 }

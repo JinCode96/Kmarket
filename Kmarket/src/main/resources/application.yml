@@ -26,6 +26,25 @@ logging:
           mybatis: trace
 
 ---
+
+# 파일 업로드 제한
+spring:
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 30MB
+
+# 파일 저장 경로
+file:
+  dir: C:/Users/kimjinwoo/study/file/
+
+# file 저장시 많은 로그 지우기
+logging:
+  level:
+    org.apache.coyote.http11: info
+
+---
+
 # application-email.yml import
 spring:
   config:

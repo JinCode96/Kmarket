@@ -28,7 +28,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // 정적 자원에 대한 접근 설정
                         .requestMatchers(PathRequest.toH2Console()).permitAll() // h2 db 콘솔 접근 권한 설정 (개발 및 테스트 목적, 나중엔 빼야함)
-                        .requestMatchers(antMatcher("/admin/**")).hasAnyRole("SELLER", "ADMIN") // 권한 필요
+//                        .requestMatchers(antMatcher("/admin/**")).hasAnyRole("SELLER", "ADMIN") // 권한 필요
                         .anyRequest().permitAll() // 그 외 다른 요청 모두 통과
                 )
                 .formLogin(form -> form

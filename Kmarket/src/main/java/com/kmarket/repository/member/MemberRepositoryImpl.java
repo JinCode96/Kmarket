@@ -71,5 +71,10 @@ public class MemberRepositoryImpl implements MemberRepository{
         return memberMapper.searchId(searchIdAndPassDTO);
     }
 
+    @Override
+    public int updatePass(SearchIdAndPassDTO searchIdAndPassDTO) {
+        return memberMapper.updatePass(searchIdAndPassDTO);
+    }
+
 
 }

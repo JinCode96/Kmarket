@@ -30,4 +30,6 @@ public interface MemberRepository {
 
     Members searchId(SearchIdAndPassDTO searchIdAndPassDTO);
     //    void update();
+
+    int updatePass(SearchIdAndPassDTO searchIdAndPassDTO);
 }

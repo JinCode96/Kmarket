@@ -391,7 +391,7 @@ window.onload = function() {
             success: function (data) {
                 if (data.status === 1) {
                     alert(data.message);
-                    window.location.href = "/kmarket/member/loginForm";
+                    window.location.href = "/kmarket/member/login";
                 } else {
                     alert(data.message);
                     window.location.href = "/kmarket/member/join";

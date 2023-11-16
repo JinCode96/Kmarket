@@ -3,7 +3,6 @@ window.onload = function () {
     const successColor = "rgb(13,136,241)";
 
     let authCode = null; // 인증 번호
-    let current_time = 0; // 발송 후 지난 초
     const fiveMinutes = 5 * 60; // 초 단위로 변환
     let minutes,seconds; // 유효시간
     let timer_thread;
@@ -43,7 +42,15 @@ window.onload = function () {
         emailAuth: document.querySelector('.emailAuthResult')
     };
 
-    input.name.addEventListener('focusout', function () {
+    input.name.addEventListener('focusout', validateName);
+    input.emailPrefix.addEventListener('focusout', validateEmail);
+    input.emailDomain.addEventListener('focusout', validateEmail);
+    input.emailDomainSelect.addEventListener('change', validateEmail);
+    btn.emailAuth.addEventListener('click', validateEmailAuth); // 인증코드 보내기 버튼
+    btn.resendEmail.addEventListener('click', validateResendEmail); // 인증코드 재전송 버튼
+    btn.emailConfirm.addEventListener('click', validateEmailConfirm); // 이메일 인증코드 확인
+
+    function validateName() {
         const name = this.value;
         if (name === "") {
             displayResult(result.name, "이름을 입력해주세요.", errorColor);
@@ -55,14 +62,23 @@ window.onload = function () {
             result.name.innerText = "";
             validation.name = true;
         }
-    });
+    }
 
-    input.emailPrefix.addEventListener('focusout', validateEmail);
-    input.emailDomain.addEventListener('focusout', validateEmail);
-    input.emailDomainSelect.addEventListener('change', validateEmail);
+    function validateEmail() {
+        const emailPrefix = input.emailPrefix.value;
+        const emailDomain = input.emailDomain.value;
+        const email = emailPrefix + "@" + emailDomain;
 
-    // 인증코드 보내기 버튼
-    btn.emailAuth.addEventListener('click', function () {
+        if (emailPrefix === "" || emailDomain === "" || !regex.email.test(email)) {
+            displayResult(result.email, "이메일 주소를 다시 확인해주세요.", errorColor);
+            validation.email = false;
+        } else {
+            result.email.innerText = "";
+            validation.email = true;
+        }
+    }
+
+    function validateEmailAuth() {
         const name = input.name.value;
         const emailPrefix = input.emailPrefix.value;
         const emailDomain = input.emailDomain.value;
@@ -73,29 +89,9 @@ window.onload = function () {
             alert('이름 또는 이메일을 다시 확인해주세요.');
         } else {
             // 해당 회원이 있는지 찾기
-            $.ajax({
-                url: "/kmarket/member/checkMemberNameAndEmail",
-                method: 'POST',
-                contentType: "application/json",
-                dataType: 'json',
-                data: JSON.stringify({"name" : name , "email" : email}),
-                success: function (data) {
-                    console.log(data.status);
-                    if (data.status === 1) {
-                        // 인증코드 발송 O
-                        emailCodeSend(email);
-                    } else {
-                        // 인증코드 발송 X
-                        alert(data.message);
-                    }
-                },
-                error: function (xhr, textStatus, errorThrown) {
-                    console.error(xhr.responseText);
-                    alert("잘못된 요청입니다. 다시 실행해주세요.");
-                }
-            });
+            ajaxCheckMemberNameAndEmail(name, email);
         }
-    });
+    }
 
     // 이메일 코드 보내기
     function emailCodeSend(email) {
@@ -109,8 +105,7 @@ window.onload = function () {
         ajaxEmailCodeSend(email); // ajax 보내기
     }
 
-    // 인증코드 재전송 버튼
-    btn.resendEmail.addEventListener('click', function () {
+    function validateResendEmail() {
         const emailPrefix = input.emailPrefix.value;
         const emailDomain = input.emailDomain.value;
         const email = emailPrefix + "@" + emailDomain;
@@ -122,18 +117,45 @@ window.onload = function () {
         ajaxEmailCodeSend(email);
 
         // 만료시간 다시 업데이트
+        timer_stop();
         startTimer(fiveMinutes, displayTimer);
-    });
+    }
 
-    // 이메일 인증코드 확인
-    btn.emailConfirm.addEventListener('click', function () {
+    function validateEmailConfirm() {
         let authCode = input.authCode.value;
 
         if (authCode === "") {
             alert('인증코드를 입력해주세요.');
             return;
         }
+        ajaxCodeConfirm(authCode);
+    }
 
+    function ajaxCheckMemberNameAndEmail(name, email) {
+        $.ajax({
+            url: "/kmarket/member/checkMemberNameAndEmail",
+            method: 'POST',
+            contentType: "application/json",
+            dataType: 'json',
+            data: JSON.stringify({"name" : name , "email" : email}),
+            success: function (data) {
+                console.log(data.status);
+                if (data.status === 1) {
+                    // 인증코드 발송 O
+                    emailCodeSend(email);
+                } else {
+                    // 인증코드 발송 X
+                    alert(data.message);
+                }
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                console.error(xhr.responseText);
+                alert("잘못된 요청입니다. 다시 실행해주세요.");
+            }
+        });
+    }
+
+    function ajaxCodeConfirm(authCode) {
         $.ajax({
             url: "/kmarket/member/codeConfirm",
             method: 'POST',
@@ -142,7 +164,6 @@ window.onload = function () {
             data: JSON.stringify({"authCode" : authCode}),
             success: function (data) {
                 if (data.status === 200) {
-                    alert('인증되었습니다. 아이디 찾기를 눌려주세요.');
                     timer_stop();
                     displayResult(displayTimer, "인증되었습니다.", successColor);
                     input.authCode.disabled = true;
@@ -159,32 +180,7 @@ window.onload = function () {
                 alert("잘못된 요청입니다. 다시 실행해주세요.");
             }
         });
-    });
-
-    // // 아이디 찾기 버튼 클릭
-    // btn.searchId.addEventListener('click', function () {
-    //     let name = input.name.value;
-    //     let email = input.emailPrefix.value + "@" + input.emailDomain.value;
-    //
-    //     if (validation.name && validation.email && validation.code) {
-    //         $.ajax({
-    //             url: "/kmarket/member/searchId",
-    //             method: 'POST',
-    //             contentType: "application/json",
-    //             dataType: 'json',
-    //             data: JSON.stringify({"name": name, "email": email}),
-    //             // success: function (data) {
-    //             //
-    //             // },
-    //             // error: function (xhr, textStatus, errorThrown) {
-    //             //     alert("잘못된 요청입니다. 다시 실행해주세요.");
-    //             // }
-    //         });
-    //     } else {
-    //         alert('회원 정보를 확인해주세요.');
-    //     }
-    // });
-
+    }
 
     // ajax 이메일 코드 전송
     function ajaxEmailCodeSend(email) {
@@ -206,7 +202,6 @@ window.onload = function () {
             }
         });
     }
-
 
     // timer display
     function startTimer(fiveMinutes, displayTimer) {
@@ -237,20 +232,6 @@ window.onload = function () {
         clearInterval(timer_thread)
         // 유효시간 만료
         validation.code = false
-    }
-
-    function validateEmail() {
-        const emailPrefix = input.emailPrefix.value;
-        const emailDomain = input.emailDomain.value;
-        const email = emailPrefix + "@" + emailDomain;
-
-        if (emailPrefix === "" || emailDomain === "" || !regex.email.test(email)) {
-            displayResult(result.email, "이메일 주소를 다시 확인해주세요.", errorColor);
-            validation.email = false;
-        } else {
-            result.email.innerText = "";
-            validation.email = true;
-        }
     }
 
     function displayResult(element, message, color) {

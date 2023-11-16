@@ -21,4 +21,6 @@ public interface MemberMapper {
     Optional<Members> findByIdSeller(String loginId);
     int checkMemberNameAndEmail(SearchIdAndPassDTO searchIdAndPassDTO);
     Members searchId(SearchIdAndPassDTO searchIdAndPassDTO);
+
+    int updatePass(SearchIdAndPassDTO searchIdAndPassDTO);
 }

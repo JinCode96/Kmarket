@@ -4,7 +4,7 @@
       layout:decorate="~{layout/member_layout}">
 <main id="member" layout:fragment="main">
     <section class="find findId">
-        <form name="form" th:action="@{/member/searchId}" id="form" method="post">
+        <form name="form" th:action="@{/member/findId}" id="form" method="post">
             <table border="0">
                 <caption>아이디 찾기</caption>
                 <tr>
@@ -58,6 +58,6 @@
 </main>
 <th:block layout:fragment="script">
     <script th:src="@{/js/emailDomain.js}"></script>
-    <script th:src="@{/js/findId.js}"></script>
+    <script th:src="@{/js/findIdAndPass.js}"></script>
 </th:block>
 </html>

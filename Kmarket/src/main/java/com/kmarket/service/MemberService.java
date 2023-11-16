@@ -21,10 +21,8 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final TermsJpaRepository termsJpaRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
 
     public int saveGeneralMember(Members member) {
-        member.setPassword(passwordEncoder.encode(member.getPassword()));
         int result = memberRepository.saveGeneral(member);
         if (result == 1) {
             memberRepository.saveCommonUser(member.getLoginId(), member.getType());
@@ -33,7 +31,6 @@ public class MemberService {
     }
 
     public int saveSellerMember(Members member) {
-        member.setPassword(passwordEncoder.encode(member.getPassword()));
         int result = memberRepository.saveSeller(member);
         if (result == 1) {
             memberRepository.saveCommonUser(member.getLoginId(), member.getType());
@@ -65,6 +62,10 @@ public class MemberService {
 
     public Members searchId(SearchIdAndPassDTO searchIdAndPassDTO) {
         return memberRepository.searchId(searchIdAndPassDTO);
+    }
+
+    public int updatePass(SearchIdAndPassDTO searchIdAndPassDTO){
+        return memberRepository.updatePass(searchIdAndPassDTO);
     }
 
 }

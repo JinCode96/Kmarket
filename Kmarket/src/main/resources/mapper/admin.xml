@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kmarket.repository.admin.AdminMapper">
+
+    <insert id="insertProduct">
+        insert into km_product (category1_code, category2_code, seller, product_name, description, company, price, discount_rate, point, stock, delivery_cost, thumbnail_list, thumbnail_main, thumbnail_detail,
+                                detail_cut, status, duty, receipt, business_type, origin, registration_date)
+        values (#{category1Code}, #{category2Code}, #{seller}, #{productName}, #{description}, #{company}, #{price}, #{discountRate}, #{point}, #{stock}, #{deliveryCost}, #{thumbnailList}, #{thumbnailMain}, #{thumbnailDetail},
+                #{detailCut}, #{status}, #{duty}, #{receipt}, #{businessType}, #{origin}, NOW());
+    </insert>
+
+
+</mapper>

@@ -324,14 +324,46 @@ p.ico  {
     border: 1px solid #959595;
     box-sizing: border-box;
 }
-#admin-product-register table  td > span {float: left; line-height: 35px; font-weight: bold;}
-#admin-product-register table tr:not(:nth-child(9)) td > p {
+#admin-product-register table  td > span {
     float: left;
+    line-height: 35px;
+    font-weight: bold;
+}
+/* 추가 */
+#admin-product-register table td > .field-error {
+
+    float: none;
+    font-weight: normal;
+    border-color: #dc3545;
+    color: rgb(240,13,56);
+}
+#admin-product-register table td > div > .field-error {
+    position: relative;
+    top: 4px;
+    float: none;
+    font-weight: normal;
+    border-color: #dc3545;
+    color: rgb(240,13,56);
+}
+#detailCutSpan{
+    position: relative;
+    top: -5px;
+    right: 5px;
+}
+#admin-product-register table tr:nth-child(10) td > #detailCutP {
+    position: relative;
+    bottom: 9px;
+    margin: 0px;
+    margin-top: 12px;
+}
+
+#admin-product-register table tr:not(:nth-child(9)) td > p {
+    float: right;
     text-indent: 5px;
     margin: 10px 0 5px 10px;
 }
 #admin-product-register table tr:nth-child(9) td > div > p {
-    float: left;
+    float: right;
     line-height: 23px;
     margin-left: 52px;
 }

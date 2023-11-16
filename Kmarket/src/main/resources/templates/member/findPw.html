@@ -4,45 +4,61 @@
       layout:decorate="~{layout/member_layout}">
 <main id="member" layout:fragment="main">
         <section class="find findPw">
-            <form name="form" method="post">
+            <form name="form" th:action="@{/member/findPw}" method="post">
                 <table border="0">
                     <caption>비밀번호 찾기</caption>
                     <tr>
                         <td>아이디</td>
                         <td>
-                            <input type="text" name="uid" class="val" placeholder="아이디 입력"/>
-                            <span class="msgId"></span>
+                            <input type="text" name="name" id="name" class="val" placeholder="이름 입력"/>
+                            <span class="nameResult"></span>
                         </td>
                     </tr>
                     <tr>
                         <td>이메일</td>
                         <td>
                             <div>
-                                <input type="email" name="email" placeholder="이메일 입력"/>
+                                <input type="text" name="emailPrefix" id="emailPrefix" placeholder="이메일 입력"> @
+                                <input type="text" name="emailDomain" id="emailDomain" class="emailDomain" placeholder="이메일 도메인">
+                                <select class="select" id="domainSelect" name="domainSelect">
+                                    <option value="" >-직접입력-</option>
+                                    <option value="naver.com">naver.com</option>
+                                    <option value="nate.com">nate.com</option>
+                                    <option value="daum.com">daum.com</option>
+                                    <option value="gmail.com">gmail.com</option>
+                                    <option value="yahoo.com">yahoo.com</option>
+                                    <option value="hanmail.net">hanmail.net</option>
+                                    <option value="kakao.com">kakao.com</option>
+                                    <option value="korea.kr">korea.kr</option>
+                                </select>
                                 <button type="button" class="btnAuth" id="btnEmailAuth">인증번호 받기</button>
-                                <span class="msgEmail"></span>
+                                <br/>
                             </div>
-                            <div>
-                                <input type="text" name="emailAuthCode" readonly placeholder="인증번호 입력"/>
+                            <span class="emailResult"></span>
+                            <div id="emailAuthDiv">
+                                <input type="text" name="authCode" id="authCode" placeholder="인증번호 입력"/>
                                 <button type="button" class="btnConfirm" id="btnEmailConfirm">확인</button>
-                                <span class="msg_emailAuth"></span>
+                                <button type="button" class="btnReSendEmail" id="btnReSendEmail">재전송</button>
+                                <span class="timer" id="timer"></span>
                             </div>
+                            <span class="emailAuthResult"></span>
                         </td>
                     </tr>
                 </table>
-            </form>
             <p>
                 비밀번호를 찾고자 하는 아이디와 이메일을 입력해 주세요.<br>
                 회원가입시 입력한 아이디와 이메일 주소가 같아야, 인증번호를 받을 수 있습니다.<br>
                 인증번호를 입력 후 확인 버튼을 누르세요.
             </p>
             <div>
-                <a th:href="@{/member/login}" class="btn btnCancel">취소</a>
-                <a th:href="@{/member/findPwResult}" class="btn btnNext" onclick="">다음</a>
+                <a th:href='@{/member/login}' class="btn btnCancel">취소</a>
+                <button type="submit" class="btn btnNext" id="btnSearchId" disabled>비밀번호 찾기</button>
             </div>
+            </form>
         </section>
     </main>
 <th:block layout:fragment="script">
-    <script th:src="@{/js/emailAuth.js}"></script>
+    <script th:src="@{/js/emailDomain.js}"></script>
+    <script th:src="@{/js/findIdAndPass.js}"></script>
 </th:block>
 </html>
