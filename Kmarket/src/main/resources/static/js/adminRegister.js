@@ -48,3 +48,38 @@ function addOptionsToCategory2(selectElement, options) {
         selectElement.appendChild(option);
     }
 }
+
+// 판매가격 입력란과 포인트 입력란의 참조를 가져옵니다.
+const priceInput = document.getElementById('price');
+const pointInput = document.getElementById('point');
+
+// 판매가격 입력란 값이 변경될 때마다 호출되는 함수를 정의합니다.
+priceInput.addEventListener('input', function () {
+    // 입력된 값에서 숫자만 추출하고 1%를 계산하여 소수점을 버립니다.
+    const priceValue = priceInput.value;
+    const pointValue = Math.floor(priceValue * 0.01);
+
+    // 계산된 값을 포인트 입력란에 적용합니다.
+    pointInput.value = pointValue;
+});
+
+// 각 입력란에 숫자만 입력되도록 적용
+allowOnlyNumbers(document.getElementById('price'));
+allowOnlyNumbers(document.getElementById('discountRate'));
+allowOnlyNumbers(document.getElementById('point'));
+allowOnlyNumbers(document.getElementById('stock'));
+allowOnlyNumbers(document.getElementById('deliveryCost'));
+
+// 입력란에 입력된 값이 숫자로 제한되도록 하는 함수
+function allowOnlyNumbers(inputElement) {
+    inputElement.addEventListener('input', function () {
+        // 입력된 값에서 숫자만 추출하여 적용
+        inputElement.value = inputElement.value.replace(/[^0-9]/g, '');
+
+        // 제일 첫 자리에 0이 오고 뒤에 다른 숫자가 오면 0을 지우도록 처리
+        if (inputElement.value.length > 1 && inputElement.value[0] === '0') {
+            inputElement.value = inputElement.value.slice(1);
+        }
+    });
+}
+

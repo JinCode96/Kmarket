@@ -57,3 +57,10 @@ spring:
     redis:
       host: 127.0.0.1
       port: 6379
+
+---
+# jpa 쿼리 보기
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.type.descriptor.sql: trace

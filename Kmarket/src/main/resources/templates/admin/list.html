@@ -13,16 +13,20 @@
                     <h1>상품목록</h1>
                     <p>HOME > 상품관리 > <span>상품목록</span></p>
                 </nav>
-                <select name="searchField">
-                    <option value="productName">상품명</option>
-                    <option value="productCode">상품코드</option>
-                    <option value="productCompany">제조사</option>
-                    <option value="productSeller">판매자</option>
-                </select>
-                <input type="text" name="searchWord">
+                <form th:action="@{/admin/list}" onsubmit="return searchValidate()">
+                    <select name="searchField">
+                        <option value="productName">상품명</option>
+                        <option value="id">상품코드</option>
+                        <option value="company">제조사</option>
+                        <option value="seller">판매자</option>
+                    </select>
+                    <input type="text" name="keyword" placeholder="검색하기">
+                    <button type="submit" class="searchButton">검색하기</button>
+                    <a th:href="@{/admin/list}">&ensp;&ensp;전체보기</a>
+                </form>
                 <table border="0">
                     <tr>
-                        <th><input type="checkbox"name="all"></th>
+                        <th><input type="checkbox" name="all" onclick="selectAll(this)"></th>
                         <th>이미지</th>
                         <th>상품코드</th>
                         <th>상품명</th>
@@ -34,77 +38,64 @@
                         <th>조회</th>
                         <th>관리</th>
                     </tr>
-                    <tr>
-                        <td><input type="checkbox" name="상품코드"></td>
+                    <tr th:each="product : ${productsPage.content}">
+                        <td><input type="checkbox" name="productCode" th:value="${product.id}"></td>
                         <td>
-                            <img th:src="@{/img/sample_thumb.jpg}" alt="thumb">
+                            <img th:src="@{/admin/images/{filename}/{cate1}/{cate2}(filename=${product.thumbnailList}, cate1=${product.category1Code}, cate2=${product.category2Code})}" alt="thumb">
                         </td>
-                        <td>201603292</td>
-                        <td>FreeMovement BLUEFORCE</td>
-                        <td>36,000</td>
-                        <td>10</td>
-                        <td>360</td>
-                        <td>400</td>
-                        <td>홍길동</td>
-                        <td>126</td>
+                        <td th:text="${product.id}">상품 번호</td>
+                        <td th:text="${#strings.length(product.productName) &gt; 30 ? #strings.substring(product.productName, 0, 30) + '...' : product.productName}">상품명</td>
+                        <td th:text="${#numbers.formatInteger(product.price, 1, 'COMMA') + '원'}">가격</td>
+                        <td th:text="${product.discountRate + '%'}">할인률</td>
+                        <td th:text="${#numbers.formatInteger(product.point, 1, 'COMMA') + 'p'}">포인트</td>
+                        <td th:text="${#numbers.formatInteger(product.stock, 1, 'COMMA') + '개'}">재고</td>
+                        <td th:text="${#strings.substring(product.seller, 0, 5)} + '****'">판매자</td>
+                        <td th:text="${#numbers.formatInteger(product.hit, 1, 'COMMA')}">조회수</td>
                         <td>
-                            <a href="#">[삭제]</a>
+                            <a href="#" th:attr="data-product-id=${product.id}, data-product-productName=${product.productName}" class="deleteProduct">[삭제]</a> <!-- ajax 통신을 위해 속성 정의 -->
                             <a href="#">[수정]</a>
                         </td>
                     </tr>
-                    <tr>
-                        <td><input type="checkbox" name="상품코드"></td>
-                        <td>
-                            <img th:src="@{/img/sample_thumb.jpg}" alt="thumb">
-                        </td>
-                        <td>201603292</td>
-                        <td>FreeMovement BLUEFORCE</td>
-                        <td>36,000</td>
-                        <td>10</td>
-                        <td>360</td>
-                        <td>400</td>
-                        <td>홍길동</td>
-                        <td>126</td>
-                        <td>
-                            <a href="#">[삭제]</a>
-                            <a href="#">[수정]</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><input type="checkbox" name="상품코드"></td>
-                        <td>
-                            <img th:src="@{/img/sample_thumb.jpg}" alt="thumb">
-                        </td>
-                        <td>201603292</td>
-                        <td>FreeMovement BLUEFORCE</td>
-                        <td>36,000</td>
-                        <td>10</td>
-                        <td>360</td>
-                        <td>400</td>
-                        <td>홍길동</td>
-                        <td>126</td>
-                        <td>
-                            <a href="#">[삭제]</a>
-                            <a href="#">[수정]</a>
-                        </td>
-                    </tr>
+                    <!-- 상품이 없을 경우 -->
+                    <th:block th:if="${productsPage.isEmpty()}">
+                        <tr> <td colspan="11" class="noProduct">등록된 상품이 없습니다.</td> </tr>
+                    </th:block>
                 </table>
-                <input type="button" value="선택삭제">
-                <div class="paging">
-                    <a href="#"></a>
-                    <a href="#"></a>
-                    <a href="#" class="pageNum">1</a>
-                    <a href="#" class="pageNum">2</a>
-                    <a href="#" class="pageNum">3</a>
-                    <a href="#" class="pageNum">4</a>
-                    <a href="#" class="pageNum on">5</a>
-                    <a href="#" class="pageNum">6</a>
-                    <a href="#" class="pageNum">7</a>
-                    <a href="#" class="pageNum">8</a>
-                    <a href="#" class="pageNum">9</a>
-                    <a href="#" class="pageNum">10</a>
-                    <a href="#"></a>
-                    <a href="#"></a>
+                <th:block th:if="${!productsPage.isEmpty()}">
+                    <input type="button" value="선택삭제" onclick="deleteSelectedProducts()">
+                </th:block>
+
+                <!-- 페이징 처리를 위한 부분 -->
+                <div class="paging" th:if="${!productsPage.isEmpty()}">
+                    <th:block th:with="pageNumber = ${productsPage.pageable.pageNumber},
+                                       pageSize = ${productsPage.pageable.pageSize},
+                                       totalPages = ${productsPage.totalPages},
+                                       startPage = ${T(java.lang.Math).floor(pageNumber / pageSize) * pageSize + 1},
+                                       tempEndPage = ${startPage + pageSize - 1},
+                                       endPage = (${tempEndPage < totalPages ? tempEndPage : totalPages})">
+
+                        <!-- 처음으로 이동 -->
+                        <a th:href="@{/admin/list(page=0, searchField=${searchField}, keyword=${keyword})}" class="first"
+                           th:classappend="${pageNumber < pageSize} ? 'disabled'"></a>
+                        <!-- 이전으로 이동 -->
+                        <a th:href="${productsPage.first} ? '#' : @{/admin/list(page=${pageNumber - 1}, searchField=${searchField}, keyword=${keyword})}" class="before"
+                           th:classappend="${productsPage.first} ? 'disabled'"></a>
+
+                        <!-- 특정 페이지로 이동 -->
+                        <th:block>
+                            <th:block th:each="page : ${#numbers.sequence(startPage, endPage)}">
+                                <a th:text="${page}" th:href="@{/admin/list(page=${page - 1}, searchField=${searchField}, keyword=${keyword})}"
+                                   th:class="${page == pageNumber + 1} ? 'pageNum on' : 'pageNum'"></a>
+                            </th:block>
+                        </th:block>
+
+                        <!-- 다음으로 이동 -->
+                        <a th:href="${productsPage.last} ? '#' : @{/admin/list(page=${pageNumber + 1}, searchField=${searchField}, keyword=${keyword})}" class="next"
+                           th:classappend="${productsPage.last} ? 'disabled'"></a>
+                        <!-- 마지막으로 이동 -->
+                        <a th:href="@{/admin/list(page=${totalPages - 1}, searchField=${searchField}, keyword=${keyword})}" class="last"
+                           th:classappend="${T(java.lang.Math).floor(totalPages / pageSize) * pageSize - 1 <= startPage} ? 'disabled'"></a>
+                    </th:block>
                 </div>
                 <p class = "ico info">
                     <strong>Tip!</strong>
@@ -113,4 +104,8 @@
             </section>
         </div>
     </main>
+<th:block layout:fragment="script">
+    <script th:src="@{/js/selectAll.js}"></script>
+    <script th:src="@{/js/adminList.js}"></script>
+</th:block>
 </html>

@@ -80,7 +80,7 @@
                         <tr>
                             <th>할인율</th>
                             <td>
-                                <input type="text" name="discountRate" th:value="0" th:errorclass="field-error"><span>%</span>
+                                <input type="text" name="discountRate" id="discountRate" th:value="0" th:errorclass="field-error"><span>%</span>
                                 <span class="field-error" th:errors="*{discountRate}">&ensp;에러 메시지</span>
                                 <p>※ '0'을 입력하면 할인율 없음</p>
                             </td>
@@ -88,7 +88,7 @@
                         <tr>
                             <th>포인트</th>
                             <td>
-                                <input type="text" name="point" th:value="0" th:errorclass="field-error"><span>점</span>
+                                <input type="text" name="point" id="point" th:value="0" th:errorclass="field-error"><span>점</span>
                                 <span class="field-error" th:errors="*{point}">&ensp;에러 메시지</span>
                                 <p>※ '0'을 입력하면 포인트 없음</p>
                             </td>
@@ -103,7 +103,7 @@
                         <tr>
                             <th>배송비</th>
                             <td>
-                                <input type="text" name="deliveryCost" th:value="0" th:errorclass="field-error"><span>원</span>
+                                <input type="text" name="deliveryCost" id="deliveryCost" th:value="0" th:errorclass="field-error"><span>원</span>
                                 <span class="field-error" th:errors="*{deliveryCost}">&ensp;에러 메시지</span>
                                 <p>※ '0'을 입력하면 배송비 무료</p>
                             </td>

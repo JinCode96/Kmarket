@@ -1,5 +1,6 @@
 package com.kmarket.domain;
 
+import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
@@ -8,8 +9,17 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @Builder
+@Entity
+@Table(name = "km_product")
 public class Products {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "category1_code")
     private Integer category1Code;
+    @Column(name = "category2_code")
     private Integer category2Code;
     private String seller;
     private String productName;

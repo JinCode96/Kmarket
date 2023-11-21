@@ -11,7 +11,7 @@ public class AdminRepositoryImpl implements AdminRepository{
     private final AdminMapper adminMapper;
 
     @Override
-    public int insertProduct(Products products) {
-        return adminMapper.insertProduct(products);
+    public void insertProduct(Products products) {
+        adminMapper.insertProduct(products);
     }
 }

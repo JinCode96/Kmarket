@@ -25,15 +25,14 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.2'
-    compileOnly 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok' // lombok
     implementation 'org.springframework.boot:spring-boot-starter-validation' // validation 추가 : 자동으로 검증기 글로벌 통합
-    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
-    runtimeOnly 'com.h2database:h2'
-    runtimeOnly 'com.mysql:mysql-connector-j'
-    annotationProcessor 'org.projectlombok:lombok'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect' // thymeleaf layout
+    runtimeOnly 'com.h2database:h2' // h2
+    runtimeOnly 'com.mysql:mysql-connector-j' // mysql
+    annotationProcessor 'org.projectlombok:lombok' // lombok
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // jpa
+    implementation 'org.springframework.boot:spring-boot-starter-security' // security
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.1.RELEASE' // security thymeleaf
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client' // oauth2
     implementation 'org.springframework.boot:spring-boot-starter-mail' // mail send

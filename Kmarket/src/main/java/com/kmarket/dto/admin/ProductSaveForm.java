@@ -43,7 +43,7 @@ public class ProductSaveForm {
     private Integer point;
 
     @NotNull(message = "{required.product.stock}")
-    @Range(min = 0, max = 10_000, message = "{range.product.stock}")
+    @Range(min = 0, max = 1_000_000, message = "{range.product.stock}")
     private Integer stock;
 
     @NotNull(message = "{required.product.deliveryCost}")

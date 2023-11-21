@@ -17,7 +17,9 @@ public final class ApiResponseConst {
     public static final String CODE_NOT_OK = "코드 맞지 않거나 만료된 코드입니다.";
     public static final String PASSWORD_UPDATE_OK = "비밀번호 변경이 완료되었습니다. 새로 로그인해주세요.";
     public static final String PASSWORD_UPDATE_NOT_OK = "비밀번호 변경에 실패하였습니다. 다시 시도해주세요.";
-
-
+    public static final String PRODUCT_DELETE_OK = "상품이 성공적으로 삭제되었습니다.";
+    public static final String PRODUCT_DELETE_NOT_OK = "상품을 찾을 수 없습니다.";
+    public static final int SUCCESS = 200;
+    public static final int FAIL = 400;
 
 }

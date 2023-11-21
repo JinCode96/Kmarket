@@ -184,14 +184,27 @@ main > div > aside > #gnb ol > li > a {
 
 /*** 관리자 상품목록 ***/
 #admin-product-list {height: 100%;}
-#admin-product-list > select {
+#admin-product-list > form > select {
     width: 80px;
     border: 1px solid #d6d6d6;
     box-sizing:border-box;
     height: 30px;
     text-indent: 5px;
 }
-
+#admin-product-list > form > input {
+    height: 30px;
+    border: 1px solid #d6d6d6;
+    box-sizing:border-box;
+    margin: 25px 0 10px;
+    text-indent: 5px;
+}
+#admin-product-list > form > .searchButton {
+    height: 30px;
+    border: 1px solid #d6d6d6;
+    box-sizing:border-box;
+    margin: 25px 0 10px;
+    text-indent: 0px;
+}
 #admin-product-list > input {
     height: 30px;
     border: 1px solid #d6d6d6;
@@ -217,7 +230,11 @@ main > div > aside > #gnb ol > li > a {
     border-bottom: 1px solid #e6e6e6;
     text-align: center;
 }
-#admin-product-list > table td > img {width: 60px;}
+#admin-product-list > table td > img {
+    height: 60px;
+    width: auto;
+    max-width: 100%;
+}
 #admin-product-list > input[type=button] {
     float: left;
     background: #fff;
@@ -245,22 +262,27 @@ main > div > aside > #gnb ol > li > a {
     border-radius: 3px;
     color: #999;
 }
-#admin-product-list > .paging > a:nth-child(1) {
+#admin-product-list > .paging > .first {
     background-image: url('../img/admin_paging_end_on.JPG');
     background-position: 3px 1px;
 }
-#admin-product-list > .paging > a:nth-child(2) {
+#admin-product-list > .paging > .before {
     background-image: url('../img/admin_paging_next_on.JPG');
     background-position: 2px 3px;
 }
-#admin-product-list > .paging > a:nth-child(13) {
+#admin-product-list > .paging > .next {
     background-image: url('../img/admin_paging_next_off.JPG');
     background-position: 4px 3px;
 }
-#admin-product-list > .paging > a:nth-child(14) {
+#admin-product-list > .paging > .last {
     background-image: url('../img/admin_paging_end_off.JPG');
     background-position: 5px 1px;
 }
+/* 추가 */
+#admin-product-list > .paging > .disabled {
+    display: none;
+}
+
 #admin-product-list > .paging > .pageNum {
     position: relative;
     top: -11px;
