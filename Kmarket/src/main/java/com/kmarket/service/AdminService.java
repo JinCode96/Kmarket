@@ -1,6 +1,7 @@
 package com.kmarket.service;
 
 import com.kmarket.domain.Products;
+import com.kmarket.dto.admin.ProductSaveForm;
 import com.kmarket.repository.admin.AdminRepository;
 import com.kmarket.repository.admin.JpaAdminRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.kmarket.constant.ApiResponseConst.*;
 
@@ -114,5 +116,32 @@ public class AdminService {
             jpaAdminRepository.deleteById(productId);
         }
     }
+
+    public Optional<Products> findById(Long id) {
+        return jpaAdminRepository.findById(id);
+    }
+
+    public void update(ProductSaveForm productSaveForm, String thumbnailList, String thumbnailMain, String thumbnailDetail, String detailCut) {
+        Products findProduct = jpaAdminRepository.findById(productSaveForm.getId()).orElseThrow();
+        findProduct.setCategory1Code(productSaveForm.getCategory1Code());
+        findProduct.setCategory2Code(productSaveForm.getCategory2Code());
+        findProduct.setProductName(productSaveForm.getProductName());
+        findProduct.setDescription(productSaveForm.getDescription());
+        findProduct.setCompany(productSaveForm.getCompany());
+        findProduct.setPrice(productSaveForm.getPrice());
+        findProduct.setDiscountRate(productSaveForm.getDiscountRate());
+        findProduct.setPoint(productSaveForm.getPoint());
+        findProduct.setStock(productSaveForm.getStock());
+        findProduct.setDeliveryCost(productSaveForm.getDeliveryCost());
+        findProduct.setThumbnailList(thumbnailList);
+        findProduct.setThumbnailMain(thumbnailMain);
+        findProduct.setThumbnailDetail(thumbnailDetail);
+        findProduct.setDetailCut(detailCut);
+        findProduct.setStatus(productSaveForm.getStatus());
+        findProduct.setDuty(productSaveForm.getDuty());
+        findProduct.setBusinessType(productSaveForm.getBusinessType());
+        findProduct.setOrigin(productSaveForm.getOrigin());
+    }
+
 }
 

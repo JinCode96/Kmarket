@@ -10,17 +10,18 @@
             </aside>
             <section id="admin-product-register" class="admin">
                 <nav>
-                    <h1>상품등록</h1>
-                    <p>HOME > 상품관리 > <span>상품등록</span></p>
+                    <h1>상품수정</h1>
+                    <p>HOME > 상품관리 > <span>상품수정</span></p>
                 </nav>
-                <form th:action th:object="${products}" method="post" enctype="multipart/form-data">
+                <form th:action method="post" enctype="multipart/form-data">
                     <h2>상품분류</h2>
                     <p>기본분류는 반드시 선택하셔야 합니다. 하나의 상품에 1개의 분류를 지정 합니다.</p>
                     <table border="0">
+                        <input type="hidden" name="id" th:value="${product.id}">
                         <tr>
                             <th>1차 분류</th>
                             <td>
-                                <select name="category1Code" id="category1Select" onchange="updateCategory2Options(this)">
+                                <select name="category1Code" id="category1Select" onchange="updateCategory2Options(this)" required>
                                     <option value="" disabled selected>1차 분류 선택</option>
                                     <option value="10">브랜드패션</option>
                                     <option value="11">패션의류·잡화·뷰티</option>
@@ -32,16 +33,16 @@
                                     <option value="17">자동차·공구</option>
                                     <option value="18">여행·도서·티켓·e쿠폰</option>
                                 </select>
-                                <span class="field-error" th:errors="*{category1Code}">&ensp;에러 메시지</span>
+                                <span class="field-error">&ensp;</span>
                             </td>
                         </tr>
                         <tr>
                             <th>2차 분류</th>
                             <td>
-                                <select name="category2Code" id="category2Select">
+                                <select name="category2Code" id="category2Select" required>
                                     <option value="" disabled selected>2차 분류 선택</option>
                                 </select>
-                                <span class="field-error" th:errors="*{category2Code}">&ensp;에러 메시지</span>
+                                <span class="field-error">&ensp;</span>
                             </td>
                         </tr>
                     </table>
@@ -51,60 +52,60 @@
                         <tr>
                             <th>상품명</th>
                             <td>
-                                <input type="text" th:field="*{productName}" th:errorclass="field-error">
-                                <span class="field-error" th:errors="*{productName}">&ensp;에러 메시지</span>
+                                <input type="text" name="productName" th:value="${product.productName}" required>
+                                <span class="field-error">&ensp;</span>
                             </td>
                         </tr>
                         <tr>
                             <th>기본설명</th>
                             <td>
-                                <input type="text" th:field="*{description}" th:errorclass="field-error">
-                                <span class="field-error" th:errors="*{description}">&ensp;에러 메시지</span>
+                                <input type="text" name="description" th:value="${product.description}" required>
+                                <span class="field-error">&ensp;</span>
                                 <p>※ 상품명 하단에 상품에 대한 추가적인 설명이 필요한 경우에 입력</p>
                             </td>
                         </tr>
                         <tr>
                             <th>제조사</th>
                             <td>
-                                <input type="text" th:field="*{company}" th:errorclass="field-error">
-                                <span class="field-error" th:errors="*{company}">&ensp;에러 메시지</span>
+                                <input type="text" name="company" th:value="${product.company}" required>
+                                <span class="field-error">&ensp;</span>
                             </td>
                         </tr>
                         <tr>
                             <th>판매가격</th>
                             <td>
-                                <input type="text" th:field="*{price}" th:errorclass="field-error"><span>원</span>
-                                <span class="field-error" th:errors="*{price}">&ensp;에러 메시지</span>
+                                <input type="text" name="price" id="price" th:value="${product.price}" required><span>원</span>
+                                <span class="field-error">&ensp;</span>
                             </td>
                         </tr>
                         <tr>
                             <th>할인율</th>
                             <td>
-                                <input type="text" name="discountRate" id="discountRate" th:value="0" th:errorclass="field-error"><span>%</span>
-                                <span class="field-error" th:errors="*{discountRate}">&ensp;에러 메시지</span>
+                                <input type="text" name="discountRate" id="discountRate" th:value="${product.discountRate}" required><span>%</span>
+                                <span class="field-error">&ensp;</span>
                                 <p>※ '0'을 입력하면 할인율 없음</p>
                             </td>
                         </tr>
                         <tr>
                             <th>포인트</th>
                             <td>
-                                <input type="text" name="point" id="point" th:value="0" th:errorclass="field-error"><span>점</span>
-                                <span class="field-error" th:errors="*{point}">&ensp;에러 메시지</span>
+                                <input type="text" name="point" id="point" th:value="${product.point}" required><span>점</span>
+                                <span class="field-error">&ensp;</span>
                                 <p>※ '0'을 입력하면 포인트 없음</p>
                             </td>
                         </tr>
                         <tr>
                             <th>재고수량</th>
                             <td>
-                                <input type="text" th:field="*{stock}" th:errorclass="field-error"><span>개</span>
-                                <span class="field-error" th:errors="*{stock}">&ensp;에러 메시지</span>
+                                <input type="text" name="stock" id="stock" th:value="${product.stock}" required><span>개</span>
+                                <span class="field-error">&ensp;</span>
                             </td>
                         </tr>
                         <tr>
                             <th>배송비</th>
                             <td>
-                                <input type="text" name="deliveryCost" id="deliveryCost" th:value="0" th:errorclass="field-error"><span>원</span>
-                                <span class="field-error" th:errors="*{deliveryCost}">&ensp;에러 메시지</span>
+                                <input type="text" name="deliveryCost" id="deliveryCost" th:value="${product.deliveryCost}" required><span>원</span>
+                                <span class="field-error">&ensp;</span>
                                 <p>※ '0'을 입력하면 배송비 무료</p>
                             </td>
                         </tr>
@@ -112,18 +113,18 @@
                             <th>상품 썸네일</th>
                             <td>
                                 <div>
-                                    <input type="file" th:field="*{thumbnailList}">
-                                    <span class="field-error" th:errors="*{thumbnailList}">&ensp;에러 메시지</span>
+                                    <input type="file" name="thumbnailList" required>
+                                    <span class="field-error">&ensp;</span>
                                     <p>※ 크기 190 x 190, 상품 목록에 출력될 이미지 입니다.</p>
                                 </div>
                                 <div>
-                                    <input type="file" th:field="*{thumbnailMain}">
-                                    <span class="field-error" th:errors="*{thumbnailMain}">&ensp;에러 메시지</span>
+                                    <input type="file" name="thumbnailMain" required>
+                                    <span class="field-error">&ensp;</span>
                                     <p>※ 크기 230 x 230, 상품 메인에 출력될 이미지 입니다.</p>
                                 </div>
                                 <div>
-                                    <input type="file" th:field="*{thumbnailDetail}">
-                                    <span class="field-error" th:errors="*{thumbnailDetail}">&ensp;에러 메시지</span>
+                                    <input type="file" name="thumbnailDetail" required>
+                                    <span class="field-error">&ensp;</span>
                                     <p>※ 크기 456 x 456, 상품 상세에 출력될 이미지 입니다.</p>
                                 </div>
                             </td>
@@ -131,8 +132,8 @@
                         <tr>
                             <th>상세 상품정보</th>
                             <td>
-                                <input type="file" th:field="*{detailCut}">
-                                <span class="field-error" id="detailCutSpan" th:errors="*{detailCut}">&ensp;에러 메시지</span>
+                                <input type="file" name="detailCut" required>
+                                <span class="field-error" id="detailCutSpan">&ensp;</span>
                                 <p id="detailCutP">※ 크기 가로 940px 높이 제약없음, 크기 최대 1MB, 상세페이지 상품정보에 출력될 이미지 입니다.</p>
                             </td>
                         </tr>
@@ -143,40 +144,40 @@
                         <tr>
                             <th>상품상태</th>
                             <td>
-                                <input type="text" name="status" value="새상품" th:errorclass="field-error">
-                                <span class="field-error" th:errors="*{status}">&ensp;에러 메시지</span>
+                                <input type="text" name="status" th:value="${product.status}" required>
+                                <span class="field-error"></span>
                             </td>
                         </tr>
                         <tr>
                             <th>부가세 면세여부</th>
                             <td>
-                                <input type="text" name="duty" value="과세상품" th:errorclass="field-error">
-                                <span class="field-error" th:errors="*{duty}">&ensp;에러 메시지</span>
+                                <input type="text" name="duty" th:value="${product.duty}" required>
+                                <span class="field-error">&ensp;</span>
                             </td>
                         </tr>
                         <tr>
                             <th>영수증 발행</th>
                             <td>
-                                <input type="text" name="receipt" style="width: 280px;" value="발행가능 - 신용카드 전표, 온라인 현금영수증" th:errorclass="field-error">
-                                <span class="field-error" th:errors="*{receipt}">&ensp;에러 메시지</span>
+                                <input type="text" name="receipt" style="width: 280px;" th:value="${product.receipt}" required>
+                                <span class="field-error">&ensp;</span>
                             </td>
                         </tr>
                         <tr>
                             <th>사업자 구분</th>
                             <td>
-                                <input type="text" name="businessType" style="width: 280px;" value="사업자 판매자" th:errorclass="field-error">
-                                <span class="field-error" th:errors="*{businessType}">&ensp;에러 메시지</span>
+                                <input type="text" name="businessType" style="width: 280px;" th:value="${product.businessType}" required>
+                                <span class="field-error">&ensp;</span>
                             </td>
                         </tr>
                         <tr>
                             <th>원산지</th>
                             <td>
-                                <input type="text" name="origin" value="국내산" th:errorclass="field-error">
-                                <span class="field-error" th:errors="*{origin}">&ensp;에러 메시지</span>
+                                <input type="text" name="origin" th:value="${product.origin}" required>
+                                <span class="field-error">&ensp;</span>
                             </td>
                         </tr>
                     </table>
-                    <input type="submit" value="등록하기">
+                    <input type="submit" value="수정하기">
                 </form>
                 <p class = "ico info">
                     <strong>Tip!</strong>

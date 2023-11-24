@@ -2,6 +2,7 @@ package com.kmarket.controller;
 
 import com.kmarket.api.ApiResponse;
 import com.kmarket.constant.ApiResponseConst;
+import com.kmarket.constant.MemberConst;
 import com.kmarket.domain.Products;
 import com.kmarket.dto.admin.ProductSaveForm;
 import com.kmarket.security.PrincipalDetails;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,13 +24,17 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static com.kmarket.constant.ApiResponseConst.*;
+import static com.kmarket.constant.MemberConst.*;
 
 @Slf4j
 @Controller
@@ -44,6 +50,9 @@ public class AdminController {
         return "admin/main";
     }
 
+    /**
+     * 상품 등록 폼
+     */
     @GetMapping("/register")
     public String registerForm(Model model) {
         model.addAttribute("products", new ProductSaveForm());
@@ -51,7 +60,7 @@ public class AdminController {
     }
 
     /**
-     * @Valid 설정 하기
+     * 상품 등록
      */
     @PostMapping("/register")
     public String insertProduct(@Validated @ModelAttribute("products") ProductSaveForm productSaveForm, BindingResult bindingResult, @AuthenticationPrincipal PrincipalDetails principalDetails) {
@@ -100,14 +109,14 @@ public class AdminController {
         String type = principalDetails.getMembers().getType();
         Page<Products> productsPage = null;
 
-        if (type.equals("SELLER")) { // 일반 판매회원
+        if (type.equals(SELLER_UPPER)) { // 일반 판매회원
             String username = principalDetails.getUsername();
             if (StringUtils.hasText(keyword) && StringUtils.hasText(searchField)) {
                 productsPage = adminService.getProductsBySellerAndSearchField(username, searchField, keyword, pageable); // 검색기능을 사용
             } else {
                 productsPage = adminService.getProductsBySeller(username, pageable); // 검색기능을 사용하지 않음
             }
-        } else if (type.equals("ADMIN")) { // 관리자
+        } else if (type.equals(ADMIN_UPPER)) { // 관리자
             if (StringUtils.hasText(keyword) && StringUtils.hasText(searchField)) {
                 productsPage = adminService.searchProducts(searchField, keyword, pageable); // 검색기능을 사용
             } else {
@@ -129,6 +138,9 @@ public class AdminController {
         return new UrlResource("file:" + fileStore.getFullPath(filename, cate1, cate2));
     }
 
+    /**
+     * 상품 단일 삭제
+     */
     @ResponseBody
     @PostMapping("/deleteProduct")
     public ApiResponse deleteProduct(@RequestParam Long productId) {
@@ -141,11 +153,13 @@ public class AdminController {
         }
     }
 
+    /**
+     * 상품 다중 선택 삭제
+     */
     @ResponseBody
     @PostMapping("/deleteSelectedProducts")
     public ApiResponse deleteSelectedProducts(@RequestBody Map<String, List<Long>> requestBody) {
         List<Long> productIds = requestBody.get("productIds");
-        log.info("productIds={}", productIds);
         try {
             adminService.deleteSelectedProducts(productIds);
             return new ApiResponse(PRODUCT_DELETE_OK, SUCCESS);
@@ -153,5 +167,50 @@ public class AdminController {
             log.error("상품 삭제 시 에러 발생", e);
             return new ApiResponse(PRODUCT_DELETE_NOT_OK, SUCCESS);
         }
+    }
+
+    /**
+     * 상품 수정 폼
+     */
+    @GetMapping("/update")
+    public String updateForm(Long productId, Model model, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        String username = principalDetails.getUsername();
+        Products product = adminService.findById(productId).orElse(null);
+        if (product != null) {
+            // 로그인된 회원과 상품을 등록한 판매자와 같지 않을 때
+            if (!username.equals(product.getSeller())) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, BAD_REQUEST);
+            }
+            model.addAttribute("product", product);
+            return "admin/update";
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, BAD_REQUEST);
+        }
+    }
+
+    /**
+     * 상품 수정
+     */
+    @PostMapping("/update")
+    public String update(@Validated ProductSaveForm productSaveForm, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            log.info("bindingResult error = {}", bindingResult);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, BAD_REQUEST);
+        }
+        Integer cate1 = productSaveForm.getCategory1Code();
+        Integer cate2 = productSaveForm.getCategory2Code();
+        try {
+            // 파일 로컬에 저장
+            String thumbnailList = fileStore.storeFile(productSaveForm.getThumbnailList(), cate1, cate2);
+            String thumbnailMain = fileStore.storeFile(productSaveForm.getThumbnailMain(), cate1, cate2);
+            String thumbnailDetail = fileStore.storeFile(productSaveForm.getThumbnailDetail(), cate1, cate2);
+            String detailCut = fileStore.storeFile(productSaveForm.getDetailCut(), cate1, cate2);
+            // 상품 수정
+            adminService.update(productSaveForm, thumbnailList, thumbnailMain, thumbnailDetail, detailCut);
+        } catch (IOException e) {
+            log.error("상품 수정 중 파일 저장 오류", e);
+            return "error/errorPage";
+        }
+        return "redirect:/admin/list";
     }
 }

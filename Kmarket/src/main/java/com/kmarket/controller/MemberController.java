@@ -86,9 +86,9 @@ public class MemberController {
     @GetMapping("/register/{type}")
     public String registerForm(@PathVariable String type, Model model) {
         model.addAttribute("member", new Members()); // th:object 사용 위해서
-        if (type.equals(GENERAL)) {
+        if (type.equals(GENERAL_LOWER)) {
             return "member/registerGeneral";
-        } else if (type.equals(SELLER)) {
+        } else if (type.equals(SELLER_LOWER)) {
             return "member/registerSeller";
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, NOT_FOUND);

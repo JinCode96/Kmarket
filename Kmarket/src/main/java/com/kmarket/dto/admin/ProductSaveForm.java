@@ -15,6 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 @ToString
 @Builder
 public class ProductSaveForm {
+
+    private Long id;
     @NotNull(message = "{required.product.category1Code}")
     private Integer category1Code;
 

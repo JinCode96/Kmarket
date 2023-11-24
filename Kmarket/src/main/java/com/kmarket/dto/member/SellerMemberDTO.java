@@ -61,7 +61,7 @@ public class SellerMemberDTO {
                 .zipCode(this.zipCode)
                 .address(this.address)
                 .detailAddress(this.detailAddress)
-                .type("SELLER")
+                .type(SELLER_UPPER)
                 .build();
     }
 }

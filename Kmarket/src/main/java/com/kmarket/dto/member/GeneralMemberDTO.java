@@ -54,7 +54,7 @@ public class GeneralMemberDTO {
                 .zipCode(this.zipCode)
                 .address(this.address)
                 .detailAddress(this.detailAddress)
-                .type("GENERAL")
+                .type(GENERAL_UPPER)
                 .build();
     }
 }
