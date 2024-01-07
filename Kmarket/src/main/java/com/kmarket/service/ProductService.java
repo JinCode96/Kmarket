@@ -171,7 +171,7 @@ public class ProductService {
 
     /**
      * 단일 상품 결제 후 테이블에 저장할 것들
-     * 트랜잭션으로 이루어짐
+     * 트랜잭션
      */
     public void orderProcess(OrderDTO orderDTO, OrderItemDTO orderItemDTO, MemberPointDTO memberPointDTO, String memberType) {
 
@@ -199,7 +199,7 @@ public class ProductService {
 
     /**
      * 장바구니 결제 후 테이블에 저장할 것들
-     * 트랜잭션으로 이루어짐
+     * 트랜잭션
      */
     public void orderProcessCart(OrderDTO orderDTO, List<OrderItemDTO> orderItemDTOs, MemberPointDTO memberPointDTO, String memberType) {
 
@@ -267,4 +267,24 @@ public class ProductService {
         }
     }
 
+    // 히트상품
+    public List<Products> findTop8ByOrderByHitDesc() {
+        return jpaProductRepository.findTop8ByOrderByHitDesc();
+    }
+    // 추천상품
+    public List<Products> findRandomProducts() {
+        return jpaProductRepository.findRandomProducts();
+    }
+    // 최신상품
+    public List<Products> findTop8ByOrderByRegistrationDateDesc() {
+        return jpaProductRepository.findTop8ByOrderByRegistrationDateDesc();
+    }
+    // 할인상품
+    public List<Products> findTop8ByOrderByDiscountRateDesc() {
+        return jpaProductRepository.findTop8ByOrderByDiscountRateDesc();
+    }
+    // 베스트 상품
+    public List<Products> findTop5ByOrderBySoldNumberDesc() {
+        return jpaProductRepository.findTop5ByOrderBySoldNumberDesc();
+    }
 }

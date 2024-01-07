@@ -264,6 +264,8 @@ main > aside > .best > ol > li > a > article {
 }
 
 main > aside > .best > ol > li > a > .thumb {
+    border: 1px solid #ddd;
+    border-radius: 4px;
     float: left;
     position: relative;
     width: 50px;
@@ -290,8 +292,12 @@ main > aside > .best > ol > li > a > .thumb > i {
     line-height: 18px;
 }
 
-main > aside > .best > ol > li > a > .thumb > img {width: 100%;}
+main > aside > .best > ol > li > a > .thumb > img {
+    width: 100%;
+    transition: transform 0.3s ease;
+}
 main > aside > .best > ol > li > a h2 {
+    font-weight: bold;
     margin-top: 4px;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -299,11 +305,19 @@ main > aside > .best > ol > li > a h2 {
 }
 
 main > aside > .best > ol > li > a:hover h2 {text-decoration: underline;}
+main > aside > .best > ol > li > a:hover .thumb > img {
+    transform: scale(1.1); /* 마우스를 올렸을 때 1.1배 확대 */
+}
 main > aside > .best > ol > li > a .org_price > del {font-size: 10px; color: #aaa;}
 main > aside > .best > ol > li > a .org_price > del::after {content: "원";}
 main > aside > .best > ol > li > a .org_price > span {color: #eb000a; font-size: 10px;}
 main > aside > .best > ol > li > a .org_price > span::after {content: "↓";}
-main > aside > .best > ol > li > a .dis_price > ins {font-size: 14px; text-decoration: none;}
+main > aside > .best > ol > li > a .dis_price > ins {
+    font-size: 14px;
+    text-decoration: none;
+    color: #cb1400;
+    font-weight: 700;
+}
 main > aside > .best > ol > li > a .dis_price > ins::after {content: "원";}
 
 main > aside > .best > ol > li:first-child > a > .thumb {
@@ -328,6 +342,11 @@ main > section {
     width: 985px;
     height: auto;
     box-sizing: border-box;
+}
+
+.bx-wrapper {
+    width: 974px;
+    height: 445px;
 }
 
 main > section > .slider {
@@ -363,15 +382,30 @@ main > section > section > article > a {
     box-sizing: border-box;
 }
 
-main > section > section > article > a:hover > p {text-decoration: underline;}
+main > section > section > article > a:hover > p {
+    text-decoration: underline;
+}
+main > section > section > article > a:hover > h2 {
+    text-decoration: underline;
+}
+main > section > section > article > a:hover .thumb > img {
+    transform: scale(1.1); /* 마우스를 올렸을 때 1.1배 확대 */
+}
+
 main > section > section > article .thumb {
     width: 100%;
     height: 230px;
     margin: 0px auto;
     overflow: hidden;
     text-align: center;
+    border-radius: 4px;
+    border: 1px solid #ddd;
 }
-
+main > section > section > article .thumb > img {
+    transition: transform 0.3s ease;
+    width: 100%;
+    height: 100%;
+}
 main > section > section > article h2 {
     font-size: 15px;
     font-weight: bold;
@@ -391,16 +425,19 @@ main > section > section > article p {
     white-space: nowrap;
     overflow: hidden;
 }
-
+main > section > section > article .org_price {
+    margin-top: 2px;
+}
 main > section > section > article .org_price > del {color: #aaa;}
 main > section > section > article .org_price > span {color: #eb000a;}
 main > section > section > article .org_price > span::after {content: "↓";}
 main > section > section > article .dis_price {margin-top: 4px;}
 main > section > section > article .dis_price > ins {
-    font-size: 14px;
+    font-size: 16px;
     text-decoration: none;
+    color: #cb1400;
+    font-weight: 700;
 }
-
 main > section > section > article .dis_price > .free {
     display: inline-block;
     font-size: 0;
@@ -408,6 +445,12 @@ main > section > section > article .dis_price > .free {
     width: 55px;
     height: 13px;
     background: url('../img/ico_freeshipping.gif') no-repeat;
+}
+main > section > section > article .dis_price > .deliveryCost {
+    color: #2e8de5;
+}
+main > section > section > article .dis_price > .deliveryCost:after {
+    content: '원';
 }
 
 main > section > section > h3 > span {
