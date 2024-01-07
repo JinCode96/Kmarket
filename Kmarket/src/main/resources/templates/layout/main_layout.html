@@ -21,5 +21,8 @@
         <main layout:fragment="main"></main>
     </div>
     <footer th:replace="~{fragment/footer :: main_footer}"></footer>
+    <th:block layout:fragment="script">
+        <script th:src="@{/js/scrollTop.js}"></script>
+    </th:block>
 </body>
 </html>

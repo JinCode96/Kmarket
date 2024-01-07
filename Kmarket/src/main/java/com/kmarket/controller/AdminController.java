@@ -165,7 +165,7 @@ public class AdminController {
             return new ApiResponse(PRODUCT_DELETE_OK, SUCCESS);
         } catch (RuntimeException e) {
             log.error("상품 삭제 시 에러 발생", e);
-            return new ApiResponse(PRODUCT_DELETE_NOT_OK, SUCCESS);
+            return new ApiResponse(PRODUCT_DELETE_NOT_OK, FAIL);
         }
     }
 

@@ -89,6 +89,7 @@ public class ProductSaveForm {
                 .company(this.getCompany())
                 .price(this.getPrice())
                 .discountRate(this.getDiscountRate())
+                .discountedPrice(this.price - Math.round(this.price * this.discountRate / 100)) // 할인된 금액 산출
                 .point(this.getPoint())
                 .stock(this.getStock())
                 .deliveryCost(this.getDeliveryCost())

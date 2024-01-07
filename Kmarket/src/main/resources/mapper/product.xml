@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kmarket.repository.product.ProductMapper">
+
+    <select id="getCategory">
+        SELECT c1.category1_code, c1.category1_name, c2.category2_code, c2.category2_name
+        FROM km_product_category1 c1 JOIN km_product_category2 c2 ON c1.category1_code = c2.category1_code
+        WHERE c1.category1_code = #{cate1} AND c2.category2_code = #{cate2};
+    </select>
+
+    <update id="increaseHit">
+        update km_product
+        set hit = hit + 1
+        where id = #{productId};
+    </update>
+
+    <update id="increaseSoldNumber">
+        update km_product
+        set sold_number = sold_number + 1
+        where id = #{productId};
+    </update>
+
+    <insert id="saveOrder" useGeneratedKeys="true" keyProperty="orderNumber">
+        insert into km_product_order (uid, order_quantity, save_point, used_point, order_total_price, receipt_name, receipt_hp, receipt_zip, receipt_address,
+                                      receipt_detail_address, order_date)
+        values (#{uid}, #{orderQuantity}, #{savePoint}, #{usedPoint}, #{orderTotalPrice}, #{receiptName}, #{receiptHp}, #{receiptZip}, #{receiptAddress},
+                #{receiptDetailAddress}, #{orderDate});
+    </insert>
+
+    <insert id="saveOrderItem">
+        insert into km_product_order_item (order_number, product_id, quantity)
+        values (#{orderNumber}, #{productId}, #{quantity});
+    </insert>
+
+    <insert id="saveMemberPoint">
+        insert into km_member_point (uid, order_number, earned_point, earned_point_date)
+        values (#{uid}, #{orderNumber}, #{earnedPoint}, #{earnedPointDate});
+    </insert>
+
+    <update id="updateGeneralMemberPoint">
+        update km_member_general
+        set point = point + #{savePoint} - #{usedPoint}
+        where login_id = #{loginId};
+    </update>
+    <update id="updateSellerMemberPoint">
+        update km_member_seller
+        set point = point + #{savePoint} - #{usedPoint}
+        where login_id = #{loginId};
+    </update>
+
+    <select id="findGeneralPoint">
+        select point
+        from km_member_general
+        where login_id = #{loginId};
+    </select>
+    <select id="findSellerPoint">
+        select point
+        from km_member_seller
+        where login_id = #{loginId};
+    </select>
+</mapper>

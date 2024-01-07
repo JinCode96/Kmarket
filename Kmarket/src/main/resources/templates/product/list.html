@@ -18,195 +18,71 @@
                 <h1>상품목록</h1>
                 <p>
                     HOME >
-                    <span>패션·의류·뷰티</span>
+                    <span th:text="${category.category1Name}">카테고리 1</span>
                     >
-                    <strong>남성의류</strong>
+                    <strong th:text="${category.category2Name}">카테고리 2</strong>
                 </p>
             </nav>
             <!-- 정렬 메뉴 -->
             <ul class="sort">
                 <li>
-                    <a href="#" class="on">판매많은순</a>
+                    <a th:href="@{/product/list(cate1=${param.cate1}, cate2=${param.cate2}, sort='sold')}" th:class="${currentSort eq 'sold' ? 'on' : ''}">판매많은순</a>
                 </li>
                 <li>
-                    <a href="#">낮은가격순</a>
+                    <a th:href="@{/product/list(cate1=${param.cate1}, cate2=${param.cate2}, sort='lowPrice')}" th:class="${currentSort eq 'lowPrice' ? 'on' : ''}">낮은가격순</a>
                 </li>
                 <li>
-                    <a href="#">높은가격순</a>
+                    <a th:href="@{/product/list(cate1=${param.cate1}, cate2=${param.cate2}, sort='highPrice')}" th:class="${currentSort eq 'highPrice' ? 'on' : ''}">높은가격순</a>
                 </li>
                 <li>
-                    <a href="#">평점높은순</a>
+                    <a th:href="@{/product/list(cate1=${param.cate1}, cate2=${param.cate2}, sort='highRating')}" th:class="${currentSort eq 'highRating' ? 'on' : ''}">평점높은순</a>
                 </li>
                 <li>
-                    <a href="#">후기많은순</a>
+                    <a th:href="@{/product/list(cate1=${param.cate1}, cate2=${param.cate2}, sort='manyReview')}" th:class="${currentSort eq 'manyReview' ? 'on' : ''}">후기많은순</a>
                 </li>
                 <li>
-                    <a href="#">최근등록순</a>
+                    <a th:href="@{/product/list(cate1=${param.cate1}, cate2=${param.cate2}, sort='recent')}" th:class="${currentSort eq 'recent' ? 'on' : ''}">최근등록순</a>
                 </li>
             </ul>
             <!-- 상품 목록 -->
             <table border="0">
                 <tbody>
-                    <tr>
+                    <!-- 상품 나열 -->
+                    <tr th:each="product : ${productsPage.content}">
                         <td>
-                            <a href="#" class="thumb">
-                                <img src="https://via.placeholder.com/120x120" alt="상품이미지">
-                            </a>
+                            <div class="img">
+                                <a th:href="@{/product/view(id=${product.id})}" class="thumb">
+                                    <img th:src="@{/product/images/{filename}/{cate1}/{cate2}(filename=${product.thumbnailList}, cate1=${product.category1Code}, cate2=${product.category2Code})}" alt="상품이미지">
+                                </a>
+                            </div>
                         </td>
                         <td>
-                            <h3 class="name">상품명</h3>
-                            <a href="#" class="desc">상품설명</a>
+                            <a th:href="@{/product/view(id=${product.id})}" th:text="${product.productName}" class="name">상품명</a> <br/>
+                            <a th:text="${product.description}" class="desc">상품설명</a>
                         </td>
                         <td>
                             <ul>
                                 <li>
-                                    <ins class="dis-price">27,000</ins>
+                                    <ins th:text="${#numbers.formatInteger(product.discountedPrice, 1, 'COMMA') + '원'}" class="dis-price">할인된 가격</ins>
                                 </li>
-                                <li>
-                                    <del class="org-price">30,000</del>
-                                    <span class="discount">10%</span>
+                                <li th:if="${product.discountRate ne 0}">
+                                    <del th:text="${#numbers.formatInteger(product.price, 1, 'COMMA') + '원'}" class="org-price">상품 원래 가격</del>
+                                    <span th:text="${product.discountRate + '%'}" class="discount">할인률</span>
                                 </li>
-                                <li>
+                                <!-- deliveryCost 가 0 일 때 -->
+                                <li th:if="${product.deliveryCost eq 0}">
                                     <span class="free-delivery">무료배송</span>
                                 </li>
-                            </ul>
-                        </td>
-                        <td>
-                            <h4 class="seller">
-                                <i class="fas fa-home" aria-hidden="true"></i>
-                                판매자
-                            </h4>
-                            <h5 class="badge power">판매자등급</h5>
-                            <h6 class="rating star1">상품평</h6>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <a href="#" class="thumb">
-                                <img src="https://via.placeholder.com/120x120" alt="상품이미지">
-                            </a>
-                        </td>
-                        <td>
-                            <h3 class="name">상품명</h3>
-                            <a href="#" class="desc">상품설명</a>
-                        </td>
-                        <td>
-                            <ul>
-                                <li>
-                                    <ins class="dis-price">27,000</ins>
-                                </li>
-                                <li>
-                                    <del class="org-price">30,000</del>
-                                    <span class="discount">10%</span>
-                                </li>
-                                <li>
-                                    <span class="free-delivery">무료배송</span>
+                                <!-- deliveryCost 가 0이 아닐 때 -->
+                                <li th:if="${product.deliveryCost ne 0}">
+                                    <span th:text="${'배송비 ' + #numbers.formatInteger(product.deliveryCost, 1, 'COMMA') + '원'}" class="deliveryCost">배송비</span>
                                 </li>
                             </ul>
                         </td>
                         <td>
                             <h4 class="seller">
                                 <i class="fas fa-home" aria-hidden="true"></i>
-                                판매자
-                            </h4>
-                            <h5 class="badge power">판매자등급</h5>
-                            <h6 class="rating star2">상품평</h6>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <a href="#" class="thumb">
-                                <img src="https://via.placeholder.com/120x120" alt="상품이미지">
-                            </a>
-                        </td>
-                        <td>
-                            <h3 class="name">상품명</h3>
-                            <a href="#" class="desc">상품설명</a>
-                        </td>
-                        <td>
-                            <ul>
-                                <li>
-                                    <ins class="dis-price">27,000</ins>
-                                </li>
-                                <li>
-                                    <del class="org-price">30,000</del>
-                                    <span class="discount">10%</span>
-                                </li>
-                                <li>
-                                    <span class="free-delivery">무료배송</span>
-                                </li>
-                            </ul>
-                        </td>
-                        <td>
-                            <h4 class="seller">
-                                <i class="fas fa-home" aria-hidden="true"></i>
-                                판매자
-                            </h4>
-                            <h5 class="badge power">판매자등급</h5>
-                            <h6 class="rating star3">상품평</h6>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <a href="#" class="thumb">
-                                <img src="https://via.placeholder.com/120x120" alt="상품이미지">
-                            </a>
-                        </td>
-                        <td>
-                            <h3 class="name">상품명</h3>
-                            <a href="#" class="desc">상품설명</a>
-                        </td>
-                        <td>
-                            <ul>
-                                <li>
-                                    <ins class="dis-price">27,000</ins>
-                                </li>
-                                <li>
-                                    <del class="org-price">30,000</del>
-                                    <span class="discount">10%</span>
-                                </li>
-                                <li>
-                                    <span class="free-delivery">무료배송</span>
-                                </li>
-                            </ul>
-                        </td>
-                        <td>
-                            <h4 class="seller">
-                                <i class="fas fa-home" aria-hidden="true"></i>
-                                판매자
-                            </h4>
-                            <h5 class="badge power">판매자등급</h5>
-                            <h6 class="rating star4">상품평</h6>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <a href="#" class="thumb">
-                                <img src="https://via.placeholder.com/120x120" alt="상품이미지">
-                            </a>
-                        </td>
-                        <td>
-                            <h3 class="name">상품명</h3>
-                            <a href="#" class="desc">상품설명</a>
-                        </td>
-                        <td>
-                            <ul>
-                                <li>
-                                    <ins class="dis-price">27,000</ins>
-                                </li>
-                                <li>
-                                    <del class="org-price">30,000</del>
-                                    <span class="discount">10%</span>
-                                </li>
-                                <li>
-                                    <span>배송비 2500</span>
-                                </li>
-                            </ul>
-                        </td>
-                        <td>
-                            <h4 class="seller">
-                                <i class="fas fa-home" aria-hidden="true"></i>
-                                판매자
+                                <span th:text="${product.company}">판매사</span>
                             </h4>
                             <h5 class="badge power">판매자등급</h5>
                             <h6 class="rating star5">상품평</h6>
@@ -214,23 +90,38 @@
                     </tr>
                 </tbody>
             </table>
+
             <!-- 상품목록 페이지번호 -->
-            <div class="paging">
-                <span class="prev">
-                    <a href="#"><&nbsp;이전</a>
-                </span>
-                <span class="num">
-                    <a href="#" class="on">1</a>
-                    <a href="#">2</a>
-                    <a href="#">3</a>
-                    <a href="#">4</a>
-                    <a href="#">5</a>
-                    <a href="#">6</a>
-                    <a href="#">7</a>
-                </span>
-                <span class="next">
-                    <a href="#">다음&nbsp;></a>
-                </span>
+            <div class="paging" th:if="${!productsPage.isEmpty()}">
+                <th:block th:with="pageNumber = ${productsPage.pageable.pageNumber},
+                                   pageSize = ${productsPage.pageable.pageSize},
+                                   totalPages = ${productsPage.totalPages},
+                                   startPage = ${T(java.lang.Math).floor(pageNumber / pageSize) * pageSize + 1},
+                                   tempEndPage = ${startPage + pageSize - 1},
+                                   endPage = (${tempEndPage < totalPages ? tempEndPage : totalPages})">
+
+                    <!-- 처음으로 이동 -->
+                    <a th:href="@{/product/list(cate1=${param.cate1}, cate2=${param.cate2}, page=0)}" class="first"
+                       th:classappend="${pageNumber < pageSize} ? 'disabled'"></a>
+                    <!-- 이전으로 이동 -->
+                    <a th:href="${productsPage.first} ? '#' : @{/product/list(cate1=${param.cate1}, cate2=${param.cate2}, page=${pageNumber - 1})}" class="before"
+                       th:classappend="${productsPage.first} ? 'disabled'"></a>
+
+                    <!-- 특정 페이지로 이동 -->
+                    <th:block>
+                        <th:block th:each="page : ${#numbers.sequence(startPage, endPage)}">
+                            <a th:text="${page}" th:href="@{/product/list(cate1=${param.cate1}, cate2=${param.cate2}, page=${page - 1})}"
+                               th:class="${page == pageNumber + 1} ? 'pageNum on' : 'pageNum'"></a>
+                        </th:block>
+                    </th:block>
+
+                    <!-- 다음으로 이동 -->
+                    <a th:href="${productsPage.last} ? '#' : @{/product/list(cate1=${param.cate1}, cate2=${param.cate2}, page=${pageNumber + 1})}" class="next"
+                       th:classappend="${productsPage.last} ? 'disabled'"></a>
+                    <!-- 마지막으로 이동 -->
+                    <a th:href="@{/product/list(cate1=${param.cate1}, cate2=${param.cate2}, page=${totalPages - 1})}" class="last"
+                       th:classappend="${T(java.lang.Math).floor(totalPages / pageSize) * pageSize - 1 <= startPage} ? 'disabled'"></a>
+                </th:block>
             </div>
         </section>
     </main>

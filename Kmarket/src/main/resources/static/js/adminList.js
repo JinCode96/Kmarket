@@ -40,7 +40,6 @@ function deleteSelectedProducts() {
 
     if (productIds.length > 0) {
         if (confirm(productIds.length + "개의 상품을 삭제하시겠습니까?")) {
-            console.log(JSON.stringify({"productIds": productIds}));
             $.ajax({
                 url: '/kmarket/admin/deleteSelectedProducts',
                 method: 'POST',

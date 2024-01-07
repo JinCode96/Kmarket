@@ -3,9 +3,9 @@
 <mapper namespace="com.kmarket.repository.admin.AdminMapper">
 
     <insert id="insertProduct" useGeneratedKeys="true" keyProperty="id">
-        insert into km_product (category1_code, category2_code, seller, product_name, description, company, price, discount_rate, point, stock, delivery_cost, thumbnail_list, thumbnail_main, thumbnail_detail,
+        insert into km_product (category1_code, category2_code, seller, product_name, description, company, price, discount_rate, discounted_price, point, stock, delivery_cost, thumbnail_list, thumbnail_main, thumbnail_detail,
                                 detail_cut, status, duty, receipt, business_type, origin, registration_date)
-        values (#{category1Code}, #{category2Code}, #{seller}, #{productName}, #{description}, #{company}, #{price}, #{discountRate}, #{point}, #{stock}, #{deliveryCost}, #{thumbnailList}, #{thumbnailMain}, #{thumbnailDetail},
+        values (#{category1Code}, #{category2Code}, #{seller}, #{productName}, #{description}, #{company}, #{price}, #{discountRate}, #{discountedPrice}, #{point}, #{stock}, #{deliveryCost}, #{thumbnailList}, #{thumbnailMain}, #{thumbnailDetail},
                 #{detailCut}, #{status}, #{duty}, #{receipt}, #{businessType}, #{origin}, NOW());
     </insert>
 

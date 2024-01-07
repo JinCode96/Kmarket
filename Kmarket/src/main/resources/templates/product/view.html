@@ -20,43 +20,44 @@
                 <h1>상품보기</h1>
                 <p>
                     HOME >
-                    <span>패션·의류·뷰티</span>
+                    <span th:text="${category.category1Name}">카테고리 1</span>
                     >
-                    <strong>남성의류</strong>
+                    <strong th:text="${category.category2Name}">카테고리 2</strong>
                 </p>
             </nav>
             <!-- 상품 전체 정보 내용 -->
             <article class="info">
                 <div class="image">
-                    <img src="https://via.placeholder.com/460x460" alt="상품 이미지">
+                    <img th:src="@{/product/images/{filename}/{cate1}/{cate2}(filename=${product.thumbnailList}, cate1=${product.category1Code}, cate2=${product.category2Code})}" alt="상품 이미지">
                 </div>
                 <div class="summary">
                     <nav>
-                        <h1>(주)판매자명</h1>
+                        <h1 th:text="${product.company}">(주)판매자명</h1>
                         <h2>
                             상품번호&nbsp;:&nbsp;
-                            <span>10010118412</span>
+                            <span th:text="${product.id}">상품 번호</span>
                         </h2>
                     </nav>
                     <nav>
-                        <h3>상품명</h3>
-                        <p>상품설명 출력</p>
+                        <h3 th:text="${product.productName}">상품명</h3>
+                        <p th:text="${product.description}">상품설명 출력</p>
                         <h5 class="rating start4">
-                            <a href="#">상품평보기</a>
+                            <a href="#" id="watchReview">상품평보기</a>
                         </h5>
                     </nav>
                     <nav>
-                        <div class="org_price">
-                            <del>30,000</del>
-                            <span>10%</span>
+                        <div th:if="${product.discountRate ne 0}" class="org_price">
+                            <del th:text="${#numbers.formatInteger(product.price, 1, 'COMMA') + '원'}">상품 가격</del>
+                            <span th:text="${product.discountRate + '%'}">할인률</span>
                         </div>
                         <div class="dis_price">
-                            <ins>27,000</ins>
+                            <ins th:text="${#numbers.formatInteger(product.discountedPrice, 1, 'COMMA') + '원'}">상품 할인된 가격</ins>
                         </div>
                     </nav>
                     <nav>
-                        <span class="delivery">무료배송</span>
-                        <span class="arrival">모레(금) 7/8 도착예정</span>
+                        <span th:if="${product.deliveryCost eq 0}" class="delivery">무료배송</span>
+                        <span th:if="${product.deliveryCost ne 0}" th:text="${'배송비 ' + #numbers.formatInteger(product.deliveryCost, 1, 'COMMA') + '원'}" class="delivery"></span>
+                        <span class="arrival">모레(금) 7/8 도착예정</span> <!-- 처리 -->
                         <span class="desc">본 상품은 국내배송만 가능합니다.</span>
                     </nav>
                     <nav>
@@ -71,21 +72,21 @@
                         </span>
                     </nav>
                     <nav>
-                        <span class="origin">원산지-상세설명 참조</span>
+                        <span class="origin" >원산지-[[${product.origin}]]</span>
                     </nav>
-                    <img src="../img/vip_plcc_banner.png" alt="100원만 결제해도 1만원 적립!" class="banner">
+                    <img th:src="@{/img/vip_plcc_banner.png}" alt="100원만 결제해도 1만원 적립!" class="banner">
                     <div class="count">
                         <button class="decrease">-</button>
-                        <input type="text" name="num" value="1" readonly>
+                        <input type="text" name="num" value="1">
                         <button class="increase">+</button>
                     </div>
                     <div class="total">
-                        <span>35,000</span>
+                        <span th:text="${#numbers.formatInteger(product.discountedPrice, 1, 'COMMA')}" class="totalPrice">총 상품 금액</span>
                         <em>총 상품금액</em>
                     </div>
                     <div class="button">
-                        <input type="button" class="cart" value="장바구니">
-                        <input type="button" class="order" value="구매하기">
+                        <input type="button" class="cart" id="cartBt" th:attr="productId=${product.id}" value="장바구니">
+                        <input type="button" class="order" id="orderBt" th:attr="productId=${product.id}" value="구매하기">
                     </div>
                 </div>
             </article>
@@ -95,9 +96,12 @@
                     <h1>상품정보</h1>
                 </nav>
                 <!-- 상품상세페이지 이미지 -->
-                <img src="https://via.placeholder.com/860x460" alt="상세페이지1">
-                <img src="https://via.placeholder.com/860x460" alt="상세페이지2">
-                <img src="https://via.placeholder.com/860x460" alt="상세페이지3">
+                <div id="productImageContainer">
+                    <img id="productImage" th:src="@{/product/images/{filename}/{cate1}/{cate2}(filename=${product.detailCut}, cate1=${product.category1Code}, cate2=${product.category2Code})}"
+                         alt="상세페이지1">
+                </div>
+                <!-- 상품 정보 더보기/접기 버튼 -->
+                <button id="toggleButton" onclick="toggleProductInfo()">상품 정보 더보기</button>
             </article>
             <!-- 상품 정보 제공 고시 내용 -->
             <article class="notice">
@@ -109,31 +113,31 @@
                     <tbody>
                         <tr>
                             <td>상품번호</td>
-                            <td>10110125435</td>
+                            <td th:text="${product.id}">10110125435</td>
                         </tr>
                         <tr>
                             <td>상품상태</td>
-                            <td>새상품</td>
+                            <td th:text="${product.status}">새상품</td>
                         </tr>
                         <tr>
                             <td>부가세 면세여부</td>
-                            <td>과세상품</td>
+                            <td th:text="${product.duty}">과세상품</td>
                         </tr>
                         <tr>
                             <td>영수증발행</td>
-                            <td>발행가능 - 신용카드 전표, 온라인 현금영수증</td>
+                            <td th:text="${product.receipt}">발행가능 - 신용카드 전표, 온라인 현금영수증</td>
                         </tr>
                         <tr>
                             <td>사업자구분</td>
-                            <td>사업자 판매자</td>
+                            <td th:text="${product.businessType}">사업자 판매자</td>
                         </tr>
                         <tr>
                             <td>브랜드</td>
-                            <td>블루포스</td>
+                            <td th:text="${product.company}">블루포스</td>
                         </tr>
                         <tr>
                             <td>원산지</td>
-                            <td>국내생산</td>
+                            <td th:text="${product.origin}">국내생산</td>
                         </tr>
                     </tbody>
                 </table>
@@ -141,43 +145,39 @@
                     <tbody>
                         <tr>
                             <td>제품소재</td>
-                            <td>상세정보 직접입력</td>
+                            <td>100% POLYESTER</td>
                         </tr>
                         <tr>
                             <td>색상</td>
-                            <td>상세정보 직접입력</td>
+                            <td>네이비</td>
                         </tr>
                         <tr>
                             <td>치수</td>
-                            <td>상세정보 직접입력</td>
+                            <td>S</td>
                         </tr>
                         <tr>
-                            <td>제조자/수입국</td>
-                            <td>상세정보 직접입력</td>
+                            <td>제조자/수입자</td>
+                            <td>(주) 아이보리 & (주) 엘비코리아</td>
                         </tr>
                         <tr>
                             <td>제조국</td>
-                            <td>상세정보 직접입력</td>
+                            <td>베트남 & 인도네시아</td>
                         </tr>
                         <tr>
                             <td>취급시 주의사항</td>
-                            <td>상세정보 직접입력</td>
+                            <td>단독세탁</td>
                         </tr>
                         <tr>
                             <td>제조연월</td>
-                            <td>상세정보 직접입력</td>
+                            <td>2020.10</td>
                         </tr>
                         <tr>
                             <td>품질보증기준</td>
-                            <td>상세정보 직접입력</td>
+                            <td>제품 이상 시 공정거래위원회 고시 소비자분쟁해결기준에 의거 보상합니다.</td>
                         </tr>
                         <tr>
                             <td>A/S 책임자와 전화번호</td>
-                            <td>상세정보 직접입력</td>
-                        </tr>
-                        <tr>
-                            <td>주문 후 예상 배송기간</td>
-                            <td>상세정보 직접입력</td>
+                            <td>Kmarket고객센터 1577-1111</td>
                         </tr>
                         <tr>
                             <td colspan="2">
@@ -191,91 +191,64 @@
                 </p>
             </article>
             <!-- 상품 리뷰 내용 -->
-            <article class="review">
+            <article class="review" id="review-article">
                 <nav><h1>상품리뷰</h1></nav>
                 <ul>
-                    <li>
-                        <div>
-                            <h5 class="rating star4">상품평</h5>
-                            <span>seo****** 2018-07-10</span>
-                        </div>
-                        <h3>상품명1/BLUE/L</h3>
-                        <p>
-                            가격대비 정말 괜찮은 옷이라 생각되네요 핏은 음...제가 입기엔 어깨선이 맞고 루즈핏이라 하기도 좀 힘드네요.
-                            아주 약간 루즈한정도...?그래도 이만한 옷은 없다고 봅니다 깨끗하고 포장도 괜찮고 다음에도 여기서 판매하는
-                            제품들을 구매하고 싶네요 정말 만족하고 후기 남깁니다 많이 파시길 바래요 ~ ~ ~
-                        </p>
-                    </li>
-                    <li>
-                        <div>
-                            <h5 class="rating star4">상품평</h5>
-                            <span>seo****** 2018-07-10</span>
-                        </div>
-                        <h3>상품명1/BLUE/L</h3>
-                        <p>
-                            가격대비 정말 괜찮은 옷이라 생각되네요 핏은 음...제가 입기엔 어깨선이 맞고 루즈핏이라 하기도 좀 힘드네요.
-                            아주 약간 루즈한정도...?그래도 이만한 옷은 없다고 봅니다 깨끗하고 포장도 괜찮고 다음에도 여기서 판매하는
-                            제품들을 구매하고 싶네요 정말 만족하고 후기 남깁니다 많이 파시길 바래요 ~ ~ ~
-                        </p>
-                    </li>
-                    <li>
-                        <div>
-                            <h5 class="rating star4">상품평</h5>
-                            <span>seo****** 2018-07-10</span>
-                        </div>
-                        <h3>상품명1/BLUE/L</h3>
-                        <p>
-                            가격대비 정말 괜찮은 옷이라 생각되네요 핏은 음...제가 입기엔 어깨선이 맞고 루즈핏이라 하기도 좀 힘드네요.
-                            아주 약간 루즈한정도...?그래도 이만한 옷은 없다고 봅니다 깨끗하고 포장도 괜찮고 다음에도 여기서 판매하는
-                            제품들을 구매하고 싶네요 정말 만족하고 후기 남깁니다 많이 파시길 바래요 ~ ~ ~
-                        </p>
-                    </li>
-                    <li>
-                        <div>
-                            <h5 class="rating star4">상품평</h5>
-                            <span>seo****** 2018-07-10</span>
-                        </div>
-                        <h3>상품명1/BLUE/L</h3>
-                        <p>
-                            가격대비 정말 괜찮은 옷이라 생각되네요 핏은 음...제가 입기엔 어깨선이 맞고 루즈핏이라 하기도 좀 힘드네요.
-                            아주 약간 루즈한정도...?그래도 이만한 옷은 없다고 봅니다 깨끗하고 포장도 괜찮고 다음에도 여기서 판매하는
-                            제품들을 구매하고 싶네요 정말 만족하고 후기 남깁니다 많이 파시길 바래요 ~ ~ ~
-                        </p>
-                    </li>
-                    <li>
-                        <div>
-                            <h5 class="rating star4">상품평</h5>
-                            <span>seo****** 2018-07-10</span>
-                        </div>
-                        <h3>상품명1/BLUE/L</h3>
-                        <p>
-                            가격대비 정말 괜찮은 옷이라 생각되네요 핏은 음...제가 입기엔 어깨선이 맞고 루즈핏이라 하기도 좀 힘드네요.
-                            아주 약간 루즈한정도...?그래도 이만한 옷은 없다고 봅니다 깨끗하고 포장도 괜찮고 다음에도 여기서 판매하는
-                            제품들을 구매하고 싶네요 정말 만족하고 후기 남깁니다 많이 파시길 바래요 ~ ~ ~
-                        </p>
-                    </li>
+                    <th:block th:if="${reviewPage.isEmpty()}">
+                        <li class="noReview">
+                            해당 상품의 리뷰가 없습니다.
+                        </li>
+                    </th:block>
+                    <th:block th:if="${!reviewPage.isEmpty()}">
+                        <li th:each="review : ${reviewPage.content}">
+                            <div>
+                                <h5 class="rating star4">상품 별점</h5>
+                                <span>[[${#strings.substring(review.uid, 0, 4) + '****'}]] &ensp;&ensp; [[${#strings.substring(review.registrationDate, 0, 10)}]]</span>
+                            </div>
+                            <h3 th:text="${product.productName}">상품명</h3>
+                            <p th:text="${review.content}">리뷰 내용</p>
+                        </li>
+                    </th:block>
                 </ul>
-                <div class="paging">
-                    <span class="prev">
-                        <a href="#"><&nbsp;이전</a>
-                    </span>
-                    <span class="num">
-                        <a href="#" class="on">1</a>
-                        <a href="#">2</a>
-                        <a href="#">3</a>
-                        <a href="#">4</a>
-                        <a href="#">5</a>
-                        <a href="#">6</a>
-                        <a href="#">7</a>
-                    </span>
-                    <span class="next">
-                        <a href="#">다음&nbsp;></a>
-                    </span>
+                <!-- 상품목록 페이지번호 -->
+                <div class="paging" th:if="${!reviewPage.isEmpty()}">
+                    <th:block th:with="pageNumber = ${reviewPage.pageable.pageNumber},
+                                   pageSize = ${reviewPage.pageable.pageSize},
+                                   totalPages = ${reviewPage.totalPages},
+                                   startPage = ${T(java.lang.Math).floor(pageNumber / pageSize) * pageSize + 1},
+                                   tempEndPage = ${startPage + pageSize - 1},
+                                   endPage = (${tempEndPage < totalPages ? tempEndPage : totalPages})">
+
+                        <!-- 처음으로 이동 -->
+                        <a th:href="@{/product/view(id=${param.id}, page=0)}" class="first"
+                           th:classappend="${pageNumber < pageSize} ? 'disabled'"></a>
+                        <!-- 이전으로 이동 -->
+                        <a th:href="${reviewPage.first} ? '#' : @{/product/view(id=${param.id}, page=${pageNumber - 1})}" class="before"
+                           th:classappend="${reviewPage.first} ? 'disabled'"></a>
+
+                        <!-- 특정 페이지로 이동 -->
+                        <th:block>
+                            <th:block th:each="page : ${#numbers.sequence(startPage, endPage)}">
+                                <a th:text="${page}" th:href="@{/product/view(id=${param.id}, page=${page - 1})}"
+                                   th:class="${page == pageNumber + 1} ? 'pageNum on' : 'pageNum'"></a>
+                            </th:block>
+                        </th:block>
+
+                        <!-- 다음으로 이동 -->
+                        <a th:href="${reviewPage.last} ? '#' : @{/product/view(id=${param.id}, page=${pageNumber + 1})}" class="next"
+                           th:classappend="${reviewPage.last} ? 'disabled'"></a>
+                        <!-- 마지막으로 이동 -->
+                        <a th:href="@{/product/view(id=${param.id}, page=${totalPages - 1})}" class="last"
+                           th:classappend="${T(java.lang.Math).floor(totalPages / pageSize) * pageSize - 1 <= startPage} ? 'disabled'"></a>
+                    </th:block>
                 </div>
             </article>
         </section>
         <!-- 상품 상세페이지 끝 -->
     </main>
     <button type="button" id="top">상단이동</button>
+    <th:block layout:fragment="script">
+        <script th:src="@{/js/productView.js}"></script>
+    </th:block>
 </th:block>
 </html>

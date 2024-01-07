@@ -225,7 +225,14 @@ main > div > aside > #gnb ol > li > a {
 }
 #admin-product-list > table tr:first-child > th > input[type=checkbox] {margin-top: 1.5px;}
 #admin-product-list > table tr > td {padding: 10px;}
-#admin-product-list > table tr:not(:first-child) > td:nth-child(4) {width: 300px;text-align: left;}
+#admin-product-list > table tr:not(:first-child) > td:nth-child(4) {
+    width: 300px;
+    text-align: left;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 315px;
+}
 #admin-product-list > table td {
     border-bottom: 1px solid #e6e6e6;
     text-align: center;

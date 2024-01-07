@@ -1,4 +1,4 @@
-package com.kmarket.entity;
+package com.kmarket.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -8,7 +8,7 @@ import lombok.*;
 @Data
 @Entity
 @Table(name = "km_member_terms")
-public class TermsEntity {
+public class Terms {
     @Id
     private int id;
     private String terms;

@@ -3,7 +3,7 @@ package com.kmarket.controller;
 import com.kmarket.api.ApiResponse;
 import com.kmarket.domain.Members;
 import com.kmarket.dto.member.*;
-import com.kmarket.entity.TermsEntity;
+import com.kmarket.domain.Terms;
 import com.kmarket.service.MemberService;
 import com.kmarket.util.EmailService;
 import com.kmarket.util.RedisUtil;
@@ -59,7 +59,7 @@ public class MemberController {
      */
     @GetMapping("/sign-up/{type}")
     public String signUp(@PathVariable String type, Model model) {
-        TermsEntity terms = memberService.getTerms().orElse(null);
+        Terms terms = memberService.getTerms().orElse(null);
         model.addAttribute("terms", terms);
         model.addAttribute("type", type);
         return "member/signup";

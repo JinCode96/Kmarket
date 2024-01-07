@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main_layout}">
+<head>
+    <!-- 공통 부분이 아닌 css -->
+    <link rel="stylesheet" th:href="@{/css/product.css}">
+</head>
+<th:block layout:fragment="main">
+    <main id="product">
+        <aside>
+            <!-- 카테고리/베스트 상품 영역 -->
+            <th:block th:replace="~{fragment/aside :: main_category}"></th:block>
+        </aside>
+        <!-- 주문 페이지 시작-->
+        <section class="order">
+            <!-- 제목, 페이지 네비게이션 -->
+            <nav>
+                <h1>주문결제</h1>
+                <p>
+                    <span style="color: #bbb; font-weight: 700;">장바구니</span>
+                    >
+                    <span style="font-weight: 700; color: #346aff;">주문결제</span>
+                    >
+                    <span style="color: #bbb; font-weight: 700;">주문완료</span>
+                </p>
+            </nav>
+            <form action="#">
+                <!-- 주문 상품 목록 -->
+                <table>
+                    <thead>
+                        <tr>
+                            <th>상품명</th>
+                            <th>총수량</th>
+                            <th>판매가</th>
+                            <th>할인금액</th>
+                            <th>배송비</th>
+                            <th>상품금액</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="empty">
+                            <td colspan="7">장바구니에 상품이 없습니다.</td>
+                        </tr>
+                        <tr th:each="cart : ${carts}">
+                            <td>
+                                <input type="hidden" th:value="${cart.productId}" class="productId">
+                                <input type="hidden" th:value="${cart.quantity}" class="quantity">
+                                <article>
+                                    <a th:href="@{/product/view(id=${cart.productId})}">
+                                        <img th:src="@{/product/images/{filename}/{cate1}/{cate2}(filename=${cart.thumbnailList}, cate1=${cart.category1Code}, cate2=${cart.category2Code})}" alt>
+                                    </a>
+                                    <div>
+                                        <h2>
+                                            <a th:href="@{/product/view(id=${cart.productId})}" th:text="${cart.productName}" id="productName">상품명</a>
+                                        </h2>
+                                    </div>
+                                </article>
+                            </td>
+                            <td th:text="${cart.quantity + '개'}">수량</td>
+                            <td th:text="${#numbers.formatInteger(cart.price * cart.quantity, 1, 'COMMA') + '원'}">판매가</td>
+                            <td th:if="${cart.discountRate ne 0}"
+                                th:text="${'-' + #numbers.formatInteger((cart.price * cart.discountRate / 100) * cart.quantity, 1, 'COMMA') + '원'}" class="discountAmount">할인금액</td>
+                            <td th:if="${cart.discountRate eq 0}" class="discountAmount">0원</td>
+                            <td th:if="${cart.deliveryCost ne 0}" th:text="${#numbers.formatInteger(cart.deliveryCost, 1, 'COMMA') + '원'}" class="deliveryCost">무료배송</td>
+                            <td th:if="${cart.deliveryCost eq 0}" class="deliveryCost">무료배송</td>
+                            <td th:text="${#numbers.formatInteger(cart.discountedPrice * cart.quantity, 1, 'COMMA') + '원'}">27,000</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <!-- 최종 결제 정보 -->
+                <div class="final">
+                    <h2>최종결제 정보</h2>
+                    <table border="0">
+                        <tbody>
+                            <tr>
+                                <td>상품수</td>
+                                <td th:text="${carts.size() + '개'}">상품수</td>
+                            </tr>
+                            <tr>
+                                <td>상품금액</td>
+                                <td th:text="${#numbers.formatInteger(cartSummary.totalCartPrice, 1, 'COMMA') + '원'}"
+                                    th:attr="productPrice=${cartSummary.totalCartPrice}" id="productPrice">상품 금액</td>
+                            </tr>
+                            <tr>
+                                <td>할인금액</td>
+                                <td th:if="${cartSummary.totalDiscount ne 0}" th:text="${'-' + #numbers.formatInteger(cartSummary.totalDiscount, 1, 'COMMA') + '원'}" class="discountAmount">-1,000</td>
+                                <td th:if="${cartSummary.totalDiscount eq 0}" class="discountAmount">0원</td>
+                            </tr>
+                            <tr>
+                                <td>배송비</td>
+                                <td th:if="${cartSummary.totalDeliveryCost ne 0}" th:text="${#numbers.formatInteger(cartSummary.totalDeliveryCost, 1, 'COMMA') + '원'}" class="deliveryCost"></td>
+                                <td th:if="${cartSummary.totalDeliveryCost eq 0}" class="deliveryCost">무료배송</td>
+                            </tr>
+                            <tr>
+                                <td>포인트 할인</td>
+                                <td id="pointDiscount">0원</td>
+                            </tr>
+                            <tr>
+                                <td>총 결제금액</td>
+                                <td th:text="${#numbers.formatInteger(cartSummary.totalAmount, 1, 'COMMA') + '원'}"
+                                    th:attr="totalPrice=${cartSummary.totalAmount}" id="totalPrice">총 결제금액</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <input type="button" id="payment" value="결제하기">
+                </div>
+                <!-- 배송정보 -->
+                <article class="delivery">
+                    <h1>배송정보</h1>
+                    <table>
+                        <tbody>
+                            <tr>
+                                <td>주문자</td>
+                                <td><input type="text" th:value="${member.name}" name="receiptName" id="receiptName"></td>
+                            </tr>
+                            <tr>
+                                <td>휴대폰</td>
+                                <td>
+                                    <input type="text" th:value="${member.phoneNumber}" name="receiptHp" id="receiptHp">
+                                    <span>- 포함 입력</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>우편번호</td>
+                                <td>
+                                    <input type="text" th:value="${member.zipCode}" name="receiptZip" id="zipCode">
+                                    <input type="button" onclick="daumPostcode()" id="btnSearchAddr" value="우편번호 찾기">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>기본주소</td>
+                                <td><input type="text" th:value="${member.address}" name="receiptAddress" id="address"></td>
+                            </tr>
+                            <tr>
+                                <td>상세주소</td>
+                                <td><input type="text" th:value="${member.detailAddress}" name="receiptDetailAddress" id="detailAddress"></td>
+                        </tbody>
+                    </table>
+                </article>
+                <!-- 할인정보 -->
+                <article class="discount">
+                    <h1>할인정보</h1>
+                    <div>
+                        <p>
+                            현재 포인트 :
+                            <span th:text="${#numbers.formatInteger(member.point, 1, 'COMMA') + 'P'}" th:attr="memberPoint=${member.point}" id="memberPoint">현재 포인트</span>
+                        </p>
+                        <label>
+                            <input type="text" name="point" id="usedPoint" value="0">
+                            P
+                            <label>
+                                <input type="checkbox" id="allPointCheck"> 최대 사용
+                            </label>
+                        </label>
+                        <span>포인트 5,000점 이상이면 현금처럼 사용 가능합니다.</span>
+                    </div>
+                </article>
+                <!-- 결제방법 -->
+                <article class="payment">
+                    <h1>결제방법</h1>
+                    <div>
+                        <span>신용카드</span>
+                        <p>
+                            <label>
+                                <input type="radio" name="payment" value="type1">
+                                신용카드 결제
+                            </label>
+                            <label>
+                                <input type="radio" name="payment" value="type1">
+                                체크카드 결제
+                            </label>
+                        </p>
+                    </div>
+                    <div>
+                        <span>계좌이체</span>
+                        <p>
+                            <label>
+                                <input type="radio" name="payment" value="type3">
+                                실시간 계좌이체
+                            </label>
+                            <label>
+                                <input type="radio" name="payment" value="type4">
+                                무통장 입금
+                            </label>
+                        </p>
+                    </div>
+                    <div>
+                        <span>기타</span>
+                        <p>
+                            <label>
+                                <input type="radio" name="payment" value="type5">
+                                휴대폰결제
+                            </label>
+                            <label>
+                                <input type="radio" name="payment" value="type6" id="kakaoPay">
+                                카카오페이
+                                <img src="../img/ico_kakaopay.gif" alt="카카오페이">
+                            </label>
+                        </p>
+                    </div>
+                </article>
+                <!-- 경고 -->
+                <article class="alert">
+                    <ul>
+                        <li>
+                            <span>케이마켓의 모든 판매자는 안전거래를 위해 구매금액, 결제수단에 상관없이 모든거래에 대하여 케이마켓 유한책임회사의 구매안전서비스(에스크로)를 제공하고 있습니다.</span>
+                        </li>
+                        <li>
+                            <span>케이마켓 유한책임회사의 전자금융거래법에 의해 결제대금예치업 등록번호는 02-006-00008입니다.</span>
+                        </li>
+                        <li>
+                            <span>등록여부는 금융감독원 홈페이지(www.fss.or.kr)의 업무자료>인허가업무안내>전자금융업등록현황에서 확인하실수 있습니다.</span>
+                        </li>
+                    </ul>
+                </article>
+            </form>
+        </section>
+        <!-- 주문 페이지 끝 -->
+    </main>
+    <button type="button" id="top">상단이동</button>
+    <th:block layout:fragment="script">
+        <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script> <!-- 주소찾기 -->
+        <script th:src="@{/js/postCode.js}"></script>
+        <script th:src="@{/js/applyPoint.js}"></script>
+        <script th:src="@{/js/cartOrder.js}"></script>
+    </th:block>
+</th:block>
+</html>

@@ -18,131 +18,102 @@
             <nav>
                 <h1>장바구니</h1>
                 <p>
-                    HOME >
-                    <span>패션·의류·뷰티</span>
+                    <strong style="font-weight: 700; color: #346aff;">장바구니</strong>
                     >
-                    <strong>장바구니</strong>
+                    <span style="color: #bbb; font-weight: 700;">주문결제</span>
+                    >
+                    <span style="color: #bbb; font-weight: 700;">주문완료</span>
                 </p>
             </nav>
-            <form action="#">
-                <!-- 장바구니 목록 -->
                 <table>
                     <thead>
                         <tr>
-                            <th><input type="checkbox" name="all"></th>
+                            <th><input type="checkbox" name="all" onclick="selectAll(this)"></th>
                             <th>상품명</th>
                             <th>총수량</th>
                             <th>판매가</th>
-                            <th>할인</th>
-                            <th>포인트</th>
+                            <th>할인금액</th>
                             <th>배송비</th>
                             <th>소계</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="empty">
+                        <tr th:if="${carts.isEmpty()}" class="empty">
                             <td colspan="7">장바구니에 상품이 없습니다.</td>
                         </tr>
-                        <tr>
-                            <td><input type="checkbox" name></td>
+                        <tr th:each="cart : ${carts}">
+                            <td>
+                                <input type="checkbox" th:value="${cart.productId}" name="cartCheckBox">
+                                <input type="hidden" th:value="${cart.productId}" class="productId">
+                            </td>
                             <td>
                                 <article>
-                                    <a href="#"><img src="https://via.placeholder.com/80x80" alt></a>
+                                    <a th:href="@{/product/view(id=${cart.productId})}"><img th:src="@{/product/images/{filename}/{cate1}/{cate2}(filename=${cart.thumbnailList}, cate1=${cart.category1Code}, cate2=${cart.category2Code})}" alt></a>
                                     <div>
                                         <h2>
-                                            <a href="#">상품명</a>
+                                            <a th:href="@{/product/view(id=${cart.productId})}" th:text="${cart.productName}">상품명</a>
                                         </h2>
-                                        <p>상품설명</p>
                                     </div>
                                 </article>
                             </td>
-                            <td>1</td>
-                            <td>27,000</td>
-                            <td>5%</td>
-                            <td>270</td>
-                            <td>무료배송</td>
-                            <td>27,000</td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" name></td>
                             <td>
-                                <article>
-                                    <a href="#"><img src="https://via.placeholder.com/80x80" alt></a>
-                                    <div>
-                                        <h2>
-                                            <a href="#">상품명</a>
-                                        </h2>
-                                        <p>상품설명</p>
-                                    </div>
-                                </article>
+                                <input type="hidden" th:value="${cart.productId}" class="hiddenProductId">
+                                <button class="decrease" onclick="adjustQuantity(this, 'decrease')">-</button>
+                                <input type="text" name="num" th:value="${cart.quantity}" onchange="adjustQuantity(this, 'input')">
+                                <button class="increase" onclick="adjustQuantity(this, 'increase')">+</button>
                             </td>
-                            <td>1</td>
-                            <td>27,000</td>
-                            <td>5%</td>
-                            <td>270</td>
-                            <td>무료배송</td>
-                            <td>27,000</td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" name></td>
-                            <td>
-                                <article>
-                                    <a href="#"><img src="https://via.placeholder.com/80x80" alt></a>
-                                    <div>
-                                        <h2>
-                                            <a href="#">상품명</a>
-                                        </h2>
-                                        <p>상품설명</p>
-                                    </div>
-                                </article>
-                            </td>
-                            <td>1</td>
-                            <td>27,000</td>
-                            <td>5%</td>
-                            <td>270</td>
-                            <td>무료배송</td>
-                            <td>27,000</td>
+                            <td th:text="${#numbers.formatInteger(cart.price * cart.quantity, 1, 'COMMA') + '원'}">판매가</td>
+
+                            <td th:if="${cart.discountRate ne 0}"
+                                th:text="${'-' + #numbers.formatInteger((cart.price * cart.discountRate / 100) * cart.quantity, 1, 'COMMA') + '원'}" class="discountAmount">-5,000원</td>
+                            <td th:if="${cart.discountRate eq 0}" class="discountAmount">0원</td>
+
+                            <td th:if="${cart.deliveryCost ne 0}" th:text="${#numbers.formatInteger(cart.deliveryCost, 1, 'COMMA') + '원'}" class="deliveryCost">무료배송</td>
+                            <td th:if="${cart.deliveryCost eq 0}" class="deliveryCost">무료배송</td>
+
+                            <td th:text="${#numbers.formatInteger(cart.discountedPrice * cart.quantity, 1, 'COMMA') + '원'}">27,000</td>
                         </tr>
                     </tbody>
                 </table>
-                <input type="button" name="del" value="선택삭제">
+                <input th:if="${!carts.isEmpty()}" type="button" name="del" value="선택삭제" onclick="deleteCart()">
                 <!-- 장바구니 전체합계 -->
-                <div class="total">
+                <div class="total" th:if="${!carts.isEmpty()}">
                     <h2>전체합계</h2>
                     <table border="0">
                         <tbody>
                             <tr>
                                 <td>상품수</td>
-                                <td>1</td>
+                                <td th:text="${carts.size() + '개'}"></td>
                             </tr>
                             <tr>
                                 <td>상품금액</td>
-                                <td>27,000</td>
+                                <td th:text="${#numbers.formatInteger(cartSummary.totalCartPrice, 1, 'COMMA') + '원'}"></td>
                             </tr>
                             <tr>
                                 <td>할인금액</td>
-                                <td>-1,000</td>
+                                <td th:if="${cartSummary.totalDiscount ne 0}" th:text="${'-' + #numbers.formatInteger(cartSummary.totalDiscount, 1, 'COMMA') + '원'}" class="discountAmount"></td>
+                                <td th:if="${cartSummary.totalDiscount eq 0}" class="discountAmount">0원</td>
                             </tr>
                             <tr>
                                 <td>배송비</td>
-                                <td>0</td>
-                            </tr>
-                            <tr>
-                                <td>포인트</td>
-                                <td>260</td>
+                                <td th:if="${cartSummary.totalDeliveryCost ne 0}" th:text="${#numbers.formatInteger(cartSummary.totalDeliveryCost, 1, 'COMMA') + '원'}" class="deliveryCost"></td>
+                                <td th:if="${cartSummary.totalDeliveryCost eq 0}" class="deliveryCost">무료배송</td>
                             </tr>
                             <tr>
                                 <td>전체주문금액</td>
-                                <td>26,000</td>
+                                <td th:text="${#numbers.formatInteger(cartSummary.totalAmount, 1, 'COMMA') + '원'}"></td>
                             </tr>
                         </tbody>
                     </table>
-                    <input type="submit" name value="주문하기">
+                    <input type="submit" value="주문하기" id="order" onclick="order()">
                 </div>
-            </form>
         </section>
         <!-- 장바구니 페이지 끝 -->
     </main>
     <button type="button" id="top">상단이동</button>
+    <th:block layout:fragment="script">
+        <script th:src="@{/js/cart.js}"></script>
+        <script th:src="@{/js/selectAll.js}"></script>
+    </th:block>
 </th:block>
 </html>

@@ -1,7 +1,7 @@
 package com.kmarket.repository.member;
 
-import com.kmarket.entity.TermsEntity;
+import com.kmarket.domain.Terms;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TermsJpaRepository extends JpaRepository<TermsEntity, Integer> {
+public interface TermsJpaRepository extends JpaRepository<Terms, Integer> {
 }

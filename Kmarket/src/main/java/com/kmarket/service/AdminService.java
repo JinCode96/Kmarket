@@ -130,6 +130,7 @@ public class AdminService {
         findProduct.setCompany(productSaveForm.getCompany());
         findProduct.setPrice(productSaveForm.getPrice());
         findProduct.setDiscountRate(productSaveForm.getDiscountRate());
+        findProduct.setDiscountedPrice(productSaveForm.getPrice() - Math.round(productSaveForm.getPrice() * productSaveForm.getDiscountRate() / 100)); // 할인된 금액 산출
         findProduct.setPoint(productSaveForm.getPoint());
         findProduct.setStock(productSaveForm.getStock());
         findProduct.setDeliveryCost(productSaveForm.getDeliveryCost());

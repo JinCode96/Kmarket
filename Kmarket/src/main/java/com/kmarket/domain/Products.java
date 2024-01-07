@@ -12,11 +12,9 @@ import lombok.*;
 @Entity
 @Table(name = "km_product")
 public class Products {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(name = "category1_code")
     private Integer category1Code;
     @Column(name = "category2_code")
@@ -27,6 +25,7 @@ public class Products {
     private String company;
     private Integer price;
     private Integer discountRate;
+    private Integer discountedPrice;
     private Integer point;
     private Integer stock;
     private Integer soldNumber;

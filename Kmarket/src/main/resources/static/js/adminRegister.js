@@ -49,19 +49,34 @@ function addOptionsToCategory2(selectElement, options) {
     }
 }
 
-// 판매가격 입력란과 포인트 입력란의 참조를 가져옵니다.
+// 판매금액과 할인률에 따른 포인트 자동 기입
 const priceInput = document.getElementById('price');
+const discountRateInput = document.getElementById('discountRate');
 const pointInput = document.getElementById('point');
 
-// 판매가격 입력란 값이 변경될 때마다 호출되는 함수를 정의합니다.
-priceInput.addEventListener('input', function () {
-    // 입력된 값에서 숫자만 추출하고 1%를 계산하여 소수점을 버립니다.
-    const priceValue = priceInput.value;
-    const pointValue = Math.floor(priceValue * 0.01);
-
-    // 계산된 값을 포인트 입력란에 적용합니다.
-    pointInput.value = pointValue;
+discountRateInput.addEventListener('input', function () {
+    const discountRate = discountRateInput.value;
+    if (discountRate < 0 || discountRate > 100) {
+        discountRateInput.value = 100;
+    }
 });
+discountRateInput.addEventListener('input', updatePoint);
+priceInput.addEventListener('input', updatePoint);
+
+function updatePoint() {
+    let price = parseFloat(priceInput.value) || 0;
+    let discountRate = parseFloat(discountRateInput.value) || 0;
+    // 할인된 가격 계산
+    let discountedPrice = price * (1 - discountRate / 100);
+
+    // 포인트 계산 (할인된 가격의 1%)
+    let point = Math.round(discountedPrice * 0.01);
+
+    // 포인트 입력 필드 업데이트
+    pointInput.value = point;
+}
+
+
 
 // 각 입력란에 숫자만 입력되도록 적용
 allowOnlyNumbers(document.getElementById('price'));

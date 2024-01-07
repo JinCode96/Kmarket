@@ -10,7 +10,7 @@
 <img style="display: block; margin-left: auto; margin-right: auto;" th:src="@{/img/header_logo.png}" alt="로고" />
 <p style="text-align: center;">&nbsp;</p>
 <h1 style="text-align: center;"><strong>오류</strong></h1>
-<p style="text-align: center;">죄송합니다. 동작 중에 문제가 발생했습니다.</p>
+<p style="text-align: center;" th:text="${errorMessage}">죄송합니다. 동작 중에 문제가 발생했습니다.</p>
 <p style="text-align: center;">잠시 후에 다시 시도해 주세요.</p>
 <p style="text-align: center;">&nbsp;</p>
 <p style="text-align: center;"><a th:href="@{/}">K마켓 홈 바로가기</a></p>

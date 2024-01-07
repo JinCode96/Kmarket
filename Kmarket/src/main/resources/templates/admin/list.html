@@ -44,7 +44,7 @@
                             <img th:src="@{/admin/images/{filename}/{cate1}/{cate2}(filename=${product.thumbnailList}, cate1=${product.category1Code}, cate2=${product.category2Code})}" alt="thumb">
                         </td>
                         <td th:text="${product.id}">상품 번호</td>
-                        <td th:text="${#strings.length(product.productName) &gt; 30 ? #strings.substring(product.productName, 0, 30) + '...' : product.productName}">상품명</td>
+                        <td th:text="${product.productName}">상품명</td>
                         <td th:text="${#numbers.formatInteger(product.price, 1, 'COMMA') + '원'}">가격</td>
                         <td th:text="${product.discountRate + '%'}">할인률</td>
                         <td th:text="${#numbers.formatInteger(product.point, 1, 'COMMA') + 'p'}">포인트</td>

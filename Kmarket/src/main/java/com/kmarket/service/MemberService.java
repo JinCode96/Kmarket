@@ -2,12 +2,11 @@ package com.kmarket.service;
 
 import com.kmarket.domain.Members;
 import com.kmarket.dto.member.SearchIdAndPassDTO;
-import com.kmarket.entity.TermsEntity;
+import com.kmarket.domain.Terms;
 import com.kmarket.repository.member.MemberRepository;
 import com.kmarket.repository.member.TermsJpaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,7 +51,7 @@ public class MemberService {
         return memberRepository.checkEmail(email);
     }
 
-    public Optional<TermsEntity> getTerms() {
+    public Optional<Terms> getTerms() {
         return termsJpaRepository.findById(1);
     }
 

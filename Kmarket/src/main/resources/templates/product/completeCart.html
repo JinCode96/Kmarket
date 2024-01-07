@@ -45,24 +45,26 @@
                             <th>할인금액</th>
                             <th>상품금액</th>
                         </tr>
-                        <tr>
+                        <tr th:each="idAndQuantity : ${idAndQuantities}">
                             <td>
                                 <article>
-                                    <a href="#"><img th:src="@{/product/images/{filename}/{cate1}/{cate2}(filename=${product.thumbnailList}, cate1=${product.category1Code}, cate2=${product.category2Code})}" alt></a>
+                                    <a th:href="@{/product/view(id=${idAndQuantity.productId})}">
+                                        <img th:src="@{/product/images/{filename}/{cate1}/{cate2}(filename=${idAndQuantity.thumbnailList}, cate1=${idAndQuantity.category1Code}, cate2=${idAndQuantity.category2Code})}" alt>
+                                    </a>
                                     <div>
                                         <h2>
-                                            <a href="#" th:text="${product.productName}">상품명</a>
+                                            <a th:href="@{/product/view(id=${idAndQuantity.productId})}" th:text="${idAndQuantity.productName}">상품명</a>
                                         </h2>
-                                        <p th:text="${product.description}">상품설명</p>
+                                        <p th:text="${idAndQuantity.description}">상품설명</p>
                                     </div>
                                 </article>
                             </td>
-                            <td th:text="${productOrder.quantity + '개'}">수량</td>
-                            <td th:text="${#numbers.formatInteger(product.price * productOrder.quantity, 1, 'COMMA') + '원'}">판매가</td>
-                            <td th:if="${product.discountRate ne 0}"
-                                th:text="${'-' + #numbers.formatInteger((product.price * product.discountRate / 100) * productOrder.quantity, 1, 'COMMA') + '원'}" class="discountAmount">할인 금액</td>
-                            <td th:if="${product.discountRate eq 0}" class="discountAmount">0원</td>
-                            <td th:text="${#numbers.formatInteger(product.discountedPrice * productOrder.quantity, 1, 'COMMA') + '원'}">상품 금액</td>
+                            <td th:text="${idAndQuantity.quantity + '개'}">수량</td>
+                            <td th:text="${#numbers.formatInteger(idAndQuantity.price * idAndQuantity.quantity, 1, 'COMMA') + '원'}">판매가</td>
+                            <td th:if="${idAndQuantity.discountRate ne 0}"
+                                th:text="${'-' + #numbers.formatInteger((idAndQuantity.price * idAndQuantity.discountRate / 100) * idAndQuantity.quantity, 1, 'COMMA') + '원'}" class="discountAmount">할인 금액</td>
+                            <td th:if="${idAndQuantity.discountRate eq 0}" class="discountAmount">0원</td>
+                            <td th:text="${#numbers.formatInteger(idAndQuantity.discountedPrice * idAndQuantity.quantity, 1, 'COMMA') + '원'}">상품 금액</td>
                         </tr>
                         <tr class="total">
                             <td colspan="4"></td>
@@ -72,26 +74,26 @@
                                         <tr>
                                             <td>총 상품금액</td>
                                             <td>
-                                                <span th:text="${#numbers.formatInteger(product.discountedPrice * productOrder.quantity, 1, 'COMMA') + '원'}"></span>
+                                                <span th:text="${#numbers.formatInteger(productOrderCartDTO.totalDiscountedPrice, 1, 'COMMA') + '원'}"></span>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>배송비</td>
                                             <td>
-                                                <span th:text="${#numbers.formatInteger(product.deliveryCost, 1, 'COMMA') + '원'}"></span>
+                                                <span th:text="${#numbers.formatInteger(productOrderCartDTO.totalDeliveryCost, 1, 'COMMA') + '원'}"></span>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>포인트 할인</td>
                                             <td>
-                                                <span th:if="${productOrder.usedPoint ne 0}" th:text="${'-' + #numbers.formatInteger(productOrder.usedPoint, 1, 'COMMA') + '원'}"></span>
-                                                <span th:if="${productOrder.usedPoint eq 0}">0원</span>
+                                                <span th:if="${productOrderCartDTO.usedPoint ne 0}" th:text="${'-' + #numbers.formatInteger(productOrderCartDTO.usedPoint, 1, 'COMMA') + '원'}"></span>
+                                                <span th:if="${productOrderCartDTO.usedPoint eq 0}">0원</span>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>총 결제금액</td>
                                             <td>
-                                                <span th:text="${#numbers.formatInteger(productOrder.totalAmount, 1, 'COMMA') + '원'}"></span>
+                                                <span th:text="${#numbers.formatInteger(productOrderCartDTO.totalAmount, 1, 'COMMA') + '원'}"></span>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -108,9 +110,9 @@
                     <tbody>
                         <tr>
                             <td>주문번호</td>
-                            <td th:text="${productOrder.orderNumber}">주문 번호</td>
+                            <td th:text="${productOrderCartDTO.orderNumber}">주문 번호</td>
                             <td rowspan="3">총 결제금액</td>
-                            <td rowspan="3"><span th:text="${#numbers.formatInteger(productOrder.totalAmount, 1, 'COMMA') + '원'}">총 결제금액</span></td>
+                            <td rowspan="3"><span th:text="${#numbers.formatInteger(productOrderCartDTO.totalAmount, 1, 'COMMA') + '원'}">총 결제금액</span></td>
                         </tr>
                         <tr>
                             <td>결제방법</td>
@@ -130,12 +132,12 @@
                     <tbody>
                         <tr>
                             <td>수취인</td>
-                            <td th:text="${productOrder.receiptName}">홍길동</td>
+                            <td th:text="${productOrderCartDTO.receiptName}">홍길동</td>
                             <td>주문자 정보</td>
                         </tr>
                         <tr>
                             <td>연락처</td>
-                            <td th:text="${productOrder.receiptHp}">010-1234-1234</td>
+                            <td th:text="${productOrderCartDTO.receiptHp}">010-1234-1234</td>
                             <td rowspan="2">
                                 [[${member.name}]]
                                 <br/>
@@ -144,7 +146,7 @@
                         </tr>
                         <tr>
                             <td>배송지 주소</td>
-                            <td>[[${productOrder.receiptAddress}]] [[${productOrder.receiptDetailAddress}]]</td>
+                            <td>[[${productOrderCartDTO.receiptAddress}]] [[${productOrderCartDTO.receiptDetailAddress}]]</td>
                         </tr>
                     </tbody>
                 </table>
