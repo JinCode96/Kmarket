@@ -27,6 +27,10 @@ public class AdminService {
     private final AdminRepository adminRepository;
     private final JpaAdminRepository jpaAdminRepository;
 
+    /**
+     * mybatis
+     * 상품 등록
+     */
     public void insertProduct(Products products) {
         adminRepository.insertProduct(products);
     }
@@ -34,13 +38,16 @@ public class AdminService {
     /**
      * ADMIN 회원
      * 모든 상품 보기
+     * jpa 페이징 처리
      */
     public Page<Products> getProductsPage(Pageable pageable) {
         return jpaAdminRepository.findAll(pageable);
     }
+    
     /**
      * ADMIN 회원
      * 검색된 상품 보기
+     * jpa 페이징 처리
      */
     public Page<Products> searchProducts(String searchField, String keyword, Pageable pageable) {
         switch (searchField) {
@@ -72,13 +79,16 @@ public class AdminService {
     /**
      * SELLER 회원
      * 모든 상품 보기
+     * jpa 페이징
      */
     public Page<Products> getProductsBySeller(String seller, Pageable pageable) {
         return jpaAdminRepository.findBySeller(seller, pageable);
     }
+
     /**
      * SELLER 회원
      * 검색된 상품 보기
+     * jpa 페이징
      */
     public Page<Products> getProductsBySellerAndSearchField(String seller, String searchField, String keyword, Pageable pageable) {
         switch (searchField) {
@@ -107,20 +117,33 @@ public class AdminService {
         }
     }
 
+    /**
+     * 상품 삭제
+     */
     public void deleteProductById(Long productId) {
         jpaAdminRepository.deleteById(productId);
     }
 
+    /**
+     * 상품 다중 삭제
+     */
     public void deleteSelectedProducts(List<Long> productIds) {
         for (Long productId : productIds) {
             jpaAdminRepository.deleteById(productId);
         }
     }
 
+    /**
+     * 상품 가져오기
+     */
     public Optional<Products> findById(Long id) {
         return jpaAdminRepository.findById(id);
     }
 
+    /**
+     * 상품 수정
+     * jpa
+     */
     public void update(ProductSaveForm productSaveForm, String thumbnailList, String thumbnailMain, String thumbnailDetail, String detailCut) {
         Products findProduct = jpaAdminRepository.findById(productSaveForm.getId()).orElseThrow();
         findProduct.setCategory1Code(productSaveForm.getCategory1Code());

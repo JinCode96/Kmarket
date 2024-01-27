@@ -746,6 +746,7 @@
     color: #fff;
     box-sizing: border-box;
     margin-top: 10px;
+    cursor: pointer;
 }
 
 
@@ -887,6 +888,7 @@
     color: #fff;
     box-sizing: border-box;
     margin-top: 10px;
+    cursor: pointer;
 }
 
 #product > .order > form > article {

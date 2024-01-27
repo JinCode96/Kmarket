@@ -7,6 +7,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 
+/**
+ * Redis 에 이메일 key value 저장
+ */
 @Service
 @RequiredArgsConstructor
 public class RedisUtil {

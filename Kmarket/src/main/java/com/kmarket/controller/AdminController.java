@@ -36,6 +36,9 @@ import java.util.Optional;
 import static com.kmarket.constant.ApiResponseConst.*;
 import static com.kmarket.constant.MemberConst.*;
 
+/**
+ * 관리자 컨트롤러
+ */
 @Slf4j
 @Controller
 @RequiredArgsConstructor
@@ -45,35 +48,40 @@ public class AdminController {
     private final AdminService adminService;
     private final FileStore fileStore;
 
+    /**
+     * 관리자 메인 화면
+     */
     @GetMapping("/")
     public String home() {
         return "admin/main";
     }
 
     /**
-     * 상품 등록 폼
+     * 상품 등록 화면
      */
     @GetMapping("/register")
     public String registerForm(Model model) {
-        model.addAttribute("products", new ProductSaveForm());
+        model.addAttribute("products", new ProductSaveForm()); // th:object 를 위해
         return "admin/register";
     }
 
     /**
-     * 상품 등록
+     * 상품 등록 POST
+     * @Validated 사용
      */
     @PostMapping("/register")
     public String insertProduct(@Validated @ModelAttribute("products") ProductSaveForm productSaveForm, BindingResult bindingResult, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+        log.info("상품 등록...");
         if (bindingResult.hasErrors()) {
             log.info("bindingResult error = {}", bindingResult);
             return "admin/register";
         }
-        log.info("ProductSaveForm={}", productSaveForm);
 
         Integer cate1 = productSaveForm.getCategory1Code();
         Integer cate2 = productSaveForm.getCategory2Code();
         String username = principalDetails.getUsername();
-
+        
+        // 한번에 처리
         try {
             // 각 파일에 대한 저장 처리
             String thumbnailList = fileStore.storeFile(productSaveForm.getThumbnailList(), cate1, cate2);
@@ -94,7 +102,8 @@ public class AdminController {
     }
 
     /**
-     * 상품 목록, jpa 페이징 처리, 키워드 검색
+     * 상품 목록 화면
+     * jpa 페이징 처리, 키워드 검색
      * SELLER (일반판매회원) 일 때, 해당 회원이 등록한 상품만 조회
      * ADMIN (관리자) 일 때, 모든 상품 조회
      */
@@ -116,6 +125,7 @@ public class AdminController {
             } else {
                 productsPage = adminService.getProductsBySeller(username, pageable); // 검색기능을 사용하지 않음
             }
+
         } else if (type.equals(ADMIN_UPPER)) { // 관리자
             if (StringUtils.hasText(keyword) && StringUtils.hasText(searchField)) {
                 productsPage = adminService.searchProducts(searchField, keyword, pageable); // 검색기능을 사용
@@ -139,11 +149,12 @@ public class AdminController {
     }
 
     /**
-     * 상품 단일 삭제
+     * 상품 단일 삭제 Delete
      */
     @ResponseBody
-    @PostMapping("/deleteProduct")
+    @DeleteMapping("/deleteProduct")
     public ApiResponse deleteProduct(@RequestParam Long productId) {
+        log.info("상품 단일 삭제...");
         try {
             adminService.deleteProductById(productId);
             return new ApiResponse(PRODUCT_DELETE_OK, SUCCESS);
@@ -157,8 +168,9 @@ public class AdminController {
      * 상품 다중 선택 삭제
      */
     @ResponseBody
-    @PostMapping("/deleteSelectedProducts")
+    @DeleteMapping("/deleteSelectedProducts")
     public ApiResponse deleteSelectedProducts(@RequestBody Map<String, List<Long>> requestBody) {
+        log.info("상품 다중 삭제...");
         List<Long> productIds = requestBody.get("productIds");
         try {
             adminService.deleteSelectedProducts(productIds);
@@ -170,7 +182,7 @@ public class AdminController {
     }
 
     /**
-     * 상품 수정 폼
+     * 상품 수정 화면
      */
     @GetMapping("/update")
     public String updateForm(Long productId, Model model, @AuthenticationPrincipal PrincipalDetails principalDetails) {
@@ -189,10 +201,12 @@ public class AdminController {
     }
 
     /**
-     * 상품 수정
+     * 상품 수정 POST
+     * @Validated 사용
      */
     @PostMapping("/update")
     public String update(@Validated ProductSaveForm productSaveForm, BindingResult bindingResult) {
+        log.info("상품 수정...");
         if (bindingResult.hasErrors()) {
             log.info("bindingResult error = {}", bindingResult);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, BAD_REQUEST);

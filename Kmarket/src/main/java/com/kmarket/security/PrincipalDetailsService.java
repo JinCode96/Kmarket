@@ -10,7 +10,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import static com.kmarket.constant.MemberConst.*;
 
+/**
+ * 실제 로그인 서비스
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -20,7 +24,7 @@ public class PrincipalDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        log.info("username={}", username);
+        log.info("로그인 요청...");
 
         UserDTO user = memberRepository.findById(username).orElse(null);
         Members member = null;
@@ -28,17 +32,16 @@ public class PrincipalDetailsService implements UserDetailsService {
         if (user != null) {
             String userType = user.getType();
 
-            if ("GENERAL".equals(userType)) {
+            if (GENERAL_UPPER.equals(userType)) {
                 member = memberRepository.findByIdGeneral(username).orElse(null);
-            } else if ("SELLER".equals(userType)) {
+            } else if (SELLER_UPPER.equals(userType)) {
                 member = memberRepository.findByIdSeller(username).orElse(null);
             }
             if (member != null) {
-//                log.info("member={}", member);
                 return new PrincipalDetails(member);
             }
         }
-//        log.info("회원 없음!!!");
+        log.info("회원 없음...");
         throw new UsernameNotFoundException(username);
     }
 }

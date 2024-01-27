@@ -19,6 +19,13 @@ public final class ApiResponseConst {
     public static final String PASSWORD_UPDATE_NOT_OK = "비밀번호 변경에 실패하였습니다. 다시 시도해주세요.";
     public static final String PRODUCT_DELETE_OK = "상품이 삭제되었습니다.";
     public static final String PRODUCT_DELETE_NOT_OK = "상품 삭제 시 문제가 발생하였습니다. 다시 시도해주세요.";
+    public static final String PRODUCT_NOT_FOUND = "상품이 존재하지 않습니다.";
+    public static final String PRODUCT_CHANGE_OK = "상품 수량 변경 완료";
+    public static final String MAX_PURCHASE_PER_PERSON = "상품의 1인당 최대 구매 가능 개수는 1일 동안 100개 입니다.";
+    public static final String ADD_TO_CART_SUCCESS = "장바구니에 상품이 추가되었습니다.\n장바구니로 이동하시겠습니까?";
+    public static final String ADD_TO_CART_FAILED = "상품을 장바구니에 추가하는데 실패하였습니다. 다시 시도해 주세요.";
+
+
     public static final int SUCCESS = 200;
     public static final int FAIL = 400;
 

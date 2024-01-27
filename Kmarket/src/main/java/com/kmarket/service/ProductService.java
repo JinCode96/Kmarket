@@ -1,6 +1,8 @@
 package com.kmarket.service;
 
 import com.kmarket.api.ApiResponse;
+import com.kmarket.constant.ApiResponseConst;
+import com.kmarket.constant.MemberConst;
 import com.kmarket.constant.ProductConst;
 import com.kmarket.domain.Cart;
 import com.kmarket.domain.Products;
@@ -28,6 +30,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.kmarket.constant.ApiResponseConst.*;
+import static com.kmarket.constant.MemberConst.GENERAL_UPPER;
+import static com.kmarket.constant.MemberConst.SELLER_UPPER;
 import static com.kmarket.constant.ProductConst.*;
 
 @Slf4j
@@ -107,7 +112,7 @@ public class ProductService {
      * 장바구니 uid 로 조회
      */
     public List<Cart> findByUid(String uid) {
-        return jpaCartRepository.findByUid(uid);
+        return jpaCartRepository.findByUidOrderByRegistrationDateDesc(uid);
     }
 
     /**
@@ -118,11 +123,10 @@ public class ProductService {
         Products findProduct = jpaProductRepository.findById(idAndQuantity.getProductId()).orElse(null);
         // 상품 없으면 에러
         if (findProduct == null) {
-            return 400;
+            return FAIL;
         }
         // 해당 회원의 장바구니에서 해당 상품 정보 가져오기
         Cart findCartProduct = jpaCartRepository.findByProductIdAndUid(idAndQuantity.getProductId(), username).orElse(null);
-        log.info("findCart={}", findCartProduct);
         // 장바구니에 해당 상품 있는지 체크
         if (findCartProduct == null) {
             // 해당 상품이 장바구니에 없다면 새로 추가해서 넣기
@@ -145,7 +149,7 @@ public class ProductService {
             // 해당 상품이 이미 장바구니에 있다면 기존 quantity 에 더하기 (사용자가 같고 상품이 이미 있다면)
             findCartProduct.setQuantity(findCartProduct.getQuantity() + idAndQuantity.getQuantity()); // 수량 추가
         }
-        return 200;
+        return SUCCESS;
     }
 
     /**
@@ -190,9 +194,9 @@ public class ProductService {
         productRepository.increaseSoldNumber(orderItemDTO.getProductId());
 
         // 5. 멤버 테이블 포인트 업데이트
-        if ("GENERAL".equals(memberType)) {
+        if (GENERAL_UPPER.equals(memberType)) {
             productRepository.updateGeneralMemberPoint(orderDTO.getSavePoint(), orderDTO.getUsedPoint(), orderDTO.getUid());
-        } else if ("SELLER".equals(memberType)) {
+        } else if (SELLER_UPPER.equals(memberType)) {
             productRepository.updateSellerMemberPoint(orderDTO.getSavePoint(), orderDTO.getUsedPoint(), orderDTO.getUid());
         }
     }
@@ -222,9 +226,9 @@ public class ProductService {
         }
 
         // 5. 멤버 테이블 포인트 업데이트
-        if ("GENERAL".equals(memberType)) {
+        if (GENERAL_UPPER.equals(memberType)) {
             productRepository.updateGeneralMemberPoint(orderDTO.getSavePoint(), orderDTO.getUsedPoint(), orderDTO.getUid());
-        } else if ("SELLER".equals(memberType)) {
+        } else if (SELLER_UPPER.equals(memberType)) {
             productRepository.updateSellerMemberPoint(orderDTO.getSavePoint(), orderDTO.getUsedPoint(), orderDTO.getUid());
         }
     }
@@ -242,20 +246,20 @@ public class ProductService {
         if (map.get("action").equals("decrease")) {
             if (findCart != null && quantity > 1) {
                 findCart.setQuantity(findCart.getQuantity() - 1); // 수량 감소
-                return 200;
+                return SUCCESS;
             }
         } else if (map.get("action").equals("increase")) {
             if (findCart != null && quantity < 100) {
                 findCart.setQuantity(findCart.getQuantity() + 1); // 수량 증가
-                return 200;
+                return SUCCESS;
             }
         } else if (map.get("action").equals("input")) {
             if (findCart != null && quantity >= 1 && quantity <= 100) {
                 findCart.setQuantity(Integer.valueOf(map.get("quantity"))); // 수량 변경
-                return 200;
+                return SUCCESS;
             }
         }
-        return 400;
+        return FAIL;
     }
 
     /**

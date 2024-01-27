@@ -17,8 +17,12 @@ public class HomeController {
 
     private final ProductService productService;
 
+    /**
+     * 홈 화면
+     */
     @GetMapping("/")
     public String home(Model model) {
+
         List<Products> hitProds = productService.findTop8ByOrderByHitDesc(); // 조회순 (히트상품)
         List<Products> recommendProds = productService.findRandomProducts(); // 랜덤 (추천상품)
         List<Products> recentProds = productService.findTop8ByOrderByRegistrationDateDesc(); // 최신순 (최신상품)

@@ -61,6 +61,10 @@ function adjustQuantity(button, action) {
 }
 
 function ajaxChangeQuantity(object) {
+
+    /**
+     * 상품 수량 변경
+     */
     $.ajax({
         url: '/kmarket/product/changeQuantity',
         method: 'POST',
@@ -91,9 +95,13 @@ function deleteCart() {
     if (productIds.length > 0) {
 
         if (confirm(productIds.length + "개의 상품을 삭제하시겠습니까?")) {
+
+            /**
+             * 상품 삭제
+             */
             $.ajax({
                 url: '/kmarket/product/deleteCart',
-                method: 'POST',
+                method: 'DELETE',
                 contentType: 'application/json',
                 data: JSON.stringify({"productIds": productIds}),
                 success: function (data) {

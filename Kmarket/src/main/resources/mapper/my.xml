@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kmarket.repository.my.MyMapper">
+
+    <select id="selectOrderHistory">
+        select A.order_number, A.order_state, A.order_date, B.product_id, B.quantity, C.product_name, C.discounted_price, C.thumbnail_list, C.category1_code, C.category2_code
+        from km_product_order as A
+        join km_product_order_item as B on A.order_number = B.order_number
+        join km_product as C on B.product_id = C.id
+        where uid = #{uid}
+        order by order_date desc
+        LIMIT 10;
+    </select>
+
+    <select id="selectMemberPoint">
+        select *
+        from km_member_point
+        where uid = #{uid}
+        order by earned_point_date desc
+        LIMIT 10;
+    </select>
+
+    <update id="updateEmail">
+        update km_member_general
+        set email = #{email}
+        where login_Id = #{loginId};
+    </update>
+
+    <select id="findSamePhoneNumberGeneral">
+        select count(*)
+        from km_member_general
+        where login_id = #{loginId}
+          and phone_number = #{phoneNumber};
+    </select>
+
+    <update id="updatePhoneNumberGeneral">
+        update km_member_general
+        set phone_number = #{phoneNumber}
+        where login_id = #{loginId};
+    </update>
+
+    <select id="findSamePhoneNumberSeller">
+        select count(*)
+        from km_member_seller
+        where login_id = #{loginId}
+          and phone_number = #{phoneNumber};
+    </select>
+
+    <update id="updatePhoneNumberSeller">
+        update km_member_seller
+        set phone_number = #{phoneNumber}
+        where login_id = #{loginId};
+    </update>
+
+    <update id="updateAddressGeneral">
+        update km_member_general
+        set zip_code       = #{zipCode},
+            address        = #{address},
+            detail_address = #{detailAddress}
+        where login_id = #{loginId};
+    </update>
+
+    <update id="updateAddressSeller">
+        update km_member_seller
+        set zip_code       = #{zipCode},
+            address        = #{address},
+            detail_address = #{detailAddress}
+        where login_id = #{loginId};
+    </update>
+
+
+
+</mapper>

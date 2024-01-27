@@ -13,12 +13,10 @@ import static com.kmarket.constant.MemberConst.*;
  * 일반 회원 폼 
  * controller 로 받는 역할 수행
  * validation 검증
- * password encode
  */
 @Data
 public class GeneralMemberDTO {
 
-    // 일반 회원 필드
     @NotBlank
     @Pattern(regexp = "^[a-z][a-z0-9]{5,12}$") // 영문자 or 영문자 + 숫자 (6~13자리)
     private String loginId;

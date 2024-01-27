@@ -71,9 +71,13 @@ window.onload = function() {
         if (!passOk || !passConfirmOk) {
             alert('비밀번호를 정확히 입력해주세요.');
         } else {
+
+            /**
+             * 회원 비밀번호 변경
+             */
             $.ajax({
                 url: "/kmarket/member/findPwResult",
-                method: "POST",
+                method: "PUT",
                 contentType: "application/json",
                 dataType: 'json',
                 data: JSON.stringify({"loginId" : loginId, "password": password}), // 객체 형태로 전송

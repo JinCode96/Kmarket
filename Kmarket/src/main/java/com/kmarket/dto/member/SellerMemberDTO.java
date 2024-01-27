@@ -13,6 +13,7 @@ import static com.kmarket.constant.MemberConst.*;
 /**
  * 판매자 회원 폼
  * controller 로 받는 역할만 수행
+ * validation 검증
  */
 @Data
 public class SellerMemberDTO {

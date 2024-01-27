@@ -24,7 +24,7 @@
                     <li>
                         <a href="#">
                             포인트
-                            <span class="point">1,000</span>
+                            <span th:text="${#numbers.formatInteger(member.point, 1, 'COMMA')}" class="point">나의 포인트</span>
                         </a>
                     </li>
                     <li>
@@ -40,7 +40,6 @@
             <ul>
                 <span class="menu_else"></span>
                 <li class="on"><a href="#">전체주문내역</a></li>
-                <!--<li><a href="#">관심상품</a></li>-->
                 <li><a href="#">포인트내역</a></li>
                 <li><a href="#">쿠폰</a></li>
                 <li><a href="#">나의리뷰</a></li>
@@ -52,72 +51,74 @@
                 <article>
                     <h3>회원정보 설정</h3>
                     <table border="0">
-                        <tr>
-                            <td>사용자 ID</td>
-                            <td>chh****</td>
-                        </tr>
-                        <tr>
-                            <td>비밀번호</td>
-                            <td>
-                                <button id="btnChangePass">비밀번호 수정</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>이름</td>
-                            <td>김*학</td>
-                        </tr>
-                        <tr>
-                            <td>생년월일</td>
-                            <td>1983년 05월 03일</td>
-                        </tr>
-                        <tr>
-                            <td>E-mail</td>
-                            <td>
-                                <input type="text" name="email1" value="chakh101">@
-                                <input type="text" name="email2" value="naver.com">
-                                <select>
-                                    <option>직접입력</option>
-                                    <option>naver.com</option>
-                                    <option>daum.net</option>
-                                    <option>gmail.com</option>
-                                    <option>nate.com</option>
-                                    <option>outlook.com</option>
-                                </select>
-                                <button id="btnChangeEmail">수정하기</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>휴대폰</td>
-                            <td>
-                                <p class="hp">
-                                    <input type="text" name="hp1" value="010"/>-
-                                    <input type="text" name="hp2" value="1234"/>-
-                                    <input type="text" name="hp3" value="1001"/>
-                                    <button id="btnChangeHp">수정하기</button>
-                                </p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>주소</td>
-                            <td>
-                                <input type="text" name="zip"/>
-                                <button id="btnFindZip">주소검색</button>
-                                <p class="address">
-                                    <input type="text" name="addr1"/>
-                                    <input type="text" name="addr2"/>
-                                </p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>회원탈퇴</td>
-                            <td>
-                                <button id="btnWithdraw">탈퇴하기</button>
-                            </td>
-                        </tr>
+                            <tr>
+                                <td>사용자 ID</td>
+                                <td>
+                                    <p th:text="${#strings.substring(member.loginId, 0, 5) + '****'}">아이디</p>
+                                </td>
+                            </tr>
+                            <!-- OAuth2 유저면 비밀번호 수정 없음 -->
+                            <tr th:if="${member.provider == null}">
+                                <td>비밀번호</td>
+                                <td>
+                                    <button th:onclick="|location.href='@{/member/findPw}'|" id="btnChangePass">비밀번호 수정</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>이름</td>
+                                <td th:text="${member.name}">이름</td>
+                            </tr>
+                            <!-- 일반회원일 때만 이메일 변경 가능 -->
+                            <tr th:if="${member.provider == null} and ${member.type == 'GENERAL'}">
+                                <td>E-mail</td>
+                                <td>
+                                    <input type="text" name="email1" id="emailPrefix" th:value="${emailPrefix}" placeholder="이메일 입력">@
+                                    <input type="text" name="email2" id="emailDomain" th:value="${emailDomain}" placeholder="이메일 도메인">
+                                    <select id="domainSelect">
+                                        <option value="" >-직접입력-</option>
+                                        <option value="naver.com">naver.com</option>
+                                        <option value="nate.com">nate.com</option>
+                                        <option value="daum.com">daum.com</option>
+                                        <option value="gmail.com">gmail.com</option>
+                                        <option value="yahoo.com">yahoo.com</option>
+                                        <option value="hanmail.net">hanmail.net</option>
+                                        <option value="kakao.com">kakao.com</option>
+                                        <option value="korea.kr">korea.kr</option>
+                                    </select>
+                                    <button id="btnChangeEmail">수정하기</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>휴대폰</td>
+                                <td>
+                                    <p class="hp">
+                                        <input type="text" th:value="${phoneNumber}" id="phoneNumber"/>
+                                        <button id="btnChangeHp">수정하기</button>
+                                        <span>"-" 을 생략하여 숫자만 입력해주세요.</span>
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>주소</td>
+                                <td>
+                                    <input type="text" id="zipCode" th:value="${member.zipCode}" placeholder="우편번호"/>
+                                    <button id="btnFindZip" onclick="daumPostcode()">주소검색</button>
+                                    <p class="address">
+                                        <input type="text" id="address" th:value="${member.address}" placeholder="주소를 검색하세요."/>
+                                        <input type="text" id="detailAddress" th:value="${member.detailAddress}" placeholder="상세주소를 입력하세요.">
+                                        <button id="btnChangeAddress">수정하기</button>
+                                    </p>
+                                </td>
+                            </tr>
                     </table>
-                    <button id="btnInfoChange">수정하기</button>
                 </article>
             </section>
         </div>
     </div>
+    <th:block layout:fragment="script">
+        <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script> <!-- 주소찾기 -->
+        <script th:src="@{/js/postCode.js}"></script> <!-- 주소찾기 -->
+        <script th:src="@{/js/emailDomain.js}"></script>
+        <script th:src="@{/js/myInfo.js}"></script>
+    </th:block>
 </html>

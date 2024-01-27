@@ -1,7 +1,13 @@
 package com.kmarket.kakaopay;
 
+import com.kmarket.kakaopay.KakaoApproveResponse;
+import com.kmarket.kakaopay.KakaoReadyResponse;
+import com.kmarket.kakaopay.ProductOrderCartDTO;
+import com.kmarket.kakaopay.ProductOrderDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -11,16 +17,18 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+/**
+ * 카카오 페이 api
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class KakaoPayService {
     static final String cid = "TC0ONETIME"; // 가맹점 테스트 코드
-    static final String admin_Key = "bc4dac60ebb717a9c8b29252bff4d484"; // 공개 조심! 본인 애플리케이션의 어드민 키를 넣어주세요
+    static final String admin_Key = System.getenv("KAKAO_ADMIN_KEY"); // 환경 변수에서 가져오기
     private static final String KAKAO_PAY_READY_URL = "https://kapi.kakao.com/v1/payment/ready"; // 1차 요청 주소
     private static final String KAKAO_PAY_APPROVE_URL = "https://kapi.kakao.com/v1/payment/approve"; // 승인 요청 주소
-    private static final String KAKAO_PAY_CANCEL_URL = "https://kapi.kakao.com/v1/payment/cancel"; // 환불 요청 주소
     private KakaoReadyResponse kakaoReady;
 
     /**
@@ -40,7 +48,7 @@ public class KakaoPayService {
         parameters.add("tax_free_amount", "0"); // 상품 비과세 금액
         parameters.add("approval_url", "http://localhost:8080/kmarket/product/orderApproval"); // 성공 시 redirect url
         parameters.add("cancel_url", "http://localhost:8080/kmarket/product/directOrder?productId=" + productOrderDTO.getProductId() + "&quantity=" + productOrderDTO.getQuantity()); // 취소 시 redirect url
-        parameters.add("fail_url", "http://localhost:8080/kmarket"); // 실패 시 redirect url todo 오류페이지 하나 만들기
+        parameters.add("fail_url", "http://localhost:8080/kmarket"); // 실패 시 redirect url
 
         // 파라미터, 헤더
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(parameters, this.getHeaders());

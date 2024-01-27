@@ -8,7 +8,6 @@ import com.kmarket.dto.product.OrderItemDTO;
 public interface ProductRepository {
     CategoryDTO getCategory(Integer cate1, Integer cate2);
     void increaseHit(Long productId);
-
     void increaseSoldNumber(Long productId);
     Integer findGeneralPoint(String LoginId);
     Integer findSellerPoint(String LoginId);

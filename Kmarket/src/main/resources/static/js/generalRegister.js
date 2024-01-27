@@ -240,6 +240,9 @@ window.onload = function() {
 
     /////////////// ajax //////////////
 
+    /**
+     * 아이디 중복 체크
+     */
     function ajaxCheckId(loginId) {
         $.ajax({
             url: "/kmarket/member/register/checkLoginId",
@@ -263,6 +266,9 @@ window.onload = function() {
         });
     }
 
+    /**
+     * 이메일 중복 체크
+     */
     function ajaxCheckEmail(email) {
         $.ajax({
             url: "/kmarket/member/register/checkEmail",
@@ -287,6 +293,9 @@ window.onload = function() {
         });
     }
 
+    /**
+     * 일반 회원 가입
+     */
     function ajaxSendMemberToServer(member) {
         $.ajax({
             url: "/kmarket/member/register/general",

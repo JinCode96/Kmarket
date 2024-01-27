@@ -3,6 +3,8 @@ package com.kmarket.domain;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 @Entity
 @Table(name = "km_product_review")
@@ -14,5 +16,5 @@ public class Review {
     private String uid;
     private String content;
     private Integer rating;
-    private String registrationDate;
+    private LocalDateTime registrationDate;
 }

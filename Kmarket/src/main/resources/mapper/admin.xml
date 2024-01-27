@@ -8,6 +8,4 @@
         values (#{category1Code}, #{category2Code}, #{seller}, #{productName}, #{description}, #{company}, #{price}, #{discountRate}, #{discountedPrice}, #{point}, #{stock}, #{deliveryCost}, #{thumbnailList}, #{thumbnailMain}, #{thumbnailDetail},
                 #{detailCut}, #{status}, #{duty}, #{receipt}, #{businessType}, #{origin}, NOW());
     </insert>
-
-
 </mapper>

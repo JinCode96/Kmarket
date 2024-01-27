@@ -12,25 +12,25 @@
                     <li>
                         <a href="#">
                             주문·배송
-                            <span class="delivery">1</span>
+                            <span th:text="${#numbers.formatInteger(orderProducts.size(), 1, 'COMMA')}" class="delivery">주문, 배송 개수</span>
                         </a>
                     </li>
                     <li>
                         <a href="#">
                             할인쿠폰
-                            <span class="coupon">1</span>
+                            <span class="coupon">0</span>
                         </a>
                     </li>
                     <li>
                         <a href="#">
                             포인트
-                            <span class="point">1,000</span>
+                            <span th:text="${#numbers.formatInteger(member.point, 1, 'COMMA')}" class="point">나의 포인트</span>
                         </a>
                     </li>
                     <li>
                         <a href="#">
                             문의내역
-                            <span class="qna">1</span>
+                            <span class="qna">0</span>
                         </a>
                     </li>
                 </ol>
@@ -60,36 +60,50 @@
                             <th>상태</th>
                             <th>확인/신청</th>
                         </tr>
-                        <tr>
-                            <td class="date">2022-12-13</td>
+                        <tr th:if="${orderProducts.isEmpty()}">
+                            <td colspan="11">최근 주문 내역이 없습니다.</td>
+                        </tr>
+                        <tr th:if="${!orderProducts.isEmpty()}" th:each="orderProduct : ${orderProducts}">
+                            <td class="date" th:text="${#strings.substring(orderProduct.orderDate, 0, 10)}">주문 날짜</td>
                             <td>
-                                <a href="#" class="thumb">
-                                    <img src="https://via.placeholder.com/80x80" alt="">
+                                <a th:href="@{/product/view(id=${orderProduct.productId})}" class="thumb">
+                                    <img th:src="@{/product/images/{filename}/{cate1}/{cate2}(filename=${orderProduct.thumbnailList}, cate1=${orderProduct.category1Code}, cate2=${orderProduct.category2Code})}" alt="">
                                 </a>
                                 <ul>
-                                    <li class="company">상호명</li>
                                     <li class="prodName">
-                                        <a href="#">상품명</a>
+                                        <a th:href="@{/product/view(id=${orderProduct.productId})}" th:text="${orderProduct.productName}">상품명</a>
                                     </li>
                                     <li>
                                         수량:
-                                        <span class="prodCount">1</span>
+                                        <span th:text="${orderProduct.quantity}" class="prodCount">수량</span>
                                         개 / 주문번호 :
-                                        <span class="ordNo">1012211341</span>
+                                        <span th:text="${orderProduct.orderNumber}" class="ordNo">주문번호</span>
                                     </li>
-                                    <li class="prodPrice">34,000</li>
+                                    <li th:text="${#numbers.formatInteger(orderProduct.discountedPrice, 1, 'COMMA') + '원'}" class="prodPrice">할인된 가격</li>
                                 </ul>
                             </td>
-                            <td class="status">배송완료</td>
+                            <td th:text="${orderProduct.orderState}" class="status">배송완료</td>
                             <td class="confirm">
                                 <a href="#" class="receive">수취확인</a>
-                                <a href="#" class="review">상품평</a>
+                                <a href="#" class="reviewWrite"  th:attr="productId=${orderProduct.productId}, productName=${orderProduct.productName}">상품평쓰기</a>
                                 <a href="#" class="refund">반품신청</a>
                                 <a href="#" class="exchange">교환신청</a>
                             </td>
                         </tr>
                     </table>
                 </article>
+
+                <!-- 모달창 -->
+                <div id="myModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close" onclick="closeReviewModal()" id="closeModal">&times;</span>
+                        <h2>상품평 작성</h2>
+                        상품명 : <span id="productNameModal"></span>
+                        <textarea id="reviewText" placeholder="상품평을 작성해주세요"></textarea>
+                        <button onclick="submitReview()" id="applyButton">적용</button>
+                    </div>
+                </div>
+
                 <article class="point">
                     <h3>포인트적립내역</h3>
                     <a href="#" class="more">더보기</a>
@@ -101,15 +115,16 @@
                                 <th>주문번호</th>
                                 <th>적립금액</th>
                                 <th>비고</th>
-                                <th>유효기간</th>
                             </tr>
-                            <tr>
-                                <td>2022-12-10</td>
+                            <tr th:if="${points.isEmpty()}">
+                                <td colspan="11">포인트 적립 내역이 없습니다.</td>
+                            </tr>
+                            <tr th:if="${!points.isEmpty()}" th:each="point : ${points}">
+                                <td th:text="${#strings.substring(point.earnedPointDate, 0, 10)}">적립 날짜</td>
                                 <td>적립</td>
-                                <td>2022121001</td>
-                                <td>340</td>
+                                <td th:text="${point.orderNumber}">주문번호</td>
+                                <td th:text="${#numbers.formatInteger(point.earnedPoint, 1, 'COMMA')}">340</td>
                                 <td>상품 구매확정</td>
-                                <td>2024-12-10</td>
                             </tr>
                         </table>
                     </table>
@@ -119,84 +134,19 @@
                     <a href="#" class="more">더보기</a>
                     <table border="0">
                         <tr>
-                            <th>번호</th>
-                            <th>상품명</th>
+                            <th>상품번호</th>
                             <th>내용</th>
                             <th>평점</th>
                             <th>작성일</th>
                         </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>상품명</td>
-                            <td>배송이 빠릅니다. 잘 사용하겠습니다.</td>
-                            <td><span class="rating star1">상품평</span></td>
-                            <td>2022-12-10</td>
+                        <tr th:if="${reviews.isEmpty()}">
+                            <td colspan="11">상품평이 없습니다.</td>
                         </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>상품명</td>
-                            <td>배송이 빠릅니다. 잘 사용하겠습니다.</td>
-                            <td><span class="rating star2">상품평</span></td>
-                            <td>2022-12-10</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>상품명</td>
-                            <td>배송이 빠릅니다. 잘 사용하겠습니다.</td>
-                            <td><span class="rating star3">상품평</span></td>
-                            <td>2022-12-10</td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>상품명</td>
-                            <td>배송이 빠릅니다. 잘 사용하겠습니다.</td>
-                            <td><span class="rating star4">상품평</span></td>
-                            <td>2022-12-10</td>
-                        </tr>
-                        <tr>
-                            <td>5</td>
-                            <td>상품명</td>
-                            <td>배송이 빠릅니다. 잘 사용하겠습니다.</td>
-                            <td><span class="rating star5">상품평</span></td>
-                            <td>2022-12-10</td>
-                        </tr>
-                    </table>
-                </article>
-                <article class="qna">
-                    <h3>문의내역</h3>
-                    <a href="#" class="more">더보기</a>
-                    <table border="0">
-                        <tr>
-                            <th>번호</th>
-                            <th>문의채널</th>
-                            <th>문의유형</th>
-                            <th>제목</th>
-                            <th>작성일</th>
-                            <th>상태</th>
-                        </tr>
-                        <tr>
-                            <td>5</td>
-                            <td>고객센터</td>
-                            <td>주문/결제</td>
-                            <td>신용카드 결제 중 오류가 난 경우 어떻게 하나요?</td>
-                            <td>2024-12-12</td>
-                            <td><span class="notAnswerYet">검토중</span></td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>고객센터</td>
-                            <td>주문/결제</td>
-                            <td>신용카드 결제 중 오류가 난 경우 어떻게 하나요?</td>
-                            <td>2024-12-12</td>
-                            <td><span class="answered">답변완료</span></td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>판매자게시판</td>
-                            <td>배송</td>
-                            <td>배송기간이 보통 얼마나 걸리나요?</td>
-                            <td>2024-12-12</td>
-                            <td><span class="answered">답변완료</span></td>
+                        <tr th:if="${!reviews.isEmpty()}" th:each="review : ${reviews}">
+                            <td th:text="${review.productId}">상품번호</td>
+                            <td th:text="${review.content}" class="reviewContent">배송이 빠릅니다. 잘 사용하겠습니다.</td>
+                            <td><span class="rating star5">평점</span></td>
+                            <td th:text="${#strings.substring(review.registrationDate, 0, 10)}">2022-12-10</td>
                         </tr>
                     </table>
                 </article>
@@ -206,28 +156,34 @@
                     <div>
                         <div class="address">
                             <span>기본 배송지설정</span>
-                            <a href="#" class="setting">변경</a>
+                            <a th:href="@{/my/info}" class="setting">변경</a>
+                            <p>
+                                <span th:if="${member.address != null}" th:text="${member.address}">주소</span>
+                                <span th:if="${member.address == null}">주소 등록 되어있지 않음.</span>
+                            </p>
                         </div>
                         <div class="email">
                             <span>email 설정</span>
-                            <a href="#" class="setting">변경</a>
+                            <a th:href="@{/my/info}" class="setting">변경</a>
                             <p>
-                                <span>abc123@gmail.com</span><br/>
-                                (최종수정일 <span>2021-12-10</span>)
+                                <span th:if="${member.email != null}" th:text="${member.email}">이메일</span>
+                                <span th:if="${member.email == null}">이메일 등록 되어있지 않음.</span>
                             </p>
                         </div>
                         <div class="hp">
                             <span>휴대폰 설정</span>
-                            <a href="#" class="setting">변경</a>
+                            <a th:href="@{/my/info}" class="setting">변경</a>
                             <p>
-                                <span>abc123@gmail.com</span><br/>
-                                (최종수정일 <span>2021-12-10</span>)
+                                <span th:if="${member.phoneNumber != null}" th:text="${member.phoneNumber}">휴대폰 번호</span>
+                                <span th:if="${member.phoneNumber == null}">휴대폰 번호 등록 되어있지 않음.</span>
                             </p>
                         </div>
                     </div>
                 </article>
-
             </section>
         </div>
     </div>
+    <th:block layout:fragment="script">
+        <script th:src="@{/js/myModal.js}"></script>
+    </th:block>
 </html>

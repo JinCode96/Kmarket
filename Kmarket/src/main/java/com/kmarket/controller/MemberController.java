@@ -21,11 +21,15 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Map;
 
 import static com.kmarket.constant.ApiResponseConst.*;
 import static com.kmarket.constant.MemberConst.*;
 
-
+/**
+ * MemberController
+ * 회원 가입
+ */
 @Slf4j
 @Controller
 @RequiredArgsConstructor
@@ -47,7 +51,7 @@ public class MemberController {
     }
 
     /**
-     * join 화면
+     * 일반 회원, 사업자 회원 구분 화면
      */
     @GetMapping("/join")
     public String join() {
@@ -56,6 +60,7 @@ public class MemberController {
 
     /**
      * 이용 약관 화면
+     * @PathVariable 사용
      */
     @GetMapping("/sign-up/{type}")
     public String signUp(@PathVariable String type, Model model) {
@@ -67,16 +72,16 @@ public class MemberController {
 
     /**
      * 이용 약관 POST
-     * 체크박스 검증
+     * 약관 체크박스 검증
      */
     @ResponseBody
     @PostMapping("/sign-up/{type}")
     public ApiResponse termsValid(@PathVariable String type, @RequestBody TermsDTO terms) {
-        if (!terms.isTermsTerms() || !terms.isTermsFinance() || !terms.isTermsPrivacy()) { // 서버 사이드 검증 실패
+        log.info("이용 약관 검증...");
+        if (!terms.isTermsTerms() || !terms.isTermsFinance() || !terms.isTermsPrivacy()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, BAD_REQUEST);
         } else {
-//            session.setAttribute("termsAgreed", true);
-            return new ApiResponse(TERMS_OK, 200);
+            return new ApiResponse(TERMS_OK, SUCCESS);
         }
     }
 
@@ -85,26 +90,28 @@ public class MemberController {
      */
     @GetMapping("/register/{type}")
     public String registerForm(@PathVariable String type, Model model) {
-        model.addAttribute("member", new Members()); // th:object 사용 위해서
+        model.addAttribute("member", new Members()); // th:object 사용을 위해서
         if (type.equals(GENERAL_LOWER)) {
             return "member/registerGeneral";
         } else if (type.equals(SELLER_LOWER)) {
             return "member/registerSeller";
         }
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, NOT_FOUND);
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, NOT_FOUND); // 404
     }
 
     /**
      * 일반 회원가입 post
+     * @Validated 사용
      */
     @ResponseBody
     @PostMapping("/register/general")
     public ApiResponse saveGeneral(@Validated @RequestBody GeneralMemberDTO generalMemberDTO, BindingResult bindingResult) {
+        log.info("일반 회원 가입...");
         if (bindingResult.hasErrors()) {
-            return new ApiResponse(BAD_REQUEST, 400);
+            return new ApiResponse(BAD_REQUEST, FAIL);
         }
         generalMemberDTO.setPassword(passwordEncoder.encode(generalMemberDTO.getPassword())); // 패스워드 암호화
-        int result = memberService.saveGeneralMember(generalMemberDTO.generalDTOToDomain());
+        int result = memberService.saveGeneralMember(generalMemberDTO.generalDTOToDomain()); // 일반 회원 저장
         if (result == 1) {
             return new ApiResponse(REGISTER_OK, result);
         }
@@ -113,15 +120,17 @@ public class MemberController {
 
     /**
      * 판매자 회원가입 post
+     * @Validated 사용
      */
     @ResponseBody
     @PostMapping("/register/seller")
     public ApiResponse saveSeller(@Validated @RequestBody SellerMemberDTO sellerMemberDTO, BindingResult bindingResult) {
+        log.info("판매자 회원 가입...");
         if (bindingResult.hasErrors()) {
-            return new ApiResponse(BAD_REQUEST, 400);
+            return new ApiResponse(BAD_REQUEST, FAIL);
         }
-        sellerMemberDTO.setPassword(passwordEncoder.encode(sellerMemberDTO.getPassword()));
-        int result = memberService.saveSellerMember(sellerMemberDTO.generalDTOToDomain());
+        sellerMemberDTO.setPassword(passwordEncoder.encode(sellerMemberDTO.getPassword())); // 패스워드 암호화 
+        int result = memberService.saveSellerMember(sellerMemberDTO.generalDTOToDomain()); // 판매자 회원 저장
         if (result == 1) {
             return new ApiResponse(REGISTER_OK, result);
         }
@@ -133,8 +142,9 @@ public class MemberController {
      */
     @ResponseBody
     @PostMapping("/register/checkLoginId")
-    public ApiResponse checkLoginId(@RequestBody LoginIdDTO loginId) {
-        int result = memberService.checkLoginId(loginId.getLoginId());
+    public ApiResponse checkLoginId(@RequestBody Map<String, String> map) {
+        log.info("아이디 중복 체크...");
+        int result = memberService.checkLoginId(map.get("loginId"));
         if (result == 1) {
             return new ApiResponse(ID_NOT_OK, result);
         } else {
@@ -148,6 +158,7 @@ public class MemberController {
     @ResponseBody
     @PostMapping("/register/checkEmail")
     public ApiResponse checkEmail(@RequestBody SearchIdAndPassDTO searchIdAndPassDTO) {
+        log.info("이메일 중복 검사...");
         int result = memberService.checkEmail(searchIdAndPassDTO.getEmail());
         if (result == 1) {
             return new ApiResponse(EMAIL_NOT_OK, result);
@@ -157,11 +168,13 @@ public class MemberController {
     }
 
     /**
-     * 이름과 이메일로 회원 찾기
+     * 회원 찾기
+     * 이름과 이메일로 회원 존재 여부 찾기
      */
     @ResponseBody
     @PostMapping("/checkMemberNameAndEmail")
     public ApiResponse checkMemberNameAndEmail(@RequestBody SearchIdAndPassDTO searchIdAndPassDTO) {
+        log.info("회원 찾기...");
         int result = memberService.checkMemberNameAndEmail(searchIdAndPassDTO);
         if (result == 1) {
             return new ApiResponse(MEMBER_FOUND, result);
@@ -176,6 +189,7 @@ public class MemberController {
     @ResponseBody
     @PostMapping("/mailConfirm")
     public ApiResponse mailConfirm(@RequestBody SearchIdAndPassDTO searchIdAndPassDTO) throws MessagingException, UnsupportedEncodingException {
+        log.info("이메일 코드 전송...");
         emailService.sendEmail(searchIdAndPassDTO.getEmail());
         return new ApiResponse(EMAIL_CODE_OK, 200);
     }
@@ -186,6 +200,7 @@ public class MemberController {
     @ResponseBody
     @PostMapping("/codeConfirm")
     public ApiResponse codeConfirm(@RequestBody SearchIdAndPassDTO searchIdAndPassDTO) {
+        log.info("Redis 이메일 코드 인증...");
         String value = redisUtil.getData(searchIdAndPassDTO.getAuthCode());
         if (value == null) {
             return new ApiResponse(CODE_NOT_OK, 400);
@@ -195,17 +210,21 @@ public class MemberController {
     }
 
     /**
-     * 아이디 찾기
+     * 아이디 찾기 화면
      */
     @GetMapping("/findId")
     public String findIdForm() {
         return "member/findId";
     }
 
+    /**
+     * 아이디 찾기 Post
+     */
     @PostMapping("/findId")
     public String searchId(@ModelAttribute SearchIdAndPassDTO searchIdAndPassDTO, RedirectAttributes redirectAttributes) {
+        log.info("아이디 찾기...");
         searchIdAndPassDTO.makeEmail(); // 이메일 완성
-        Members members = memberService.searchId(searchIdAndPassDTO);
+        Members members = memberService.searchId(searchIdAndPassDTO);  // 이름과 이메일로 회원 찾기 (Oauth2 가 아닌 회원)
         if (members != null) {
             redirectAttributes.addFlashAttribute("members", members); // members 객체 redirect
             return "redirect:/member/findIdResult";
@@ -214,42 +233,54 @@ public class MemberController {
         }
     }
 
+    /**
+     * 아이디 찾기 결과 화면
+     */
     @GetMapping("/findIdResult")
     public String findIdResult(@ModelAttribute("members") Members members) {
         return "member/findIdResult";
     }
 
     /**
-     * 비밀번호 찾기
+     * 비밀번호 찾기 화면
      */
     @GetMapping("/findPw")
     public String findPwForm() {
         return "member/findPw";
     }
 
+    /**
+     * 비밀번호 찾기
+     * 회원 찾기 POST
+     */
     @PostMapping("/findPw")
     public String searchPass(SearchIdAndPassDTO searchIdAndPassDTO, RedirectAttributes redirectAttributes) {
-        searchIdAndPassDTO.makeEmail();
-        Members members = memberService.searchId(searchIdAndPassDTO);
+        log.info("비밀번호 찾기...");
+        searchIdAndPassDTO.makeEmail(); // 이메일 완성
+        Members members = memberService.searchId(searchIdAndPassDTO); // 회원 찾기
         if (members != null) {
             redirectAttributes.addFlashAttribute("members", members);
             return "redirect:/member/findPwResult";
         } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, BAD_REQUEST); // 회원이 없다면 404
         }
     }
 
     /**
-     * 비밀번호 변경
+     * 비밀번호 변경 화면
      */
     @GetMapping("/findPwResult")
     public String findPwResult(@ModelAttribute("members") Members members) {
         return "member/findPwResult";
     }
 
+    /**
+     * 회원 비밀번호 변경 PUT
+     */
     @ResponseBody
-    @PostMapping("/findPwResult")
+    @PutMapping("/findPwResult")
     public ApiResponse updatePassword(@RequestBody SearchIdAndPassDTO searchIdAndPassDTO) {
+        log.info("회원 비밀번호 변경...");
         searchIdAndPassDTO.setPassword(passwordEncoder.encode(searchIdAndPassDTO.getPassword()));
         int result = memberService.updatePass(searchIdAndPassDTO);
         if (result == 1) {

@@ -10,9 +10,13 @@ deleteProduct.forEach(button => {
         const productName = button.getAttribute('data-product-productName');
 
         if (confirm("상품코드 : " + productId + "\n" + "상품명 : " + productName + "\n" + "해당 상품을 삭제하시겠습니까?")) {
+
+            /**
+             * 상품 단일 삭제
+             */
             $.ajax({
                 url: '/kmarket/admin/deleteProduct',
-                method: 'POST',
+                method: 'DELETE',
                 dataType: 'json',
                 data: {"productId": productId},
                 success: function (data) {
@@ -40,9 +44,13 @@ function deleteSelectedProducts() {
 
     if (productIds.length > 0) {
         if (confirm(productIds.length + "개의 상품을 삭제하시겠습니까?")) {
+
+            /**
+             * 상품 다중 삭제
+             */
             $.ajax({
                 url: '/kmarket/admin/deleteSelectedProducts',
-                method: 'POST',
+                method: 'DELETE',
                 contentType: 'application/json',
                 data: JSON.stringify({"productIds": productIds}),
                 success: function (data) {

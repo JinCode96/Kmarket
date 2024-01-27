@@ -124,6 +124,7 @@ header > div.logo > div > a {
     margin-left: 5px;
     float: left;
     border: none;
+    cursor: pointer;
 }
 
 /* 추가 */

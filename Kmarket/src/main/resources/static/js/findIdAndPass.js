@@ -131,6 +131,9 @@ window.onload = function () {
         ajaxCodeConfirm(authCode);
     }
 
+    /**
+     * 회원 존재 여부 찾기
+     */
     function ajaxCheckMemberNameAndEmail(name, email) {
         $.ajax({
             url: "/kmarket/member/checkMemberNameAndEmail",
@@ -155,6 +158,9 @@ window.onload = function () {
         });
     }
 
+    /**
+     * 이메일 인증
+     */
     function ajaxCodeConfirm(authCode) {
         $.ajax({
             url: "/kmarket/member/codeConfirm",

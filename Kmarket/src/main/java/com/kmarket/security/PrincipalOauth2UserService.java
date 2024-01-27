@@ -18,6 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * 카카오, 네이버 등 로그인 서비스
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -29,25 +32,24 @@ public class PrincipalOauth2UserService extends DefaultOAuth2UserService {
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        log.info("loadUser...");
+        log.info("oAuth2...");
 
         OAuth2User oAuth2User = super.loadUser(userRequest);
-        log.info("getAttributes={}", oAuth2User.getAttributes());
-        
+
         OAuth2UserInfo oAuth2UserInfo = null;
         String provider = userRequest.getClientRegistration().getRegistrationId(); // google, facebook ...
 
         if (provider.equals("google")) {
-            log.info("구글 로그인 요청");
+            log.info("구글 로그인 요청...");
             oAuth2UserInfo = new GoogleUserInfo(oAuth2User.getAttributes());
         } else if (provider.equals("facebook")) {
-            log.info("페이스북 로그인 요청");
+            log.info("페이스북 로그인 요청...");
             oAuth2UserInfo = new FaceBookUserInfo(oAuth2User.getAttributes());
         } else if (provider.equals("naver")) {
-            log.info("네이버 로그인 요청");
+            log.info("네이버 로그인 요청...");
             oAuth2UserInfo = new NaverUserInfo((Map) oAuth2User.getAttributes().get("response"));
         } else if (provider.equals("kakao")) {
-            log.info("카카오 로그인");
+            log.info("카카오 로그인 요청...");
             oAuth2UserInfo = new KakaoUserInfo((Map)oAuth2User.getAttributes());
         }
 

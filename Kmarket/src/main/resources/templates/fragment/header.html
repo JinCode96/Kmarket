@@ -89,7 +89,7 @@
             <img th:src="@{/img/admin_logo.png}" alt="ADMINSTRATOR">
         </a>
         <nav>
-            <span><span>홍길동</span> 님 반갑습니다.</span> <!-- th:text="${#authentication.principal.members.name}"-->
+            <span><span th:text="${#authentication.principal.members.name}">이름</span> 님 반갑습니다.</span>
             <a th:href="@{/}">HOME</a>
             <a th:href="@{/logout}">로그아웃</a>
             <a href="#">고객센터</a>

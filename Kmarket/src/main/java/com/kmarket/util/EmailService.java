@@ -13,6 +13,9 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 import java.io.UnsupportedEncodingException;
 import java.util.Random;
 
+/**
+ * 이메일 전송 서비스
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional

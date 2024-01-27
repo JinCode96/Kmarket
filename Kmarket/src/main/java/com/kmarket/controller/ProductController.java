@@ -1,7 +1,7 @@
 package com.kmarket.controller;
 
+import com.kmarket.kakaopay.KakaoPayService;
 import com.kmarket.api.ApiResponse;
-import com.kmarket.constant.MemberConst;
 import com.kmarket.domain.*;
 import com.kmarket.dto.product.*;
 import com.kmarket.kakaopay.*;
@@ -34,6 +34,9 @@ import java.util.*;
 import static com.kmarket.constant.ApiResponseConst.*;
 import static com.kmarket.constant.MemberConst.*;
 
+/**
+ * 상품 컨트롤러
+ */
 @Slf4j
 @Controller
 @RequestMapping("/product")
@@ -45,8 +48,8 @@ public class ProductController {
     private final KakaoPayService kakaoPayService;
 
     /**
+     * 상품 목록 화면
      * 카테고리에 맞는 상품 불러오기, 페이징 처리
-     * 판매많은순, 낮은가격순, 높은가격순, 평점높은순, 후기많은순, 최근등록순 정렬하기
      */
     @GetMapping("/list")
     public String list(Pageable pageable,
@@ -54,31 +57,28 @@ public class ProductController {
                        @RequestParam(defaultValue = "popular") String sort,
                        Model model) {
         CategoryDTO category = productService.getCategory(cate1, cate2);
-        Page<Products> findProducts = productService.findByCategory1CodeAndCategory2Code(cate1, cate2, pageable, sort);
-        log.info("findProducts={}", findProducts);
+        Page<Products> findProducts = productService.findByCategory1CodeAndCategory2Code(cate1, cate2, pageable, sort); // 카테고리별 조회
 
         model.addAttribute("category", category);
         model.addAttribute("productsPage", findProducts);
         model.addAttribute("currentSort", sort);
-
         return "product/list";
     }
 
     /**
-     * 상품 상세
+     * 상품 상세 화면
+     * 리뷰 페이징 처리
      */
     @GetMapping("/view")
     public String view(Long id, @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable, Model model) {
-        
         Products findProduct = productService.findById(id).orElse(null);
         if (findProduct == null) {
-            model.addAttribute("errorMessage", "해당 상품이 존재하지 않습니다."); // 에러페이지
+            model.addAttribute("errorMessage", PRODUCT_NOT_FOUND); // 에러페이지
             return "error/errorPage";
         }
-        log.info("findProduct={}", findProduct);
 
         productService.increaseHit(id); // 상품 조회수 +1
-        Page<Review> reviewPage = productService.findByProductId(id, pageable); // 리뷰 페이징 처리
+        Page<Review> reviewPage = productService.findByProductId(id, pageable); // 상품 리뷰 페이징 처리
 
         model.addAttribute("category", productService.getCategory(findProduct.getCategory1Code(), findProduct.getCategory2Code()));
         model.addAttribute("product", findProduct);
@@ -87,42 +87,40 @@ public class ProductController {
     }
 
     /**
-     * 장바구니에 추가
+     * 장바구니에 추가 POST
      */
     @ResponseBody
     @PostMapping("/view")
     public ApiResponse directInsertCart(@RequestBody ProductIdAndQuantity productIdAndQuantity, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        log.info("productId..={}", productIdAndQuantity);
+        log.info("상품 장바구니에 추가...");
+
         if (principalDetails == null) {
-            return new ApiResponse("로그인 되어있지 않음", 600);
+            return new ApiResponse( 600); // 로그인 되어있지 않음
         }
         if (productIdAndQuantity.getQuantity() > 100) {
-            return new ApiResponse("상품의 1인당 최대 구매 가능 개수는 1일 동안 100개 입니다.", 400);
+            return new ApiResponse(MAX_PURCHASE_PER_PERSON, FAIL);
         }
+
         int result = productService.insertCart(productIdAndQuantity, principalDetails.getUsername());
-        if (result == 400) {
-            return new ApiResponse("장바구니에 상품 추가 실패", result);
+        if (result == SUCCESS) {
+            return new ApiResponse(ADD_TO_CART_SUCCESS, result);
         } else {
-            return new ApiResponse("장바구니에 상품이 추가되었습니다.\n장바구니로 이동하시겠습니까?", result);
+            return new ApiResponse(ADD_TO_CART_FAILED, result);
         }
     }
 
     /**
-     * 상품 단일 주문
-     * productId, quantity 를 받음
-     * 1. 상품 select 로 가져와서 view 로 보여주기
-     * 2. 사용자 정보 띄우기 (로그인 안 되어있을 시 로그인 창으로 보내기)
-     * 트랜잭션으로 처리하기
+     * 상품 단건 주문 화면
      */
     @GetMapping("/directOrder")
     public String directOrder(Long productId, Integer quantity, @AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {
         if (!(1 <= quantity && quantity <= 100)) {
-            model.addAttribute("errorMessage", "상품의 1인당 최대 구매 가능 개수는 1일 동안 100개 입니다.");
+            model.addAttribute("errorMessage", MAX_PURCHASE_PER_PERSON);
             return "error/errorPage";
         }
         Products findProduct = productService.findById(productId).orElse(null); // 해당 상품 가져오기, 장바구니 추가
         if (findProduct == null) { // 상품 null 체크
-            model.addAttribute("errorMessage", "해당 상품이 존재하지 않습니다.");
+            model.addAttribute("errorMessage", PRODUCT_NOT_FOUND);
             return "error/errorPage";
         }
 
@@ -135,7 +133,7 @@ public class ProductController {
     }
 
     /**
-     * 카카오 페이 단일 결제
+     * 카카오 페이 단건 결제
      * 포인트 유효성 검사
      */
     @ResponseBody
@@ -143,15 +141,14 @@ public class ProductController {
     public KakaoReadyResponse readyToKakaoPay(@RequestBody @Validated ProductOrderDTO productOrderDTO,
                                               @AuthenticationPrincipal PrincipalDetails principalDetails,
                                               HttpServletRequest request) {
-        log.info("kakaoPay...");
-        log.info("productOrderDto={}", productOrderDTO);
+        log.info("카카오 페이 단건 결제...");
 
         if (productOrderDTO.getUsedPoint() != 0) {
             validatePoints(productOrderDTO, principalDetails); // 포인트 유효성 검사
         }
 
         Products products = productService.findById(productOrderDTO.getProductId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "PRODUCT NOT FOUND")); // 실제 상품 가져오기
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, PRODUCT_NOT_FOUND)); // 실제 상품 가져오기
 
         // 실제 상품 정보 세팅
         productOrderDTO.setSavePoint(products.getPoint());
@@ -168,20 +165,91 @@ public class ProductController {
     }
 
     /**
-     * 장바구니 카카오페이
+     * 단건 결제 완료 후 호출
+     * 1. order 테이블에 주문 내용 1개 추가
+     * 2. order_item 테이블에 주문한 상품 추가. (단일 상품일 시 1개 추가)
+     * 3. member_point 테이블 포인트 적립 추가
+     * 4. 상품 주문 횟수 +1
+     * 5. member_general 또는 member_seller 테이블 포인트 업데이트
+     * 모두 트랜잭션으로 한번에 처리
+     * 결제 완료 창으로 리다이렉트
+     */
+    @GetMapping("/orderApproval")
+    public String orderApproval(@RequestParam("pg_token") String pgToken, @AuthenticationPrincipal PrincipalDetails principalDetails, HttpSession session, RedirectAttributes redirectAttributes) {
+        log.info("orderApproval...");
+
+        KakaoApproveResponse kakaoApprove = kakaoPayService.approveResponse(pgToken); // 카카오페이 요청 승인
+        ProductOrderDTO productOrderDTO = (ProductOrderDTO) session.getAttribute("productOrderDTO"); // 세션 주문 정보 가져오기
+        session.removeAttribute("productOrderDTO"); // 세션 닫아주기
+
+        if (productOrderDTO == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Session attribute 'productOrderDTO' not found or expired");
+        }
+
+        // 필요한 객체 생성
+        OrderDTO orderDTO = createOrderDTO(principalDetails.getUsername(), kakaoApprove, productOrderDTO);
+        OrderItemDTO orderItemDTO = createOrderItemDTO(productOrderDTO);
+        MemberPointDTO memberPointDTO = createMemberPointDTO(principalDetails.getUsername(), kakaoApprove, productOrderDTO);
+
+        productService.orderProcess(orderDTO, orderItemDTO, memberPointDTO, principalDetails.getMembers().getType()); // 주문 프로세스
+
+        productOrderDTO.setOrderNumber(orderDTO.getOrderNumber()); // 주문번호 set
+        redirectAttributes.addFlashAttribute("productOrderDTO", productOrderDTO);
+
+        return "redirect:/product/complete";
+    }
+
+    /**
+     * 단건 결제 주문 완료 화면
+     */
+    @GetMapping("/complete")
+    public String complete(ProductOrderDTO productOrderDTO, @AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {
+        log.info("단건 결제 완료...");
+        if (productOrderDTO.getProductId() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "didn't order the product");
+        }
+        Products product = productService.findById(productOrderDTO.getProductId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "product not found")); // 실제 상품 가져오기
+
+        model.addAttribute("member", principalDetails.getMembers());
+        model.addAttribute("product", product);
+        model.addAttribute("productOrder", productOrderDTO);
+        return "product/complete";
+    }
+
+    /**
+     * 상품 장바구니 주문 화면
+     */
+    @GetMapping("/cartOrder")
+    public String cartOrder(@RequestParam List<Long> productIds, @AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {
+        List<Cart> findCarts = productService.findById(productIds, principalDetails.getUsername());
+
+        CartSummary cartSummary = new CartSummary();
+
+        for (Cart cart : findCarts) {
+            cartSummary.addProduct(cart);
+        }
+        cartSummary.setTotalAmount(cartSummary.getTotalAmount() + cartSummary.getTotalDeliveryCost()); // 배송비를 상품 총 가격에 더함
+
+        model.addAttribute("cartSummary", cartSummary);
+        model.addAttribute("member", principalDetails.getMembers());
+        model.addAttribute("carts", findCarts);
+        return "product/cartOrder";
+    }
+
+    /**
+     * 카카오페이 장바구니 결제
      */
     @ResponseBody
     @PostMapping("/cartOrderPay")
-    public KakaoReadyResponse readyToKakaoPayCart(@RequestBody @Validated ProductOrderCartDTO productOrderCartDTO,
-                                              HttpServletRequest request) {
-        log.info("kakaoPay...");
-        log.info("productOrderCartDTO={}", productOrderCartDTO);
+    public KakaoReadyResponse readyToKakaoPayCart(@RequestBody @Validated ProductOrderCartDTO productOrderCartDTO, HttpServletRequest request) {
+        log.info("카카오 페이 장바구니 결제...");
 
         List<IdAndQuantity> orderInfos = new ArrayList<>();
 
         // 실제 product 가져와서 orderInfo 채우기
         for (IdAndQuantity idAndQuantity : productOrderCartDTO.getIdAndQuantities()) {
-            Products findProducts = productService.findById(idAndQuantity.getProductId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "PRODUCT NOT FOUND"));
+            Products findProducts = productService.findById(idAndQuantity.getProductId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, PRODUCT_NOT_FOUND));
             idAndQuantity.setProductName(findProducts.getProductName());
             idAndQuantity.setPoint(findProducts.getPoint());
             idAndQuantity.setDeliveryCost(findProducts.getDeliveryCost());
@@ -194,7 +262,6 @@ public class ProductController {
             idAndQuantity.setThumbnailList(findProducts.getThumbnailList());
             orderInfos.add(idAndQuantity);
         }
-        log.info("orderInfo={}", orderInfos);
 
         int totalSavePoint = 0;
         int totalDeliveryCost = 0;
@@ -226,7 +293,6 @@ public class ProductController {
         productOrderCartDTO.setTotalDiscountedPrice(totalDiscountedPrice);
         productOrderCartDTO.setTotalDeliveryCost(totalDeliveryCost);
         productOrderCartDTO.setTotalAmount(totalAmount); // 총 비용
-        log.info("productOrderCartDTO={}", productOrderCartDTO);
 
         KakaoReadyResponse kakaoReadyResponse = kakaoPayService.kakaoPayReady(productOrderCartDTO); // 카카오페이 준비
 
@@ -238,41 +304,7 @@ public class ProductController {
     }
 
     /**
-     * 결제 완료 후 호출되는 메서드
-     * 1. order 테이블에 주문 내용 1개 추가
-     * 2. order_item 테이블에 주문한 상품 추가. (단일 상품일 시 1개 추가)
-     * 3. member_point 테이블 포인트 적립 추가
-     * 4. 상품 주문 횟수 +1
-     * 5. member_general 또는 member_seller 테이블 포인트 업데이트
-     * 모두 트랜잭션으로 한번에 처리
-     * 결제 완료 창으로 리다이렉트
-     */
-    @GetMapping("/orderApproval")
-    public String orderApproval(@RequestParam("pg_token") String pgToken, @AuthenticationPrincipal PrincipalDetails principalDetails, HttpSession session, RedirectAttributes redirectAttributes) {
-        log.info("orderApproval...");
-        KakaoApproveResponse kakaoApprove = kakaoPayService.approveResponse(pgToken); // 카카오페이 요청 승인
-        log.info("kakaoApprove={}", kakaoApprove);
-        
-        ProductOrderDTO productOrderDTO = (ProductOrderDTO) session.getAttribute("productOrderDTO"); // 세션 주문 정보 가져오기
-        session.removeAttribute("productOrderDTO"); // 세션 닫아주기
-        if (productOrderDTO == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Session attribute 'productOrderDTO' not found or expired");
-        }
-
-        // 객체 생성
-        OrderDTO orderDTO = createOrderDTO(principalDetails.getUsername(), kakaoApprove, productOrderDTO);
-        OrderItemDTO orderItemDTO = createOrderItemDTO(productOrderDTO);
-        MemberPointDTO memberPointDTO = createMemberPointDTO(principalDetails.getUsername(), kakaoApprove, productOrderDTO);
-
-        productService.orderProcess(orderDTO, orderItemDTO, memberPointDTO, principalDetails.getMembers().getType()); // 주문 프로세스
-
-        productOrderDTO.setOrderNumber(orderDTO.getOrderNumber()); // 주문번호 set
-        redirectAttributes.addFlashAttribute("productOrderDTO", productOrderDTO);
-        return "redirect:/product/complete";
-    }
-
-    /**
-     * 결제 완료 후 호출되는 메서드 (장바구니)
+     * 카카오페이 결제 완료 후 호출 (장바구니)
      * 1. order 테이블에 주문 내용 1개 추가
      * 2. order_item 테이블에 주문한 상품 추가. (단일 상품일 시 1개 추가)
      * 3. member_point 테이블 포인트 적립 추가
@@ -282,8 +314,8 @@ public class ProductController {
     @GetMapping("/orderApprovalCart")
     public String orderApprovalCart(@RequestParam("pg_token") String pgToken, @AuthenticationPrincipal PrincipalDetails principalDetails, HttpSession session, RedirectAttributes redirectAttributes) {
         log.info("orderApprovalCart...");
+
         KakaoApproveResponse kakaoApprove = kakaoPayService.approveResponse(pgToken); // 카카오페이 요청 승인
-        log.info("kakaoApprove={}", kakaoApprove);
 
         ProductOrderCartDTO productOrderCartDTO = (ProductOrderCartDTO) session.getAttribute("productOrderCartDTO"); // 세션 주문 정보 가져오기
         session.removeAttribute("productOrderCartDTO"); // 세션 닫아주기
@@ -292,7 +324,7 @@ public class ProductController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Session attribute 'productOrderDTO' not found or expired");
         }
 
-        // 객체 생성
+        // 필요한 객체 생성
         OrderDTO orderDTO = createOrderDTO(principalDetails.getUsername(), kakaoApprove, productOrderCartDTO);
         List<OrderItemDTO> orderItemDTOs = createOrderItemDTO(productOrderCartDTO); // 리스트
         MemberPointDTO memberPointDTO = createMemberPointDTO(principalDetails.getUsername(), kakaoApprove, productOrderCartDTO);
@@ -306,33 +338,14 @@ public class ProductController {
     }
 
     /**
-     * 주문 완료 페이지
-     */
-    @GetMapping("/complete")
-    public String complete(ProductOrderDTO productOrderDTO, @AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {
-        log.info("결제 완료 화면...");
-        if (productOrderDTO.getProductId() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "didn't order the product");
-        }
-        Products product = productService.findById(productOrderDTO.getProductId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "product not found")); // 실제 상품 가져오기
-
-        model.addAttribute("member", principalDetails.getMembers());
-        model.addAttribute("product", product);
-        model.addAttribute("productOrder", productOrderDTO);
-        return "product/complete";
-    }
-
-    /**
      * 주문 완료 페이지 (장바구니)
      */
     @GetMapping("/completeCart")
     public String completeCart(ProductOrderCartDTO productOrderCartDTO, @AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {
-        log.info("결제 완료 화면 (장바구니)...");
+        log.info("장바구니 결제 완료...");
         if (productOrderCartDTO.getIdAndQuantities() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "didn't order the product");
         }
-        log.info("productOrderCartDTO={}", productOrderCartDTO);
 
         model.addAttribute("member", principalDetails.getMembers());
         model.addAttribute("productOrderCartDTO", productOrderCartDTO);
@@ -342,7 +355,7 @@ public class ProductController {
 
     /**
      * 장바구니
-     * 해당 회원이 장바구니 정보 가져오기
+     * 해당 회원의 장바구니 정보 가져오기
      * 장바구니의 가격 정보 더해서 출력
      */
     @GetMapping("/cart")
@@ -367,23 +380,24 @@ public class ProductController {
     @ResponseBody
     @PostMapping("/changeQuantity")
     public ApiResponse changeQuantity(@RequestBody Map<String, String> map, @AuthenticationPrincipal PrincipalDetails principalDetails) {
-//        log.info("map={}", map);
+        log.info("장바구니 수량 변경...");
 
         int result = productService.changeQuantity(map, principalDetails);
         if (result == SUCCESS) {
-            return new ApiResponse("상품 수량 변경 완료", result);
+            return new ApiResponse(PRODUCT_CHANGE_OK, result);
         }
         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Fail to change quantity of cart");
     }
 
     /**
-     * 장바구니 상품 삭제
+     * 장바구니 상품 삭제 DELETE
      */
     @ResponseBody
-    @PostMapping("/deleteCart")
+    @DeleteMapping("/deleteCart")
     public ApiResponse deleteCart(@RequestBody Map<String, List<Long>> requestBody,
                                   @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        log.info("requestBody={}", requestBody);
+        log.info("장바구니 상품 삭제...");
+
         List<Long> productIds = requestBody.get("productIds");
         try {
             productService.deleteCart(productIds, principalDetails);
@@ -393,41 +407,6 @@ public class ProductController {
             return new ApiResponse(PRODUCT_DELETE_NOT_OK, FAIL);
         }
     }
-
-    /**
-     * 상품 장바구니 주문
-     * 해당 사용자 장바구니에 있는 상품들 가져와서 view 로 보여주기
-     * 사용자 정보 띄우기 (로그인 안 되어있을 시 로그인 창으로 보내기)
-     */
-    @GetMapping("/cartOrder")
-    public String cartOrder(@RequestParam List<Long> productIds, @AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {
-        log.info("productIds={}", productIds);
-
-        List<Cart> findCarts = productService.findById(productIds, principalDetails.getUsername());
-        log.info("findCarts={}", findCarts);
-
-        CartSummary cartSummary = new CartSummary();
-
-        for (Cart cart : findCarts) {
-            cartSummary.addProduct(cart);
-        }
-        cartSummary.setTotalAmount(cartSummary.getTotalAmount() + cartSummary.getTotalDeliveryCost()); // 배송비를 상품 총 가격에 더함
-
-        model.addAttribute("cartSummary", cartSummary);
-        model.addAttribute("member", principalDetails.getMembers());
-        model.addAttribute("carts", findCarts);
-        return "product/cartOrder";
-    }
-
-    /**
-     * 상품 장바구니 다중 결제하기 POST
-     * 1. order 테이블에 주문 내용 1개 추가
-     * 2. order_item 테이블에 주문한 상품 추가. (여러 상품일 시 여러개 추가)
-     * 3. member_point 테이블 포인트 적립 추가
-     * 4. member_general 또는 member_seller 테이블 포인트 업데이트
-     * 모두 트랜잭션으로 한번에 처리
-     * 결제 완료 창으로 리다이렉트
-     */
     
     //////////////////////////////////////////////////////////////////////
 
@@ -453,6 +432,7 @@ public class ProductController {
      */
     private void validatePoints(ProductOrderDTO productOrderDTO, PrincipalDetails principalDetails) {
         log.info("포인트 유효성 검사...");
+
         String type = principalDetails.getMembers().getType();
         Integer availablePoint = null;
 

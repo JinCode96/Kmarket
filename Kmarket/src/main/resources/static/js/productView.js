@@ -52,6 +52,9 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('cartBt').addEventListener('click', function () {
         let productId = encodeURIComponent(this.getAttribute('productId')); // url 인코딩
 
+        /**
+         * 상품 장바구니에 추가
+         */
         $.ajax({
             url: '/kmarket/product/view',
             method: 'POST',

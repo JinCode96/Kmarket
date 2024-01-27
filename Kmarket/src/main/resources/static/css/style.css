@@ -691,6 +691,15 @@ footer p > strong {
     margin-right: 10px;
 }
 #my > .home > section > article > table ul > li {margin: 4px 0;}
+#my > .home > section > article > table ul > li > a {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    display: block;
+    max-width: 333px;
+    font-weight: bold;
+}
+
 #my > .home > section > article > table td {
     padding: 10px;
     border-left: 1px solid #f1f1f1;
@@ -698,12 +707,27 @@ footer p > strong {
     box-sizing: border-box;
     overflow: hidden;
 }
-#my > .home > section > article > table td img {margin-top: 6px;}
+#my > .home > section > article > table .reviewContent {
+    text-align: left;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 291px;
+}
+
+#my > .home > section > article > table td img {
+    margin-top: 6px;
+    width: 80px;
+    height: 80px;
+}
 #my > .home > section > article > table td:first-child {
     border-left: none;
 }
 #my > .home > section > article > table td {text-align: center;}
-#my > .home > section > article.latest > table td:nth-child(2) {text-align: left;}
+#my > .home > section > article.latest > table td:nth-child(2) {
+    text-align: left;
+    width: 473px;
+}
 #my > .home > section > article.review > table td:nth-child(3) {text-align: left;}
 #my > .home > section > article.qna > table td:nth-child(4) {text-align: left;}
 
@@ -712,7 +736,7 @@ footer p > strong {
     font-family: 고딕;
     font-size: 16px;
     font-weight: bold;
-    color: rgb(34, 34, 34);
+    color: #cb1400;
 }
 
 #my > .home > section > article > table .confirm > a {
@@ -726,7 +750,7 @@ footer p > strong {
 #my > .home > section > article > table .receive {
     background-position: -369px -179px;
 }
-#my > .home > section > article > table .review {
+#my > .home > section > article > table .reviewWrite {
     background-position: -369px -202px;
 }
 
@@ -833,6 +857,74 @@ footer p > strong {
     background-position: -499px -227px;
 }
 #my > .home > section > .myinfo * {font-family: 돋움;}
+
+/* 모달창 */
+/* 배경이 반투명한 검정색으로 설정 */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* 모달창 위치 및 크기 설정 */
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 800px;
+    height: 323px;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+}
+#applyButton {
+    width: 75px;
+    height: 35px;
+    float: right;
+    padding: 5px;
+    border: 1px solid #999;
+}
+
+.modal-content > h2 {
+    font-weight: bold;
+    font-size: 15px;
+}
+
+/* X 버튼 디자인 */
+.close {
+    position: absolute;
+    top: -4px;
+    right: 10px;
+    font-size: 29px;
+    cursor: pointer;
+}
+
+/* 상품평 입력 창 디자인 */
+.modal-content textarea {
+    width: calc(100% - 20px);
+    height: 200px;
+    margin-bottom: 20px;
+    margin-top: 6px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: none;
+}
+
+/* 적용 버튼 디자인 */
+.modal-content button {
+    background-color: #4caf50;
+    color: #fff;
+    font-size: 15px;
+    border-radius: 4px;
+    cursor: pointer;
+}
 
 /* my - ordered(전체주문내역­) */
 #my > .ordered {}
@@ -1505,7 +1597,6 @@ footer p > strong {
 #my > .info > section > article > table * {
     font-family: '돋움';
 }
-
 #my > .info > section > article > table th {
     padding: 6px;
     background-color: #a5a7a5;
@@ -1519,6 +1610,11 @@ footer p > strong {
     box-sizing: border-box;
     overflow: hidden;
 }
+#my > .info > section > article > table td > p {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
 #my > .info > section > article > table td:first-child {
     width: 120px;
     border-left: none;
@@ -1530,14 +1626,22 @@ footer p > strong {
     border: 1px solid #999;
 }
 
-#my > .info > section > article > table .address > input {
+#my > .info > section > article > table .address > input:nth-child(1) {
     display: block;
+    width: 300px;
+    margin-top: 2px;
+}
+#my > .info > section > article > table .address > input:nth-child(2) {
     width: 300px;
     margin-top: 2px;
 }
 
 #my > .info > section > article > table .hp > input {
-    width: 60px;
+    width: 145px;
+}
+#my > .info > section > article > table .hp > span {
+    padding-left: 8px;
+    color: rgb(174,174,174);
 }
 
 #my > .info > section > article > table select {
