@@ -7,7 +7,7 @@
             <nav>
                 <h1>약관동의</h1>
             </nav>
-            <form th:action="|@{/member/sign-up}/${type}|" id="signUpForm" method="post">
+            <form th:action="|@{/members/sign-up}/${type}|" id="signUpForm" method="post">
                 <section>
                     <label><input type="checkbox" name="agree0" value="selectAll" onclick='selectAll(this)'>전체 동의</label>
                 </section>
@@ -54,7 +54,7 @@
                     alert('필수 이용약관에 동의해주세요.');
                 } else {
                     $.ajax({
-                        url: "/kmarket/member/sign-up/" + type,
+                        url: "/kmarket/members/sign-up/" + type,
                         method: 'POST',
                         contentType: 'application/json',
                         dataType: 'json',
@@ -64,7 +64,7 @@
                             "termsPrivacy":privacy
                         }),
                         success: function (data) {
-                            window.location.href = "/kmarket/member/register/" + type;
+                            window.location.href = "/kmarket/members/add/" + type;
                         },
                         error: function (xhr) {
                             console.error(xhr.responseText);

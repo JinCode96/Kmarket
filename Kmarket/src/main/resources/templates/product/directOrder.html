@@ -40,12 +40,12 @@
                         <tr>
                             <td>
                                 <article>
-                                    <a th:href="@{/product/view(id=${product.id})}">
-                                        <img th:src="@{/product/images/{filename}/{cate1}/{cate2}(filename=${product.thumbnailList}, cate1=${product.category1Code}, cate2=${product.category2Code})}" alt>
+                                    <a th:href="@{/products/view(id=${product.id})}">
+                                        <img th:src="@{/products/images/{filename}/{cate1}/{cate2}(filename=${product.thumbnailList}, cate1=${product.category1Code}, cate2=${product.category2Code})}" alt>
                                     </a>
                                     <div>
                                         <h2>
-                                            <a th:href="@{/product/view(id=${product.id})}" th:text="${product.productName}" id="productName">상품명</a>
+                                            <a th:href="@{/products/view(id=${product.id})}" th:text="${product.productName}" id="productName">상품명</a>
                                         </h2>
                                     </div>
                                 </article>

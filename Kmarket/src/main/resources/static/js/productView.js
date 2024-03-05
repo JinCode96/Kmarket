@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
          * 상품 장바구니에 추가
          */
         $.ajax({
-            url: '/kmarket/product/view',
+            url: '/kmarket/products/addCarts',
             method: 'POST',
             dataType: 'json',
             contentType: 'application/json',
@@ -64,12 +64,12 @@ document.addEventListener('DOMContentLoaded', function () {
             success: function (data) {
                 if (data.status === 200) {
                     if (confirm(data.message)) {
-                        window.location.href = '/kmarket/product/cart';
+                        window.location.href = '/kmarket/products/cart';
                     }
                 } else if (data.status === 400) {
                     alert(data.message);
                 } else if (data.status === 600) {
-                    window.location.href = '/kmarket/member/login';
+                    window.location.href = '/kmarket/members/login';
                 }
             },
             error: function (xhr, textStatus, errorThrown) {
@@ -84,18 +84,18 @@ document.addEventListener('DOMContentLoaded', function () {
         let productId = encodeURIComponent(this.getAttribute('productId')); // url 인코딩
 
         $.ajax({
-            url: '/kmarket/product/view',
+            url: '/kmarket/products/addCarts',
             method: 'POST',
             dataType: 'json',
             contentType: 'application/json',
             data: JSON.stringify({"productId" : productId, "quantity": quantity}),
             success: function (data) {
                 if (data.status === 200) {
-                    window.location.href = '/kmarket/product/directOrder?productId=' + productId + '&quantity=' + encodeURIComponent(quantity);
+                    window.location.href = '/kmarket/products/directOrder?productId=' + productId + '&quantity=' + encodeURIComponent(quantity);
                 } else if (data.status === 400) {
                     alert(data.message);
                 } else if (data.status === 600) {
-                    window.location.href = '/kmarket/member/login';
+                    window.location.href = '/kmarket/members/login';
                 }
             },
             error: function (xhr, textStatus, errorThrown) {

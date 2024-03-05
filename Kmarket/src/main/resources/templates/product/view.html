@@ -28,7 +28,7 @@
             <!-- 상품 전체 정보 내용 -->
             <article class="info">
                 <div class="image">
-                    <img th:src="@{/product/images/{filename}/{cate1}/{cate2}(filename=${product.thumbnailList}, cate1=${product.category1Code}, cate2=${product.category2Code})}" alt="상품 이미지">
+                    <img th:src="@{/products/images/{filename}/{cate1}/{cate2}(filename=${product.thumbnailList}, cate1=${product.category1Code}, cate2=${product.category2Code})}" alt="상품 이미지">
                 </div>
                 <div class="summary">
                     <nav>
@@ -97,7 +97,7 @@
                 </nav>
                 <!-- 상품상세페이지 이미지 -->
                 <div id="productImageContainer">
-                    <img id="productImage" th:src="@{/product/images/{filename}/{cate1}/{cate2}(filename=${product.detailCut}, cate1=${product.category1Code}, cate2=${product.category2Code})}"
+                    <img id="productImage" th:src="@{/products/images/{filename}/{cate1}/{cate2}(filename=${product.detailCut}, cate1=${product.category1Code}, cate2=${product.category2Code})}"
                          alt="상세페이지1">
                 </div>
                 <!-- 상품 정보 더보기/접기 버튼 -->
@@ -220,25 +220,25 @@
                                    endPage = (${tempEndPage < totalPages ? tempEndPage : totalPages})">
 
                         <!-- 처음으로 이동 -->
-                        <a th:href="@{/product/view(id=${param.id}, page=0)}" class="first"
+                        <a th:href="@{/products/view(id=${param.id}, page=0)}" class="first"
                            th:classappend="${pageNumber < pageSize} ? 'disabled'"></a>
                         <!-- 이전으로 이동 -->
-                        <a th:href="${reviewPage.first} ? '#' : @{/product/view(id=${param.id}, page=${pageNumber - 1})}" class="before"
+                        <a th:href="${reviewPage.first} ? '#' : @{/products/view(id=${param.id}, page=${pageNumber - 1})}" class="before"
                            th:classappend="${reviewPage.first} ? 'disabled'"></a>
 
                         <!-- 특정 페이지로 이동 -->
                         <th:block>
                             <th:block th:each="page : ${#numbers.sequence(startPage, endPage)}">
-                                <a th:text="${page}" th:href="@{/product/view(id=${param.id}, page=${page - 1})}"
+                                <a th:text="${page}" th:href="@{/products/view(id=${param.id}, page=${page - 1})}"
                                    th:class="${page == pageNumber + 1} ? 'pageNum on' : 'pageNum'"></a>
                             </th:block>
                         </th:block>
 
                         <!-- 다음으로 이동 -->
-                        <a th:href="${reviewPage.last} ? '#' : @{/product/view(id=${param.id}, page=${pageNumber + 1})}" class="next"
+                        <a th:href="${reviewPage.last} ? '#' : @{/products/view(id=${param.id}, page=${pageNumber + 1})}" class="next"
                            th:classappend="${reviewPage.last} ? 'disabled'"></a>
                         <!-- 마지막으로 이동 -->
-                        <a th:href="@{/product/view(id=${param.id}, page=${totalPages - 1})}" class="last"
+                        <a th:href="@{/products/view(id=${param.id}, page=${totalPages - 1})}" class="last"
                            th:classappend="${T(java.lang.Math).floor(totalPages / pageSize) * pageSize - 1 <= startPage} ? 'disabled'"></a>
                     </th:block>
                 </div>

@@ -76,7 +76,7 @@ window.onload = function() {
              * 회원 비밀번호 변경
              */
             $.ajax({
-                url: "/kmarket/member/findPwResult",
+                url: "/kmarket/members/resetPw",
                 method: "PUT",
                 contentType: "application/json",
                 dataType: 'json',
@@ -84,10 +84,10 @@ window.onload = function() {
                 success: function (data) {
                     if (data.status === 1) {
                         alert(data.message);
-                        window.location.href = "/kmarket/member/login";
+                        window.location.href = "/kmarket/members/login";
                     } else {
                         alert(data.message);
-                        window.location.href = "/kmarket/member/findPw";
+                        window.location.href = "/kmarket/members/findPw";
                     }
                 },
                 error: function (xhr, textStatus, errorThrown) {

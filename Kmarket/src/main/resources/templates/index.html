@@ -23,10 +23,10 @@
                 </h1>
                 <ol>
                     <li th:each="bestProd : ${bestProds}">
-                        <a th:href="@{/product/view(id=${bestProd.id})}">
+                        <a th:href="@{/products/view(id=${bestProd.id})}">
                             <div class="thumb">
                                 <i>1</i>
-                                <img th:src="@{/product/images/{filename}/{cate1}/{cate2}(filename=${bestProd.thumbnailList}, cate1=${bestProd.category1Code}, cate2=${bestProd.category2Code})}" alt="item1">
+                                <img th:src="@{/products/images/{filename}/{cate1}/{cate2}(filename=${bestProd.thumbnailList}, cate1=${bestProd.category1Code}, cate2=${bestProd.category2Code})}" alt="item1">
                             </div>
                             <h2 th:text="${bestProd.productName}">상품명</h2>
                             <div class="dis_price">
@@ -66,9 +66,9 @@
                     <span id="hit-span">히트상품</span>
                 </h3>
                 <article th:each="hitProd : ${hitProds}">
-                    <a th:href="@{/product/view(id=${hitProd.id})}">
+                    <a th:href="@{/products/view(id=${hitProd.id})}">
                         <div class="thumb">
-                            <img th:src="@{/product/images/{filename}/{cate1}/{cate2}(filename=${hitProd.thumbnailList}, cate1=${hitProd.category1Code}, cate2=${hitProd.category2Code})}" alt="t1">
+                            <img th:src="@{/products/images/{filename}/{cate1}/{cate2}(filename=${hitProd.thumbnailList}, cate1=${hitProd.category1Code}, cate2=${hitProd.category2Code})}" alt="t1">
                         </div>
                         <h2 th:text="${hitProd.productName}">상품명</h2>
                         <p th:text="${hitProd.description}">간단한 상품 설명</p>
@@ -90,9 +90,9 @@
                     <span id="recommend-span">추천상품</span>
                 </h3>
                 <article th:each="recommendProd : ${recommendProds}">
-                    <a th:href="@{/product/view(id=${recommendProd.id})}">
+                    <a th:href="@{/products/view(id=${recommendProd.id})}">
                         <div class="thumb">
-                            <img th:src="@{/product/images/{filename}/{cate1}/{cate2}(filename=${recommendProd.thumbnailList}, cate1=${recommendProd.category1Code}, cate2=${recommendProd.category2Code})}" alt="t1">
+                            <img th:src="@{/products/images/{filename}/{cate1}/{cate2}(filename=${recommendProd.thumbnailList}, cate1=${recommendProd.category1Code}, cate2=${recommendProd.category2Code})}" alt="t1">
                         </div>
                         <h2 th:text="${recommendProd.productName}">상품명</h2>
                         <p th:text="${recommendProd.description}">간단한 상품 설명</p>
@@ -114,9 +114,9 @@
                     <span id="recent-span">최신상품</span>
                 </h3>
                 <article th:each="recentProd : ${recentProds}">
-                    <a th:href="@{/product/view(id=${recentProd.id})}">
+                    <a th:href="@{/products/view(id=${recentProd.id})}">
                         <div class="thumb">
-                            <img th:src="@{/product/images/{filename}/{cate1}/{cate2}(filename=${recentProd.thumbnailList}, cate1=${recentProd.category1Code}, cate2=${recentProd.category2Code})}" alt="t1">
+                            <img th:src="@{/products/images/{filename}/{cate1}/{cate2}(filename=${recentProd.thumbnailList}, cate1=${recentProd.category1Code}, cate2=${recentProd.category2Code})}" alt="t1">
                         </div>
                         <h2 th:text="${recentProd.productName}">상품명</h2>
                         <p th:text="${recentProd.description}">간단한 상품 설명</p>
@@ -138,9 +138,9 @@
                     <span id="discount-span">할인상품</span>
                 </h3>
                 <article th:each="discountProd : ${discountProds}">
-                    <a th:href="@{/product/view(id=${discountProd.id})}">
+                    <a th:href="@{/products/view(id=${discountProd.id})}">
                         <div class="thumb">
-                            <img th:src="@{/product/images/{filename}/{cate1}/{cate2}(filename=${discountProd.thumbnailList}, cate1=${discountProd.category1Code}, cate2=${discountProd.category2Code})}" alt="t1">
+                            <img th:src="@{/products/images/{filename}/{cate1}/{cate2}(filename=${discountProd.thumbnailList}, cate1=${discountProd.category1Code}, cate2=${discountProd.category2Code})}" alt="t1">
                         </div>
                         <h2 th:text="${discountProd.productName}">상품명</h2>
                         <p th:text="${discountProd.description}">간단한 상품 설명</p>

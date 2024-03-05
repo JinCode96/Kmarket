@@ -39,7 +39,7 @@ import static com.kmarket.constant.MemberConst.*;
  */
 @Slf4j
 @Controller
-@RequestMapping("/product")
+@RequestMapping("/products")
 @RequiredArgsConstructor
 public class ProductController {
 
@@ -90,7 +90,7 @@ public class ProductController {
      * 장바구니에 추가 POST
      */
     @ResponseBody
-    @PostMapping("/view")
+    @PostMapping("/addCarts")
     public ApiResponse directInsertCart(@RequestBody ProductIdAndQuantity productIdAndQuantity, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         log.info("상품 장바구니에 추가...");
 
@@ -110,7 +110,7 @@ public class ProductController {
     }
 
     /**
-     * 상품 단건 주문 화면
+     * 직접 주문 화면
      */
     @GetMapping("/directOrder")
     public String directOrder(Long productId, Integer quantity, @AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {
@@ -133,7 +133,7 @@ public class ProductController {
     }
 
     /**
-     * 카카오 페이 단건 결제
+     * 카카오 페이 직접 결제
      * 포인트 유효성 검사
      */
     @ResponseBody
@@ -165,7 +165,7 @@ public class ProductController {
     }
 
     /**
-     * 단건 결제 완료 후 호출
+     * 직접 결제 완료 후 호출
      * 1. order 테이블에 주문 내용 1개 추가
      * 2. order_item 테이블에 주문한 상품 추가. (단일 상품일 시 1개 추가)
      * 3. member_point 테이블 포인트 적립 추가
@@ -200,7 +200,7 @@ public class ProductController {
     }
 
     /**
-     * 단건 결제 주문 완료 화면
+     * 직접 결제 주문 완료 화면
      */
     @GetMapping("/complete")
     public String complete(ProductOrderDTO productOrderDTO, @AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {
@@ -378,7 +378,7 @@ public class ProductController {
      * 장바구니 상품 수량 변경
      */
     @ResponseBody
-    @PostMapping("/changeQuantity")
+    @PutMapping("/cart/quantity")
     public ApiResponse changeQuantity(@RequestBody Map<String, String> map, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         log.info("장바구니 수량 변경...");
 
@@ -393,7 +393,7 @@ public class ProductController {
      * 장바구니 상품 삭제 DELETE
      */
     @ResponseBody
-    @DeleteMapping("/deleteCart")
+    @DeleteMapping("/cart")
     public ApiResponse deleteCart(@RequestBody Map<String, List<Long>> requestBody,
                                   @AuthenticationPrincipal PrincipalDetails principalDetails) {
         log.info("장바구니 상품 삭제...");

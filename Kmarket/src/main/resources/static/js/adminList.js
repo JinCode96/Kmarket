@@ -15,7 +15,7 @@ deleteProduct.forEach(button => {
              * 상품 단일 삭제
              */
             $.ajax({
-                url: '/kmarket/admin/deleteProduct',
+                url: '/kmarket/admin/products',
                 method: 'DELETE',
                 dataType: 'json',
                 data: {"productId": productId},
@@ -49,7 +49,7 @@ function deleteSelectedProducts() {
              * 상품 다중 삭제
              */
             $.ajax({
-                url: '/kmarket/admin/deleteSelectedProducts',
+                url: '/kmarket/admin/selectedProducts',
                 method: 'DELETE',
                 contentType: 'application/json',
                 data: JSON.stringify({"productIds": productIds}),

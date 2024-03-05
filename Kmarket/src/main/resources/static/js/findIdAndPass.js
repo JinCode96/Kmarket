@@ -136,7 +136,7 @@ window.onload = function () {
      */
     function ajaxCheckMemberNameAndEmail(name, email) {
         $.ajax({
-            url: "/kmarket/member/checkMemberNameAndEmail",
+            url: "/kmarket/members/checkMembers",
             method: 'POST',
             contentType: "application/json",
             dataType: 'json',
@@ -158,12 +158,33 @@ window.onload = function () {
         });
     }
 
+    // ajax 이메일 코드 전송
+    function ajaxEmailCodeSend(email) {
+        // 인증 코드 보내기
+        $.ajax({
+            url: "/kmarket/members/sendMails",
+            method: 'POST',
+            contentType: "application/json",
+            dataType: 'json',
+            data: JSON.stringify({"email" : email}),
+            success: function (data) {
+                console.log(data.message);
+                validation.email = true;
+            },
+            error: function (xhr, textStatus, errorThrown) {
+                console.error(xhr.responseText);
+                alert("잘못된 요청입니다. 다시 실행해주세요.");
+                validation.email = false;
+            }
+        });
+    }
+
     /**
      * 이메일 인증
      */
     function ajaxCodeConfirm(authCode) {
         $.ajax({
-            url: "/kmarket/member/codeConfirm",
+            url: "/kmarket/members/checkCodes",
             method: 'POST',
             contentType: "application/json",
             dataType: 'json',
@@ -184,27 +205,6 @@ window.onload = function () {
             },
             error: function (xhr, textStatus, errorThrown) {
                 alert("잘못된 요청입니다. 다시 실행해주세요.");
-            }
-        });
-    }
-
-    // ajax 이메일 코드 전송
-    function ajaxEmailCodeSend(email) {
-        // 인증 코드 보내기
-        $.ajax({
-            url: "/kmarket/member/mailConfirm",
-            method: 'POST',
-            contentType: "application/json",
-            dataType: 'json',
-            data: JSON.stringify({"email" : email}),
-            success: function (data) {
-                console.log(data.message);
-                validation.email = true;
-            },
-            error: function (xhr, textStatus, errorThrown) {
-                console.error(xhr.responseText);
-                alert("잘못된 요청입니다. 다시 실행해주세요.");
-                validation.email = false;
             }
         });
     }

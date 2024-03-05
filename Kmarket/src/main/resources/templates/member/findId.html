@@ -4,7 +4,7 @@
       layout:decorate="~{layout/member_layout}">
 <main id="member" layout:fragment="main">
     <section class="find findId">
-        <form name="form" th:action="@{/member/findId}" id="form" method="post">
+        <form name="form" th:action="@{/members/findId}" id="form" method="post">
             <table border="0">
                 <caption>아이디 찾기</caption>
                 <tr>
@@ -50,7 +50,7 @@
             인증번호를 입력 후 아이디 찾기 버튼을 누르세요.
         </p>
         <div>
-            <a th:href='@{/member/login}' class="btn btnCancel">취소</a>
+            <a th:href='@{/members/login}' class="btn btnCancel">취소</a>
             <button type="submit" class="btn btnNext" id="btnSearchId" disabled>아이디 찾기</button>
         </div>
         </form>

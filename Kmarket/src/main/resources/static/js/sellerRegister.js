@@ -358,7 +358,7 @@ window.onload = function() {
     // 아이디 중복 ajax
     function ajaxCheckSellerId(loginId) {
         $.ajax({
-            url: "/kmarket/member/register/checkLoginId",
+            url: "/kmarket/members/checkIds",
             method: "POST",
             contentType: "application/json",
             dataType: 'json',
@@ -383,7 +383,7 @@ window.onload = function() {
     // 최종 회원가입
     function sendMemberToServer(member) {
         $.ajax({
-            url: "/kmarket/member/register/seller",
+            url: "/kmarket/members/add/seller",
             method: 'POST',
             contentType: "application/json",
             dataType: 'json',
@@ -391,10 +391,10 @@ window.onload = function() {
             success: function (data) {
                 if (data.status === 1) {
                     alert(data.message);
-                    window.location.href = "/kmarket/member/login";
+                    window.location.href = "/kmarket/members/login";
                 } else {
                     alert(data.message);
-                    window.location.href = "/kmarket/member/join";
+                    window.location.href = "/kmarket/members/join";
                 }
             },
             error: function (xhr, textStatus, errorThrown) {

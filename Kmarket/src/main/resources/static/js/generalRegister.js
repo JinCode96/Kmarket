@@ -245,7 +245,7 @@ window.onload = function() {
      */
     function ajaxCheckId(loginId) {
         $.ajax({
-            url: "/kmarket/member/register/checkLoginId",
+            url: "/kmarket/members/checkIds",
             method: "POST",
             contentType: "application/json", // 안 붙이면 "="이 자꾸 붙음..
             dataType: 'json', // 서버에서 json 응답 기대
@@ -271,7 +271,7 @@ window.onload = function() {
      */
     function ajaxCheckEmail(email) {
         $.ajax({
-            url: "/kmarket/member/register/checkEmail",
+            url: "/kmarket/members/checkEmails",
             method: 'POST',
             contentType: "application/json",
             dataType: 'json',
@@ -298,7 +298,7 @@ window.onload = function() {
      */
     function ajaxSendMemberToServer(member) {
         $.ajax({
-            url: "/kmarket/member/register/general",
+            url: "/kmarket/members/add/general",
             method: 'POST',
             contentType: "application/json",
             dataType: 'json',
@@ -306,10 +306,10 @@ window.onload = function() {
             success: function (data) {
                 if (data.status === 1) {
                     alert(data.message);
-                    window.location.href = "/kmarket/member/login";
+                    window.location.href = "/kmarket/members/login";
                 } else {
                     alert(data.message);
-                    window.location.href = "/kmarket/member/join";
+                    window.location.href = "/kmarket/members/join";
                 }
             },
             error: function (data) {

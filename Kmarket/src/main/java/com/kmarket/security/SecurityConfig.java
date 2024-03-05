@@ -34,14 +34,14 @@ public class SecurityConfig {
 //                        .requestMatchers(PathRequest.toH2Console()).permitAll() // h2 db 콘솔 접근 권한 설정 (개발 및 테스트 목적, 나중엔 빼야함)
                         .requestMatchers(antMatcher("/admin/**")).hasAnyRole(SELLER_UPPER, ADMIN_UPPER) // 권한 필요
                         .requestMatchers(
-                                antMatcher("/product/directOrder"), antMatcher("/product/cart"), antMatcher("/product/cartOrder"), antMatcher("/my/**")
+                                antMatcher("/products/directOrder"), antMatcher("/products/cart"), antMatcher("/products/cartOrder"), antMatcher("/my/**")
                         ).authenticated()
                         .anyRequest().permitAll()
                 )
                 .formLogin(form -> form
-                        .loginPage("/member/login").permitAll() // 기본 로그인 화면 설정
-                        .loginProcessingUrl("/member/login") // 해당 url 로 post 요청
-                        .failureUrl("/member/login?failCheck=true")
+                        .loginPage("/members/login").permitAll() // 기본 로그인 화면 설정
+                        .loginProcessingUrl("/members/login") // 해당 url 로 post 요청
+                        .failureUrl("/members/login?failCheck=true")
                         .defaultSuccessUrl("/")
                 )
                 .logout(logout -> logout
@@ -52,7 +52,7 @@ public class SecurityConfig {
                         .userDetailsService(principalDetailsService)
                 )
                 .oauth2Login(cust -> cust
-                        .loginPage("/member/login") // OAuth2 로그인 페이지 설정
+                        .loginPage("/members/login") // OAuth2 로그인 페이지 설정
                         .userInfoEndpoint(oauth -> oauth.userService(principalOauth2UserService)) // 로그인 완료 후처리 필요.
                 );
 

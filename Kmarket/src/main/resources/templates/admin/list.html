@@ -53,7 +53,7 @@
                         <td th:text="${#numbers.formatInteger(product.hit, 1, 'COMMA')}">조회수</td>
                         <td>
                             <a href="#" th:attr="data-product-id=${product.id}, data-product-productName=${product.productName}" class="deleteProduct">[삭제]</a> <!-- ajax 통신을 위해 속성 정의 -->
-                            <a th:href="@{/admin/update(productId=${product.id})}">[수정]</a>
+                            <a th:href="@{/admin/modifyProducts(productId=${product.id})}">[수정]</a>
                         </td>
                     </tr>
                     <!-- 상품이 없을 경우 -->

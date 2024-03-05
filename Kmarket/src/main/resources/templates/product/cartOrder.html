@@ -47,12 +47,12 @@
                                 <input type="hidden" th:value="${cart.productId}" class="productId">
                                 <input type="hidden" th:value="${cart.quantity}" class="quantity">
                                 <article>
-                                    <a th:href="@{/product/view(id=${cart.productId})}">
-                                        <img th:src="@{/product/images/{filename}/{cate1}/{cate2}(filename=${cart.thumbnailList}, cate1=${cart.category1Code}, cate2=${cart.category2Code})}" alt>
+                                    <a th:href="@{/products/view(id=${cart.productId})}">
+                                        <img th:src="@{/products/images/{filename}/{cate1}/{cate2}(filename=${cart.thumbnailList}, cate1=${cart.category1Code}, cate2=${cart.category2Code})}" alt>
                                     </a>
                                     <div>
                                         <h2>
-                                            <a th:href="@{/product/view(id=${cart.productId})}" th:text="${cart.productName}" id="productName">상품명</a>
+                                            <a th:href="@{/products/view(id=${cart.productId})}" th:text="${cart.productName}" id="productName">상품명</a>
                                         </h2>
                                     </div>
                                 </article>

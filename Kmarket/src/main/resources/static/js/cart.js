@@ -1,16 +1,3 @@
-// document.addEventListener('DOMContentLoaded', function () {
-//
-//     const orderBt = document.getElementById('order');
-//
-//     orderBt.addEventListener('click', function () {
-//         alert('hi');
-//
-//         // th:attr 로 지정한 'carts' 속성을 가져와서 JSON 문자열을 객체로 파싱
-//         const carts = JSON.parse(orderBt.getAttribute('carts'));
-//         console.log('carts = ' + carts);
-//     });
-// });
-
 /**
  * 주문하기 페이지 GET
  */
@@ -26,7 +13,7 @@ function order() {
     console.log('queryString = ' + queryString);
 
     // window.location.href를 사용하여 페이지 이동
-    window.location.href = '/kmarket/product/cartOrder?' + queryString;
+    window.location.href = '/kmarket/products/cartOrder?' + queryString;
 }
 
 function adjustQuantity(button, action) {
@@ -66,8 +53,8 @@ function ajaxChangeQuantity(object) {
      * 상품 수량 변경
      */
     $.ajax({
-        url: '/kmarket/product/changeQuantity',
-        method: 'POST',
+        url: '/kmarket/products/cart/quantity',
+        method: 'PUT',
         dataType: 'json',
         contentType: 'application/json',
         data: object,
@@ -100,7 +87,7 @@ function deleteCart() {
              * 상품 삭제
              */
             $.ajax({
-                url: '/kmarket/product/deleteCart',
+                url: '/kmarket/products/cart',
                 method: 'DELETE',
                 contentType: 'application/json',
                 data: JSON.stringify({"productIds": productIds}),

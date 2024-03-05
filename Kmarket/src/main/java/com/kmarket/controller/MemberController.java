@@ -33,7 +33,7 @@ import static com.kmarket.constant.MemberConst.*;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/member")
+@RequestMapping("/members")
 public class MemberController {
 
     private final BCryptPasswordEncoder passwordEncoder;
@@ -88,7 +88,7 @@ public class MemberController {
     /**
      * 회원가입 화면
      */
-    @GetMapping("/register/{type}")
+    @GetMapping("/add/{type}")
     public String registerForm(@PathVariable String type, Model model) {
         model.addAttribute("member", new Members()); // th:object 사용을 위해서
         if (type.equals(GENERAL_LOWER)) {
@@ -104,7 +104,7 @@ public class MemberController {
      * @Validated 사용
      */
     @ResponseBody
-    @PostMapping("/register/general")
+    @PostMapping("/add/general")
     public ApiResponse saveGeneral(@Validated @RequestBody GeneralMemberDTO generalMemberDTO, BindingResult bindingResult) {
         log.info("일반 회원 가입...");
         if (bindingResult.hasErrors()) {
@@ -123,7 +123,7 @@ public class MemberController {
      * @Validated 사용
      */
     @ResponseBody
-    @PostMapping("/register/seller")
+    @PostMapping("/add/seller")
     public ApiResponse saveSeller(@Validated @RequestBody SellerMemberDTO sellerMemberDTO, BindingResult bindingResult) {
         log.info("판매자 회원 가입...");
         if (bindingResult.hasErrors()) {
@@ -141,7 +141,7 @@ public class MemberController {
      * 아이디 중복 검사
      */
     @ResponseBody
-    @PostMapping("/register/checkLoginId")
+    @PostMapping("/checkIds")
     public ApiResponse checkLoginId(@RequestBody Map<String, String> map) {
         log.info("아이디 중복 체크...");
         int result = memberService.checkLoginId(map.get("loginId"));
@@ -156,7 +156,7 @@ public class MemberController {
      * 이메일 중복 검사
      */
     @ResponseBody
-    @PostMapping("/register/checkEmail")
+    @PostMapping("/checkEmails")
     public ApiResponse checkEmail(@RequestBody SearchIdAndPassDTO searchIdAndPassDTO) {
         log.info("이메일 중복 검사...");
         int result = memberService.checkEmail(searchIdAndPassDTO.getEmail());
@@ -172,7 +172,7 @@ public class MemberController {
      * 이름과 이메일로 회원 존재 여부 찾기
      */
     @ResponseBody
-    @PostMapping("/checkMemberNameAndEmail")
+    @PostMapping("/checkMembers")
     public ApiResponse checkMemberNameAndEmail(@RequestBody SearchIdAndPassDTO searchIdAndPassDTO) {
         log.info("회원 찾기...");
         int result = memberService.checkMemberNameAndEmail(searchIdAndPassDTO);
@@ -187,7 +187,7 @@ public class MemberController {
      * 이메일 인증번호 전송
      */
     @ResponseBody
-    @PostMapping("/mailConfirm")
+    @PostMapping("/sendMails")
     public ApiResponse mailConfirm(@RequestBody SearchIdAndPassDTO searchIdAndPassDTO) throws MessagingException, UnsupportedEncodingException {
         log.info("이메일 코드 전송...");
         emailService.sendEmail(searchIdAndPassDTO.getEmail());
@@ -198,7 +198,7 @@ public class MemberController {
      * redis 코드 인증
      */
     @ResponseBody
-    @PostMapping("/codeConfirm")
+    @PostMapping("/checkCodes")
     public ApiResponse codeConfirm(@RequestBody SearchIdAndPassDTO searchIdAndPassDTO) {
         log.info("Redis 이메일 코드 인증...");
         String value = redisUtil.getData(searchIdAndPassDTO.getAuthCode());
@@ -269,7 +269,7 @@ public class MemberController {
     /**
      * 비밀번호 변경 화면
      */
-    @GetMapping("/findPwResult")
+    @GetMapping("/resetPw")
     public String findPwResult(@ModelAttribute("members") Members members) {
         return "member/findPwResult";
     }
@@ -278,7 +278,7 @@ public class MemberController {
      * 회원 비밀번호 변경 PUT
      */
     @ResponseBody
-    @PutMapping("/findPwResult")
+    @PutMapping("/resetPw")
     public ApiResponse updatePassword(@RequestBody SearchIdAndPassDTO searchIdAndPassDTO) {
         log.info("회원 비밀번호 변경...");
         searchIdAndPassDTO.setPassword(passwordEncoder.encode(searchIdAndPassDTO.getPassword()));

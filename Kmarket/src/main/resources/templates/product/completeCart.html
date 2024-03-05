@@ -48,12 +48,12 @@
                         <tr th:each="idAndQuantity : ${idAndQuantities}">
                             <td>
                                 <article>
-                                    <a th:href="@{/product/view(id=${idAndQuantity.productId})}">
-                                        <img th:src="@{/product/images/{filename}/{cate1}/{cate2}(filename=${idAndQuantity.thumbnailList}, cate1=${idAndQuantity.category1Code}, cate2=${idAndQuantity.category2Code})}" alt>
+                                    <a th:href="@{/products/view(id=${idAndQuantity.productId})}">
+                                        <img th:src="@{/products/images/{filename}/{cate1}/{cate2}(filename=${idAndQuantity.thumbnailList}, cate1=${idAndQuantity.category1Code}, cate2=${idAndQuantity.category2Code})}" alt>
                                     </a>
                                     <div>
                                         <h2>
-                                            <a th:href="@{/product/view(id=${idAndQuantity.productId})}" th:text="${idAndQuantity.productName}">상품명</a>
+                                            <a th:href="@{/products/view(id=${idAndQuantity.productId})}" th:text="${idAndQuantity.productName}">상품명</a>
                                         </h2>
                                         <p th:text="${idAndQuantity.description}">상품설명</p>
                                     </div>

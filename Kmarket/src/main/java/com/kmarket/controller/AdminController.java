@@ -51,7 +51,7 @@ public class AdminController {
     /**
      * 관리자 메인 화면
      */
-    @GetMapping("/")
+    @GetMapping("")
     public String home() {
         return "admin/main";
     }
@@ -59,7 +59,7 @@ public class AdminController {
     /**
      * 상품 등록 화면
      */
-    @GetMapping("/register")
+    @GetMapping("/products")
     public String registerForm(Model model) {
         model.addAttribute("products", new ProductSaveForm()); // th:object 를 위해
         return "admin/register";
@@ -69,7 +69,7 @@ public class AdminController {
      * 상품 등록 POST
      * @Validated 사용
      */
-    @PostMapping("/register")
+    @PostMapping("/products")
     public String insertProduct(@Validated @ModelAttribute("products") ProductSaveForm productSaveForm, BindingResult bindingResult, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         log.info("상품 등록...");
         if (bindingResult.hasErrors()) {
@@ -152,7 +152,7 @@ public class AdminController {
      * 상품 단일 삭제 Delete
      */
     @ResponseBody
-    @DeleteMapping("/deleteProduct")
+    @DeleteMapping("/products")
     public ApiResponse deleteProduct(@RequestParam Long productId) {
         log.info("상품 단일 삭제...");
         try {
@@ -168,7 +168,7 @@ public class AdminController {
      * 상품 다중 선택 삭제
      */
     @ResponseBody
-    @DeleteMapping("/deleteSelectedProducts")
+    @DeleteMapping("/selectedProducts")
     public ApiResponse deleteSelectedProducts(@RequestBody Map<String, List<Long>> requestBody) {
         log.info("상품 다중 삭제...");
         List<Long> productIds = requestBody.get("productIds");
@@ -184,7 +184,7 @@ public class AdminController {
     /**
      * 상품 수정 화면
      */
-    @GetMapping("/update")
+    @GetMapping("/modifyProducts")
     public String updateForm(Long productId, Model model, @AuthenticationPrincipal PrincipalDetails principalDetails) {
         String username = principalDetails.getUsername();
         Products product = adminService.findById(productId).orElse(null);
@@ -204,7 +204,7 @@ public class AdminController {
      * 상품 수정 POST
      * @Validated 사용
      */
-    @PostMapping("/update")
+    @PostMapping("/modifyProducts")
     public String update(@Validated ProductSaveForm productSaveForm, BindingResult bindingResult) {
         log.info("상품 수정...");
         if (bindingResult.hasErrors()) {
