@@ -1,5 +1,6 @@
 package com.kmarket.controller;
 
+import com.kmarket.exception.OrderProcessingException;
 import com.kmarket.kakaopay.KakaoPayService;
 import com.kmarket.api.ApiResponse;
 import com.kmarket.domain.*;
@@ -141,27 +142,35 @@ public class ProductController {
     public KakaoReadyResponse readyToKakaoPay(@RequestBody @Validated ProductOrderDTO productOrderDTO,
                                               @AuthenticationPrincipal PrincipalDetails principalDetails,
                                               HttpServletRequest request) {
-        log.info("카카오 페이 단건 결제...");
+        log.info("카카오 페이 직접 결제...");
 
-        if (productOrderDTO.getUsedPoint() != 0) {
-            validatePoints(productOrderDTO, principalDetails); // 포인트 유효성 검사
+        try {
+            // 1. 포인트 유효성 검사
+            if (productOrderDTO.getUsedPoint() != 0) {
+                validatePoints(productOrderDTO, principalDetails);
+            }
+
+            // 2. 상품정보 DB에서 가져오기
+            Products products = productService.findById(productOrderDTO.getProductId()).orElse(null);
+
+            // 3. 상품 정보 세팅
+            productOrderDTO.setSavePoint(products.getPoint());
+            productOrderDTO.setProductName(products.getProductName());
+            productOrderDTO.setTotalAmount(getTotalAmount(productOrderDTO, products));
+
+            // 4. 카카오페이 준비
+            KakaoReadyResponse kakaoReadyResponse = kakaoPayService.kakaoPayReady(productOrderDTO);
+
+            // 5. 세션에 주문 정보 저장
+            HttpSession session = request.getSession();
+            session.setAttribute("productOrderDTO", productOrderDTO);
+
+            return kakaoReadyResponse;
+        } catch (Exception e) {
+            // 롤백 및 예외 처리
+            log.error("카카오페이 주문 처리 중 오류가 발생했습니다.", e);
+            throw new OrderProcessingException("카카오페이 주문 처리 중 오류가 발생했습니다.", e);
         }
-
-        Products products = productService.findById(productOrderDTO.getProductId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, PRODUCT_NOT_FOUND)); // 실제 상품 가져오기
-
-        // 실제 상품 정보 세팅
-        productOrderDTO.setSavePoint(products.getPoint());
-        productOrderDTO.setProductName(products.getProductName());
-        productOrderDTO.setTotalAmount(getTotalAmount(productOrderDTO, products)); 
-
-        KakaoReadyResponse kakaoReadyResponse = kakaoPayService.kakaoPayReady(productOrderDTO); // 카카오페이 준비
-
-        // 세션에 주문 정보 저장
-        HttpSession session = request.getSession();
-        session.setAttribute("productOrderDTO", productOrderDTO); 
-
-        return kakaoReadyResponse; // 카카오페이 준비
     }
 
     /**
@@ -176,27 +185,32 @@ public class ProductController {
      */
     @GetMapping("/orderApproval")
     public String orderApproval(@RequestParam("pg_token") String pgToken, @AuthenticationPrincipal PrincipalDetails principalDetails, HttpSession session, RedirectAttributes redirectAttributes) {
-        log.info("orderApproval...");
+        log.info("직접결제 완료 후 호출...");
 
-        KakaoApproveResponse kakaoApprove = kakaoPayService.approveResponse(pgToken); // 카카오페이 요청 승인
-        ProductOrderDTO productOrderDTO = (ProductOrderDTO) session.getAttribute("productOrderDTO"); // 세션 주문 정보 가져오기
-        session.removeAttribute("productOrderDTO"); // 세션 닫아주기
+        try {
+            KakaoApproveResponse kakaoApprove = kakaoPayService.approveResponse(pgToken); // 카카오페이 요청 승인
+            ProductOrderDTO productOrderDTO = (ProductOrderDTO) session.getAttribute("productOrderDTO"); // 세션 주문 정보 가져오기
+            session.removeAttribute("productOrderDTO"); // 세션 닫아주기
 
-        if (productOrderDTO == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Session attribute 'productOrderDTO' not found or expired");
+            if (productOrderDTO == null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "세션에 저장된 주문정보 없음");
+            }
+
+            // 필요한 객체 생성
+            OrderDTO orderDTO = createOrderDTO(principalDetails.getUsername(), kakaoApprove, productOrderDTO);
+            OrderItemDTO orderItemDTO = createOrderItemDTO(productOrderDTO);
+            MemberPointDTO memberPointDTO = createMemberPointDTO(principalDetails.getUsername(), kakaoApprove, productOrderDTO);
+
+            productService.orderProcess(orderDTO, orderItemDTO, memberPointDTO, principalDetails.getMembers().getType()); // 주문 프로세스
+
+            productOrderDTO.setOrderNumber(orderDTO.getOrderNumber()); // 주문번호 set
+            redirectAttributes.addFlashAttribute("productOrderDTO", productOrderDTO);
+
+            return "redirect:/product/complete";
+        } catch (Exception e) {
+            log.error("직접주문 처리 중 오류가 발생했습니다.", e);
+            throw new OrderProcessingException("직접주문 처리 중 오류가 발생했습니다.", e);
         }
-
-        // 필요한 객체 생성
-        OrderDTO orderDTO = createOrderDTO(principalDetails.getUsername(), kakaoApprove, productOrderDTO);
-        OrderItemDTO orderItemDTO = createOrderItemDTO(productOrderDTO);
-        MemberPointDTO memberPointDTO = createMemberPointDTO(principalDetails.getUsername(), kakaoApprove, productOrderDTO);
-
-        productService.orderProcess(orderDTO, orderItemDTO, memberPointDTO, principalDetails.getMembers().getType()); // 주문 프로세스
-
-        productOrderDTO.setOrderNumber(orderDTO.getOrderNumber()); // 주문번호 set
-        redirectAttributes.addFlashAttribute("productOrderDTO", productOrderDTO);
-
-        return "redirect:/product/complete";
     }
 
     /**
@@ -204,7 +218,7 @@ public class ProductController {
      */
     @GetMapping("/complete")
     public String complete(ProductOrderDTO productOrderDTO, @AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {
-        log.info("단건 결제 완료...");
+        log.info("직접 결제 완료...");
         if (productOrderDTO.getProductId() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "didn't order the product");
         }
@@ -223,14 +237,7 @@ public class ProductController {
     @GetMapping("/cartOrder")
     public String cartOrder(@RequestParam List<Long> productIds, @AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {
         List<Cart> findCarts = productService.findById(productIds, principalDetails.getUsername());
-
-        CartSummary cartSummary = new CartSummary();
-
-        for (Cart cart : findCarts) {
-            cartSummary.addProduct(cart);
-        }
-        cartSummary.setTotalAmount(cartSummary.getTotalAmount() + cartSummary.getTotalDeliveryCost()); // 배송비를 상품 총 가격에 더함
-
+        CartSummary cartSummary = calculateCartSummary(findCarts);
         model.addAttribute("cartSummary", cartSummary);
         model.addAttribute("member", principalDetails.getMembers());
         model.addAttribute("carts", findCarts);
@@ -245,62 +252,38 @@ public class ProductController {
     public KakaoReadyResponse readyToKakaoPayCart(@RequestBody @Validated ProductOrderCartDTO productOrderCartDTO, HttpServletRequest request) {
         log.info("카카오 페이 장바구니 결제...");
 
-        List<IdAndQuantity> orderInfos = new ArrayList<>();
+        try {
+            // 상품 정보 세팅
+            List<IdAndQuantity> orderInfos = getProductOrderInfo(productOrderCartDTO.getIdAndQuantities());
 
-        // 실제 product 가져와서 orderInfo 채우기
-        for (IdAndQuantity idAndQuantity : productOrderCartDTO.getIdAndQuantities()) {
-            Products findProducts = productService.findById(idAndQuantity.getProductId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, PRODUCT_NOT_FOUND));
-            idAndQuantity.setProductName(findProducts.getProductName());
-            idAndQuantity.setPoint(findProducts.getPoint());
-            idAndQuantity.setDeliveryCost(findProducts.getDeliveryCost());
-            idAndQuantity.setDiscountedPrice(findProducts.getDiscountedPrice());
-            idAndQuantity.setDiscountRate(findProducts.getDiscountRate());
-            idAndQuantity.setDescription(findProducts.getDescription());
-            idAndQuantity.setPrice(findProducts.getPrice());
-            idAndQuantity.setCategory1Code(findProducts.getCategory1Code());
-            idAndQuantity.setCategory2Code(findProducts.getCategory2Code());
-            idAndQuantity.setThumbnailList(findProducts.getThumbnailList());
-            orderInfos.add(idAndQuantity);
+            // 총 결제 금액 계산
+            int totalSavePoint = calculateTotalSavePoint(orderInfos);
+            int totalDiscountedPrice = calculateTotalDiscountedPrice(orderInfos);
+            int totalDeliveryCost = calculateTotalDeliveryCost(orderInfos);
+            int totalAmount = calculateTotalAmount(totalDiscountedPrice, totalDeliveryCost, productOrderCartDTO.getUsedPoint());
+
+            // 상품명 설정
+            String productName = generateProductName(orderInfos);
+
+            // 주문 정보 설정
+            productOrderCartDTO.setSavePoint(totalSavePoint);
+            productOrderCartDTO.setProductName(productName);
+            productOrderCartDTO.setTotalDiscountedPrice(totalDiscountedPrice);
+            productOrderCartDTO.setTotalDeliveryCost(totalDeliveryCost);
+            productOrderCartDTO.setTotalAmount(totalAmount);
+
+            // 카카오페이 준비
+            KakaoReadyResponse kakaoReadyResponse = kakaoPayService.kakaoPayReady(productOrderCartDTO);
+
+            // 세션에 주문 정보 저장
+            HttpSession session = request.getSession();
+            session.setAttribute("productOrderCartDTO", productOrderCartDTO);
+
+            return kakaoReadyResponse;
+        } catch (Exception e) {
+            log.error("장바구니 주문 처리 중 오류가 발생했습니다.", e);
+            throw new OrderProcessingException("장바구니 주문 처리 중 오류가 발생했습니다.", e);
         }
-
-        int totalSavePoint = 0;
-        int totalDeliveryCost = 0;
-        int totalDiscountedPrice = 0;
-        String productName = null;
-        int totalAmount = 0;
-
-        for (IdAndQuantity orderInfo : orderInfos) {
-            // 1. totalSavePoint 산출
-            totalSavePoint += orderInfo.getPoint() * orderInfo.getQuantity();
-            // 2. totalDiscountedPrice 산출
-            totalDiscountedPrice += orderInfo.getDiscountedPrice() * orderInfo.getQuantity();
-            // 3. totalDeliveryCost 산출
-            totalDeliveryCost += orderInfo.getDeliveryCost();
-        }
-        // 4. 상품명 외 n개
-        if (orderInfos.size() > 1) {
-            productName = orderInfos.get(0).getProductName() + "외 " + orderInfos.size() + "개";
-        } else {
-            productName = orderInfos.get(0).getProductName();
-        }
-
-        // 5. 총 결제 금액 산출
-        totalAmount = totalDiscountedPrice + totalDeliveryCost - productOrderCartDTO.getUsedPoint();
-
-        // 실제 상품 정보 세팅
-        productOrderCartDTO.setSavePoint(totalSavePoint);
-        productOrderCartDTO.setProductName(productName);
-        productOrderCartDTO.setTotalDiscountedPrice(totalDiscountedPrice);
-        productOrderCartDTO.setTotalDeliveryCost(totalDeliveryCost);
-        productOrderCartDTO.setTotalAmount(totalAmount); // 총 비용
-
-        KakaoReadyResponse kakaoReadyResponse = kakaoPayService.kakaoPayReady(productOrderCartDTO); // 카카오페이 준비
-
-        // 세션에 주문 정보 저장
-        HttpSession session = request.getSession();
-        session.setAttribute("productOrderCartDTO", productOrderCartDTO);
-
-        return kakaoReadyResponse; // 카카오페이 준비
     }
 
     /**
@@ -315,26 +298,35 @@ public class ProductController {
     public String orderApprovalCart(@RequestParam("pg_token") String pgToken, @AuthenticationPrincipal PrincipalDetails principalDetails, HttpSession session, RedirectAttributes redirectAttributes) {
         log.info("orderApprovalCart...");
 
-        KakaoApproveResponse kakaoApprove = kakaoPayService.approveResponse(pgToken); // 카카오페이 요청 승인
+        try {
+            // 카카오페이 요청 승인
+            KakaoApproveResponse kakaoApprove = kakaoPayService.approveResponse(pgToken);
 
-        ProductOrderCartDTO productOrderCartDTO = (ProductOrderCartDTO) session.getAttribute("productOrderCartDTO"); // 세션 주문 정보 가져오기
-        session.removeAttribute("productOrderCartDTO"); // 세션 닫아주기
+            // 세션 주문 정보 가져오기
+            ProductOrderCartDTO productOrderCartDTO = (ProductOrderCartDTO) session.getAttribute("productOrderCartDTO");
+            session.removeAttribute("productOrderCartDTO");
 
-        if (productOrderCartDTO == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Session attribute 'productOrderDTO' not found or expired");
+            // 주문정보 없을 때 처리
+            if (productOrderCartDTO == null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "세션에 주문정보가 없음");
+            }
+
+            // 필요한 객체 생성
+            OrderDTO orderDTO = createOrderDTO(principalDetails.getUsername(), kakaoApprove, productOrderCartDTO);
+            List<OrderItemDTO> orderItemDTOs = createOrderItemDTO(productOrderCartDTO);
+            MemberPointDTO memberPointDTO = createMemberPointDTO(principalDetails.getUsername(), kakaoApprove, productOrderCartDTO);
+
+            // 주문 프로세스 실행
+            productService.orderProcessCart(orderDTO, orderItemDTOs, memberPointDTO, principalDetails.getMembers().getType());
+
+            // 주문번호 설정 후 리다이렉트
+            productOrderCartDTO.setOrderNumber(orderDTO.getOrderNumber());
+            redirectAttributes.addFlashAttribute("productOrderCartDTO", productOrderCartDTO);
+            return "redirect:/product/completeCart";
+        } catch (Exception e) {
+            log.error("장바구니 주문 처리 중 오류가 발생했습니다.", e);
+            throw new OrderProcessingException("장바구니 주문 처리 중 오류가 발생했습니다.", e);
         }
-
-        // 필요한 객체 생성
-        OrderDTO orderDTO = createOrderDTO(principalDetails.getUsername(), kakaoApprove, productOrderCartDTO);
-        List<OrderItemDTO> orderItemDTOs = createOrderItemDTO(productOrderCartDTO); // 리스트
-        MemberPointDTO memberPointDTO = createMemberPointDTO(principalDetails.getUsername(), kakaoApprove, productOrderCartDTO);
-
-        productService.orderProcessCart(orderDTO, orderItemDTOs, memberPointDTO, principalDetails.getMembers().getType()); // 주문 프로세스
-
-        productOrderCartDTO.setOrderNumber(orderDTO.getOrderNumber()); // 주문번호 set
-        redirectAttributes.addFlashAttribute("productOrderCartDTO", productOrderCartDTO);
-
-        return "redirect:/product/completeCart";
     }
 
     /**
@@ -361,14 +353,7 @@ public class ProductController {
     @GetMapping("/cart")
     public String cart(@AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {
         List<Cart> findCarts = productService.findByUid(principalDetails.getUsername());
-
-        CartSummary cartSummary = new CartSummary();
-
-        for (Cart cart : findCarts) {
-            cartSummary.addProduct(cart); // 연산
-        }
-        cartSummary.setTotalAmount(cartSummary.getTotalAmount() + cartSummary.getTotalDeliveryCost()); // 배송비를 상품 총 가격에 더함
-
+        CartSummary cartSummary = calculateCartSummary(findCarts);
         model.addAttribute("cartSummary", cartSummary);
         model.addAttribute("carts", findCarts);
         return "product/cart";
@@ -522,5 +507,77 @@ public class ProductController {
         memberPointDTO.setEarnedPoint(productOrderCartDTO.getSavePoint());
         memberPointDTO.setEarnedPointDate(LocalDateTime.parse(kakaoApprove.getApproved_at()));
         return memberPointDTO;
+    }
+
+    // 상품 정보 세팅 메서드
+    private List<IdAndQuantity> getProductOrderInfo(List<IdAndQuantity> idAndQuantities) {
+        List<IdAndQuantity> orderInfos = new ArrayList<>();
+        for (IdAndQuantity idAndQuantity : idAndQuantities) {
+            Products product = productService.findById(idAndQuantity.getProductId())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, PRODUCT_NOT_FOUND));
+            setProductOrderInfo(idAndQuantity, product);
+            orderInfos.add(idAndQuantity);
+        }
+        return orderInfos;
+    }
+
+    // 주문 정보 설정 메서드
+    private void setProductOrderInfo(IdAndQuantity orderInfo, Products product) {
+        orderInfo.setProductName(product.getProductName());
+        orderInfo.setPoint(product.getPoint());
+        orderInfo.setDeliveryCost(product.getDeliveryCost());
+        orderInfo.setDiscountedPrice(product.getDiscountedPrice());
+        orderInfo.setDiscountRate(product.getDiscountRate());
+        orderInfo.setDescription(product.getDescription());
+        orderInfo.setPrice(product.getPrice());
+        orderInfo.setCategory1Code(product.getCategory1Code());
+        orderInfo.setCategory2Code(product.getCategory2Code());
+        orderInfo.setThumbnailList(product.getThumbnailList());
+    }
+
+    // 총 적립 포인트 계산 메서드
+    private int calculateTotalSavePoint(List<IdAndQuantity> orderInfos) {
+        return orderInfos.stream()
+                .mapToInt(info -> info.getPoint() * info.getQuantity())
+                .sum();
+    }
+
+    // 총 할인 가격 계산 메서드
+    private int calculateTotalDiscountedPrice(List<IdAndQuantity> orderInfos) {
+        return orderInfos.stream()
+                .mapToInt(info -> info.getDiscountedPrice() * info.getQuantity())
+                .sum();
+    }
+
+    // 총 배송비 계산 메서드
+    private int calculateTotalDeliveryCost(List<IdAndQuantity> orderInfos) {
+        return orderInfos.stream()
+                .mapToInt(IdAndQuantity::getDeliveryCost)
+                .sum();
+    }
+
+    // 총 결제 금액 계산 메서드
+    private int calculateTotalAmount(int totalDiscountedPrice, int totalDeliveryCost, int usedPoint) {
+        return totalDiscountedPrice + totalDeliveryCost - usedPoint;
+    }
+
+    // 상품명 생성 메서드
+    private String generateProductName(List<IdAndQuantity> orderInfos) {
+        if (orderInfos.size() > 1) {
+            return orderInfos.get(0).getProductName() + "외 " + (orderInfos.size() - 1) + "개";
+        } else {
+            return orderInfos.get(0).getProductName();
+        }
+    }
+
+    // 장바구니 요약 정보 계산 메서드
+    private CartSummary calculateCartSummary(List<Cart> carts) {
+        CartSummary cartSummary = new CartSummary();
+        for (Cart cart : carts) {
+            cartSummary.addProduct(cart);
+        }
+        // 배송비를 상품 총 가격에 더함
+        cartSummary.setTotalAmount(cartSummary.getTotalAmount() + cartSummary.getTotalDeliveryCost());
+        return cartSummary;
     }
 }
